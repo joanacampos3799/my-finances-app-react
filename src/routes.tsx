@@ -5,6 +5,8 @@ import RootLayout from "./layouts/RootLayout";
 import WelcomePage from "./pages/Welcome";
 import SignInPage from "./pages/SignIn";
 import SignUpPage from "./pages/SignUp";
+import CategoriesPage from "./pages/CategoriesPage";
+import FixedTransactionsPage from "./pages/FixedTransactionsPage";
 
 const router = createBrowserRouter([
   {
@@ -16,8 +18,12 @@ const router = createBrowserRouter([
       { path: "/sign-up/*", element: <SignUpPage /> },
       {
         element: <DashboardLayout />,
-        path: "dashboard",
-        children: [{ path: "/dashboard", element: <DashboardPage /> }],
+        path: "s",
+        children: [
+          { path: "/s/dashboard", element: <DashboardPage /> },
+          { path: "/s/categories", element: <CategoriesPage /> },
+          { path: "/s/fixed-transactions", element: <FixedTransactionsPage /> },
+        ],
       },
     ],
   },

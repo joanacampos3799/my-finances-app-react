@@ -1,10 +1,10 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Center } from "@chakra-ui/react";
 import { SignUp } from "@clerk/clerk-react";
 
 export default function SignUpPage() {
   return (
-    <Box>
-      <SignUp path="/sign-up" />
-    </Box>
+    <Center>
+      <SignUp path="/sign-up" fallbackRedirectUrl="/s/dashboard" />
+    </Center>
   );
 }
