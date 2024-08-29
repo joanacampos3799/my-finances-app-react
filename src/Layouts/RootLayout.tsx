@@ -5,8 +5,11 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/clerk-react";
+import { Box } from "@chakra-ui/react";
+import NavBar from "../components/NavBar";
 
-const PUBLISHABLE_KEY: string = process.env.CLERK_PUBLISHABLE_KEY || "";
+const PUBLISHABLE_KEY: string =
+  process.env.REACT_APP_CLERK_PUBLISHABLE_KEY || "";
 
 if (!PUBLISHABLE_KEY || PUBLISHABLE_KEY === "") {
   throw new Error("Missing Publishable Key");
@@ -21,22 +24,10 @@ export default function RootLayout() {
       routerReplace={(to) => navigate(to, { replace: true })}
       publishableKey={PUBLISHABLE_KEY}
     >
-      <header className="header">
-        <div>
-          <div>
-            <p>Clerk + React + React Router App</p>
-          </div>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-          <SignedOut>
-            <Link to="/sign-in">Sign In</Link>
-          </SignedOut>
-        </div>
-      </header>
-      <main>
+      <Box w="100%" h="calc(100vh)">
+        <NavBar />
         <Outlet />
-      </main>
+      </Box>
     </ClerkProvider>
   );
 }

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { Text } from "@chakra-ui/react";
 
 export default function DashboardLayout() {
   const { userId, isLoaded } = useAuth();
@@ -14,7 +15,7 @@ export default function DashboardLayout() {
     }
   }, [isLoaded]);
 
-  if (!isLoaded) return "Loading...";
+  if (!isLoaded) return <Text>Loading...</Text>;
 
   return <Outlet />;
 }
