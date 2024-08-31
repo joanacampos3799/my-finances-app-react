@@ -1,10 +1,5 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import {
-  ClerkProvider,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/clerk-react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { ClerkProvider } from "@clerk/clerk-react";
 import { Box } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
 
@@ -17,7 +12,6 @@ if (!PUBLISHABLE_KEY || PUBLISHABLE_KEY === "") {
 
 export default function RootLayout() {
   const navigate = useNavigate();
-
   return (
     <ClerkProvider
       routerPush={(to) => navigate(to)}

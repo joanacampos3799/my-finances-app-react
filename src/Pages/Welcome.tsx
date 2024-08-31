@@ -1,4 +1,4 @@
-import { Box, Center, Icon, Text } from "@chakra-ui/react";
+import { Box, Center, Icon } from "@chakra-ui/react";
 import { FaAngleDown } from "react-icons/fa6";
 import Description from "../components/Description";
 

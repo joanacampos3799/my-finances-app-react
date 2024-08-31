@@ -1,4 +1,3 @@
-import React from "react";
 import useCategories from "../hooks/useCategories";
 import { SimpleGrid } from "@chakra-ui/react";
 import CategoryCard from "./CategoryCard";

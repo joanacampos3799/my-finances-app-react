@@ -17,6 +17,7 @@ import {
   Stack,
   Textarea,
 } from "@chakra-ui/react";
+import IconPicker from "./IconPicker";
 
 interface Props {
   isOpen: boolean;
@@ -33,30 +34,22 @@ const NewCategoryDrawer = ({ isOpen, onClose }: Props) => {
         <DrawerBody>
           <Stack spacing="24px">
             <Box>
-              <FormLabel htmlFor="username">Name</FormLabel>
-              <Input id="username" placeholder="Please enter user name" />
+              <FormLabel htmlFor="name">Name</FormLabel>
+              <Input id="name" placeholder="Please enter Category name" />
             </Box>
 
             <Box>
-              <FormLabel htmlFor="url">Url</FormLabel>
-              <InputGroup>
-                <InputLeftAddon>http://</InputLeftAddon>
-                <Input type="url" id="url" placeholder="Please enter domain" />
-                <InputRightAddon>.com</InputRightAddon>
-              </InputGroup>
+              <FormLabel htmlFor="icon">Choose an Icon</FormLabel>
+              <IconPicker />
             </Box>
 
             <Box>
-              <FormLabel htmlFor="owner">Select Owner</FormLabel>
-              <Select id="owner" defaultValue="segun">
-                <option value="segun">Segun Adebayo</option>
-                <option value="kola">Kola Tioluwani</option>
+              <FormLabel htmlFor="owner">Select Type</FormLabel>
+              <Select id="owner" defaultValue="1">
+                <option value="0">Both</option>
+                <option value="1">Expense</option>
+                <option value="2">Income</option>
               </Select>
-            </Box>
-
-            <Box>
-              <FormLabel htmlFor="desc">Description</FormLabel>
-              <Textarea id="desc" />
             </Box>
           </Stack>
         </DrawerBody>

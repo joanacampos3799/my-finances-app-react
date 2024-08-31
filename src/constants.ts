@@ -10,3 +10,5 @@ export const iconMap: { [key: string]: IconType } = {
     android: FaAndroid,
 
   };
+
+  export const CACHE_KEY_CATEGORIES = ['categories'];

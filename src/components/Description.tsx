@@ -1,5 +1,7 @@
+import { Text } from "@chakra-ui/react";
+
 const Description = () => {
-  return <div>Description</div>;
+  return <Text>Description</Text>;
 };
 
 export default Description;

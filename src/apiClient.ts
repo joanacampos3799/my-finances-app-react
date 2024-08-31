@@ -1,17 +1,12 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { useUserStore } from './stores/userStore';
 
 export interface FetchResponse<T> {
   count: number;
-  next: string | null;
   results: T[];
 }
 
-const {userId} = useUserStore()
-
 const axiosInstance = axios.create({
-  baseURL: 'https://localhost:8080/',
-  headers: {'X-User-ID': userId}
+  baseURL: 'http://localhost:8080/'
 });
 
 class APIClient<T> {
@@ -27,11 +22,26 @@ class APIClient<T> {
       .then((res) => res.data);
   };
 
-  get = (id: number | string) => {
+  get = (id: number | string, config?: AxiosRequestConfig) => {
     return axiosInstance
-      .get<T>(this.endpoint + '/' + id)
+      .get<T>(this.endpoint + '/' + id, config)
       .then((res) => res.data);
   };
+
+  getAppUserId = (userId: string) => {
+    return axiosInstance
+      .get<T>(this.endpoint + '?userId=' + userId)
+      .then((res) => {
+        console.log(res)
+       return res.data
+      });
+  };
+
+  post = (data: T, config?: AxiosRequestConfig) => {
+    return axiosInstance
+      .post<T>(this.endpoint, data, config)
+      .then(res => res.data);
+  }
 }
 
 export default APIClient;
