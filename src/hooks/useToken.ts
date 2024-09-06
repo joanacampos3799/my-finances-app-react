@@ -1,19 +1,18 @@
 
 import { useAuth} from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../constants";
 
 
 export const useToken = () => {
     const { getToken } = useAuth();
 
-    return useQuery<string | null, Error, string>({
-        queryKey: ['token'],
-    queryFn:async () => {
+    const {data: token} = useQuery<string | null, Error, string>({
+        queryKey: [queryKeys.token],
+        queryFn:async () => {
         const token = await getToken();
         return token
-    }, 
-    staleTime: 10 * 1000,
-    retry: 3
-    })
+    }})
 
+    return token
 } 

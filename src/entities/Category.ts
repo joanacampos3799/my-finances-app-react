@@ -1,10 +1,11 @@
-import TransactionType from "./TransactionType";
+import { UUID } from "crypto";
 
 export default interface Category {
-    Id: number,
+    Id?: number,
     Name: string,
     Icon: string,
+    userId: UUID,
     MonthlySpent?: number,
     MonthlyEarned?: number,
-    TransactionType: TransactionType
+    CategoryType: number
 }

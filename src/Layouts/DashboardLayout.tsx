@@ -1,29 +1,28 @@
 import * as React from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Text } from "@chakra-ui/react";
-import useUser from "../hooks/useUser";
-import useUserStore from "../stores/userStore";
+import { Box, Text } from "@chakra-ui/react";
+import { useAuthActions } from "../hooks/useAuthActions";
+import { useLoginData } from "../contexts/AuthContext";
 
 export default function DashboardLayout() {
-  const { userId, isLoaded } = useAuth();
-  const { setUserId } = useUserStore();
+  const { isSignedIn, userId, isLoaded } = useAuth();
+  const { userId: Id, userToken } = useLoginData();
   const navigate = useNavigate();
-
+  const { signin } = useAuthActions();
   React.useEffect(() => {
     if (isLoaded && !userId) {
       navigate("/sign-in");
+    } else if (isSignedIn && !userToken && !Id) {
+      signin();
     }
-  }, [isLoaded]);
-
-  const user = useUser(userId!!);
-  React.useEffect(() => {
-    if (user && user.data) {
-      setUserId(user.data.userId);
-    }
-  }, [user.data]);
+  }, [isLoaded, userId, navigate, signin, userToken, Id, isSignedIn]);
 
   if (!isLoaded) return <Text>Loading...</Text>;
 
-  return <Outlet />;
+  return (
+    <Box padding="10px">
+      <Outlet />
+    </Box>
+  );
 }

@@ -1,20 +1,26 @@
 import { useQuery } from "@tanstack/react-query";
 import APIClient, { FetchResponse } from "../apiClient";
 import Category from "../entities/Category";
-import { CACHE_KEY_CATEGORIES } from "../constants";
-import { AxiosRequestConfig } from "axios";
+import {queryKeys } from "../constants";
+import { useLoginData } from "../contexts/AuthContext";
 
 const apiClient = new APIClient<Category>('/categories');
 
 
-const useCategories = (config?: AxiosRequestConfig) =>
-  useQuery<FetchResponse<Category>, Error>({
-    queryKey: CACHE_KEY_CATEGORIES,
-    queryFn:async () => {
-        const data = await apiClient.getAll(config)
-        return data;
-    },
-    staleTime: 10 * 1000
-  });
+const useCategories = () =>
+  {
+    const { userId, userToken } = useLoginData();
+  
+    const fallback: FetchResponse<Category> = {
+      data: [],
+      count: 0
+    };
+    const { data: categories = fallback } = useQuery({
+      enabled: !!userToken,
+      queryKey: [queryKeys.categories],
+      queryFn: () => apiClient.getAll(userId!!, userToken!!),
+    });
+    return  categories
+  }
 
 export default useCategories;

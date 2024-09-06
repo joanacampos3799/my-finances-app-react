@@ -15,7 +15,7 @@ export const useIconPack = () => {
       const { ...exportIcons } = IconPack
         const fas: Icon[] = Object.values(exportIcons).map((icon: IconType) => ({
             icon: icon,
-            name: icon.toString()
+            name: icon.name
         }))
           setIconPack(fas)
     }

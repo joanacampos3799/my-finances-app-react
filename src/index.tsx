@@ -5,13 +5,16 @@ import { RouterProvider } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 import router from "./routes/routes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthContextProvider } from "./contexts/AuthContext";
 
 const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ChakraProvider>
+    <ChakraProvider portalZIndex={40}>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <AuthContextProvider>
+          <RouterProvider router={router} />
+        </AuthContextProvider>
       </QueryClientProvider>
     </ChakraProvider>
   </React.StrictMode>

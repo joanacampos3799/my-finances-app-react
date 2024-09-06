@@ -1,8 +1,18 @@
 import { Box, Center, Icon } from "@chakra-ui/react";
 import { FaAngleDown } from "react-icons/fa6";
 import Description from "../components/Description";
+import { useAuth } from "@clerk/clerk-react";
+import { useAuthActions } from "../hooks/useAuthActions";
+import { useEffect } from "react";
 
 export default function WelcomePage() {
+  const { signout } = useAuthActions();
+  const { isSignedIn } = useAuth();
+
+  useEffect(() => {
+    if (!isSignedIn) signout();
+  }, [isSignedIn, signout]);
+
   return (
     <Box h="calc(90hv)" w="inherit">
       <Center

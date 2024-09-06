@@ -1,46 +1,37 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Category from "../entities/Category";
 import APIClient from "../apiClient";
-import { CACHE_KEY_CATEGORIES } from "../constants";
+import { useLoginData } from "../contexts/AuthContext";
+import { toast } from "../toast";
+import { mutationKeys, queryKeys } from "../constants";
 
 const apiClient = new APIClient<Category>('/categories/new');
-
-interface AddCategoryContext { 
-    previousCategories: Category[]
-  }
   
   const useAddCategory = (onAdd: () => void) => {
     const queryClient = useQueryClient();
+    const { userId, userToken } = useLoginData();
+
+    const {mutate: addCategory} =useMutation({
+      mutationKey: [mutationKeys.addCategory],
+      mutationFn: (category : Category) => apiClient.post(category, userId!!, userToken!!), 
+      onMutate: () => onAdd(),
   
-    return useMutation<Category, Error, Category, AddCategoryContext>({
-      mutationFn: apiClient.post, 
-      onMutate: (newCategory: Category) => {
-        const previousCategories = queryClient.getQueryData<Category[]>(CACHE_KEY_CATEGORIES) || [];
-  
-        queryClient.setQueryData<Category[]>(CACHE_KEY_CATEGORIES, (categories = []) => [
-          newCategory,
-          ...categories,
-        ]);
-  
-        onAdd();
-  
-        return { previousCategories };
+      onSuccess: (newCategory: Category) => {
+        toast({ title: `Category ${newCategory.Name} added!`, status: "success" });
+      },
+      onSettled: () => {
+        // return promise to maintain 'inProgress' status until query invalidation
+        //    is complete
+        return queryClient.invalidateQueries({ queryKey: [queryKeys.categories] });
       },
   
-      onSuccess: (savedCategory, newCategory) => {
-        queryClient.setQueryData<Category[]>(CACHE_KEY_CATEGORIES, (categories) =>
-          categories?.map((category) =>
-            category === newCategory ? savedCategory : category
-          )
-        );
-      },
-  
-      onError: (error, newCategory, context) => {
-        if (!context) return;
-  
-        queryClient.setQueryData<Category[]>(CACHE_KEY_CATEGORIES, context.previousCategories);
-      }
+      onError: (error, newCategory) => {
+        console.log(error.message)
+        toast({ title: `There was an error adding Category ${newCategory.Name}`, status: "error" });
+        }
     });
+
+    return addCategory;
   }
   
   export default useAddCategory;

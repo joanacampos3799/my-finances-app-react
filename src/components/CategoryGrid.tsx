@@ -1,16 +1,18 @@
-import useCategories from "../hooks/useCategories";
 import { SimpleGrid } from "@chakra-ui/react";
 import CategoryCard from "./CategoryCard";
+import Category from "../entities/Category";
 
-const CategoryGrid = () => {
-  const { data } = useCategories();
+interface Props {
+  categories: Category[];
+}
+const CategoryGrid = ({ categories }: Props) => {
   return (
     <SimpleGrid
-      columns={{ sm: 1, md: 2, lg: 3, xl: 4 }}
+      columns={{ sm: 1, md: 2, lg: 4, xl: 5 }}
       spacing={6}
       padding="10px"
     >
-      {data?.results.map((category) => (
+      {categories.map((category) => (
         <CategoryCard key={category.Id} category={category} />
       ))}
     </SimpleGrid>
