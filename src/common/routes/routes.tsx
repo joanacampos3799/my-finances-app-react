@@ -1,12 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
-import DashboardLayout from "../layouts/DashboardLayout";
-import DashboardPage from "../pages/Dashboard";
-import RootLayout from "../layouts/RootLayout";
-import SignInPage from "../pages/SignIn";
-import SignUpPage from "../pages/SignUp";
-import CategoriesPage from "../pages/CategoriesPage";
-import FixedTransactionsPage from "../pages/FixedTransactionsPage";
+
+import DashboardPage from "../../dashboard/pages/Dashboard";
+
+import SignInPage from "../../auth/pages/SignIn";
+import SignUpPage from "../../auth/pages/SignUp";
+import CategoriesPage from "../../categories/pages/CategoriesPage";
+import FixedTransactionsPage from "../../fixed-transactions/pages/FixedTransactionsPage";
 import ConditionalRoute from "./ConditionalRoute";
+import RootLayout from "../../welcome/layouts/RootLayout";
+import DashboardLayout from "../../welcome/layouts/DashboardLayout";
 
 const router = createBrowserRouter([
   {

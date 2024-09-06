@@ -20,9 +20,9 @@ import IconPicker from "./IconPicker";
 import { useRef, useState } from "react";
 import useAddCategory from "../hooks/useAddCategory";
 import { BsChevronDown } from "react-icons/bs";
-import { useLoginData } from "../contexts/AuthContext";
-import { movementTypes } from "../constants";
-import MovementType from "../entities/MovementType";
+import { useLoginData } from "../../auth/contexts/AuthContext";
+import { movementTypes } from "../../common/constants";
+import MovementType from "../../movement-types/MovementType";
 
 interface Props {
   isOpen: boolean;

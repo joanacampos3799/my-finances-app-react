@@ -3,9 +3,9 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { RouterProvider } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
-import router from "./routes/routes";
+import router from "./common/routes/routes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthContextProvider } from "./contexts/AuthContext";
+import { AuthContextProvider } from "./auth/contexts/AuthContext";
 
 const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root")!).render(

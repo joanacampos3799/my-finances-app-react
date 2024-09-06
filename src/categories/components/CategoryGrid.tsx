@@ -1,6 +1,6 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import CategoryCard from "./CategoryCard";
-import Category from "../entities/Category";
+import Category from "../Category";
 
 interface Props {
   categories: Category[];

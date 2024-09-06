@@ -10,12 +10,11 @@ import {
   IconButton,
   useDisclosure,
 } from "@chakra-ui/react";
-import Category from "../entities/Category";
+import Category from "../Category";
 import { TbArrowBarToDown, TbArrowBarUp } from "react-icons/tb";
 import { useIconPack } from "../hooks/useIconPack";
-import { movementTypes } from "../constants";
+import { movementTypes } from "../../common/constants";
 import { FaEraser, FaPen } from "react-icons/fa6";
-import { useRef } from "react";
 
 interface Props {
   category: Category;

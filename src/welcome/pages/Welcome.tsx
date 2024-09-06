@@ -1,9 +1,11 @@
 import { Box, Center, Icon } from "@chakra-ui/react";
 import { FaAngleDown } from "react-icons/fa6";
-import Description from "../components/Description";
+
 import { useAuth } from "@clerk/clerk-react";
-import { useAuthActions } from "../hooks/useAuthActions";
+
 import { useEffect } from "react";
+import { useAuthActions } from "../../auth/hooks/useAuthActions";
+import Description from "../components/Description";
 
 export default function WelcomePage() {
   const { signout } = useAuthActions();

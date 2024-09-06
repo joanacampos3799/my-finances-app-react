@@ -2,8 +2,8 @@ import * as React from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Box, Text } from "@chakra-ui/react";
-import { useAuthActions } from "../hooks/useAuthActions";
-import { useLoginData } from "../contexts/AuthContext";
+import { useLoginData } from "../../auth/contexts/AuthContext";
+import { useAuthActions } from "../../auth/hooks/useAuthActions";
 
 export default function DashboardLayout() {
   const { isSignedIn, userId, isLoaded } = useAuth();

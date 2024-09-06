@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/clerk-react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import WelcomePage from "../pages/Welcome";
+import WelcomePage from "../../welcome/pages/Welcome";
 
 const ConditionalRoute = () => {
   const { isSignedIn } = useAuth();

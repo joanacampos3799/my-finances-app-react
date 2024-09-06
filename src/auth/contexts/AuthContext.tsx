@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-import User from "../entities/User";
+import User from "../User";
 import { UUID } from "crypto";
 import useAuthStore from "../stores/useAuthSore";
 

@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import User from "../entities/User"
+import User from "../User"
 
 interface UserStore {
     user: User | undefined

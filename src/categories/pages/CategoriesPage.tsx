@@ -10,9 +10,9 @@ import CategoryGrid from "../components/CategoryGrid";
 import NewCategoryDrawer from "../components/NewCategoryDrawer";
 import useCategories from "../hooks/useCategories";
 import { useMutationState } from "@tanstack/react-query";
-import { mutationKeys } from "../constants";
-import Category from "../entities/Category";
-import { FetchResponse } from "../apiClient";
+import { mutationKeys } from "../../common/constants";
+import Category from "../Category";
+import { FetchResponse } from "../../common/apiClient";
 
 const CategoriesPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
