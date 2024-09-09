@@ -8,6 +8,8 @@ export const queryKeys = {
 
 export const mutationKeys = {
   addCategory: "new-category",
+  deleteCategory: "delete-category",
+  updateCategory: "update-category",
 };
 
 export const movementTypes: MovementType[] = [

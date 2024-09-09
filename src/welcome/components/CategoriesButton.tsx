@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const CategoriesButton = () => {
   return (
     <Link to="/s/categories">
-      <Button>Categories</Button>
+      <Button variant="ghost">Categories</Button>
     </Link>
   );
 };

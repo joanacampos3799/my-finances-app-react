@@ -1,79 +1,87 @@
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  HStack,
-  Icon,
-  Heading,
-  Text,
-  Tooltip,
-  IconButton,
-  useDisclosure,
-} from "@chakra-ui/react";
 import Category from "../Category";
 import { TbArrowBarToDown, TbArrowBarUp } from "react-icons/tb";
 import { useIconPack } from "../hooks/useIconPack";
 import { movementTypes } from "../../common/constants";
-import { FaEraser, FaPen } from "react-icons/fa6";
+import { FaPen } from "react-icons/fa6";
+import DeleteCategoryAlert from "./DeleteCategoryAlert";
+import { useState } from "react";
+import UpdateCategoryCard from "./UpdateCategoryCard";
+import { Card, FormatNumber, Heading, HStack, Icon } from "@chakra-ui/react";
+import { Button } from "../../components/ui/button";
+import { Tooltip } from "../../components/ui/tooltip";
 
 interface Props {
   category: Category;
 }
 const CategoryCard = ({ category }: Props) => {
   const iconPack = useIconPack();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  console.log(iconPack?.length);
+  const [isEditing, setIsEditing] = useState(false);
   return (
-    <Card>
-      <CardHeader>
-        <HStack justifyContent="space-between">
-          <HStack justifyContent="center">
-            <Icon
-              as={iconPack?.find((icon) => icon.name === category.Icon)?.icon}
-            ></Icon>
-            <Heading>{category.Name}</Heading>
-          </HStack>
-          <IconButton
-            variant="ghost"
-            colorScheme="gray"
-            aria-label="Delete"
-            onClick={onOpen}
-            icon={<FaEraser />}
-          />
-        </HStack>
-      </CardHeader>
-      <CardBody>
-        <HStack justifyContent="space-between">
-          {category.MonthlySpent != null && (
-            <HStack>
-              <Tooltip
-                hasArrow
-                label={movementTypes[category.CategoryType].name}
-              >
-                <span>
-                  <Icon as={TbArrowBarUp} />
-                </span>
-              </Tooltip>
+    <>
+      {isEditing ? (
+        <UpdateCategoryCard category={category} setIsEditing={setIsEditing} />
+      ) : (
+        <Card.Root variant={"elevated"}>
+          <Card.Header>
+            <HStack justifyContent="space-between">
+              <HStack justifyContent="center">
+                <Icon
+                  boxSize={4}
+                  as={
+                    iconPack?.find((icon) => icon.name === category.Icon)?.icon
+                  }
+                ></Icon>
+                <Heading>{category.Name}</Heading>
+              </HStack>
 
-              <Text>{category.MonthlySpent.toFixed(2)}€</Text>
+              <DeleteCategoryAlert category={category} />
             </HStack>
-          )}
-          {category.MonthlyEarned != null && (
-            <HStack>
-              <Icon as={TbArrowBarToDown} />
-              <Text>{category.MonthlyEarned.toFixed(2)}€</Text>
+          </Card.Header>
+          <Card.Body>
+            <HStack width={"full"} justifyContent="space-between">
+              <HStack>
+                {category.MonthlySpent != null && (
+                  <HStack>
+                    <Tooltip
+                      showArrow
+                      content={movementTypes[category.CategoryType].name}
+                    >
+                      <span>
+                        <Icon as={TbArrowBarUp} />
+                      </span>
+                    </Tooltip>
+
+                    <FormatNumber
+                      value={category.MonthlySpent}
+                      style="currency"
+                      currency="EUR"
+                    ></FormatNumber>
+                  </HStack>
+                )}
+                {category.MonthlyEarned != null && (
+                  <HStack>
+                    <Icon as={TbArrowBarToDown} />
+                    <FormatNumber
+                      value={category.MonthlyEarned}
+                      style="currency"
+                      currency="EUR"
+                    ></FormatNumber>
+                  </HStack>
+                )}
+              </HStack>
+              <Button
+                variant="ghost"
+                colorPalette="gray"
+                aria-label="Edit"
+                onClick={() => setIsEditing(true)}
+              >
+                <FaPen />
+              </Button>
             </HStack>
-          )}
-          <IconButton
-            variant="ghost"
-            colorScheme="gray"
-            aria-label="Edit"
-            icon={<FaPen />}
-          />
-        </HStack>
-      </CardBody>
-    </Card>
+          </Card.Body>
+        </Card.Root>
+      )}
+    </>
   );
 };
 

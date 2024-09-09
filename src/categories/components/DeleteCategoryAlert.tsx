@@ -1,49 +1,60 @@
+import { useState } from "react";
+import Category from "../Category";
+import { useDeleteCategory } from "../hooks/useDeleteCategory";
+import { Button } from "../../components/ui/button";
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  Button,
-} from "@chakra-ui/react";
-import React from "react";
-import { useRef } from "react";
+  DialogRoot,
+  DialogContent,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  DialogTrigger,
+} from "../../components/ui/dialog";
+import { FaEraser } from "react-icons/fa6";
 interface Props {
-  isOpen: boolean;
-  onClose: () => void;
+  category: Category;
 }
-const DeleteCategoryAlert = ({ isOpen, onClose }: Props) => {
-  const cancelRef = useRef<HTMLButtonElement>(null);
+const DeleteCategoryAlert = ({ category }: Props) => {
+  const [open, setOpen] = useState(false);
+  const deleteCategory = useDeleteCategory();
+
+  const handleDelete = () => {
+    category.Name = "Deleted";
+    deleteCategory(category);
+    setOpen(false);
+  };
+
   return (
-    <AlertDialog
-      motionPreset="slideInBottom"
-      isCentered
-      isOpen={isOpen}
-      leastDestructiveRef={cancelRef}
-      onClose={onClose}
+    <DialogRoot
+      motionPreset="slide-in-bottom"
+      centered
+      open={open}
+      onOpenChange={(e) => setOpen(e.open)}
     >
-      <AlertDialogOverlay>
-        <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Delete Customer
-          </AlertDialogHeader>
+      <DialogTrigger asChild>
+        <Button variant="ghost" aria-label="Delete">
+          <FaEraser />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader fontSize="lg" fontWeight="bold">
+          Delete Category
+        </DialogHeader>
 
-          <AlertDialogBody>
-            Are you sure? You can't undo this action afterwards.
-          </AlertDialogBody>
+        <DialogBody>
+          Are you sure? You can't undo this action afterwards.
+        </DialogBody>
 
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="red" onClick={onClose} ml={3}>
-              Delete
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialogOverlay>
-    </AlertDialog>
+        <DialogFooter>
+          <Button variant={"outline"} onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button colorPalette="red" onClick={handleDelete} ml={3}>
+            Delete
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </DialogRoot>
   );
 };
 

@@ -1,40 +1,46 @@
+import { useRef, useState } from "react";
+import { useIconPack } from "../hooks/useIconPack";
+import { FaCheck, FaMagnifyingGlass, FaPen } from "react-icons/fa6";
 import {
-  Button,
-  ButtonGroup,
-  Center,
-  Icon,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Popover,
   PopoverArrow,
   PopoverBody,
-  PopoverCloseButton,
   PopoverContent,
   PopoverFooter,
   PopoverHeader,
+  PopoverRoot,
   PopoverTrigger,
-  Portal,
+} from "../../components/ui/popover";
+import {
+  HStack,
+  Icon,
+  IconButton,
+  Input,
   SimpleGrid,
   Skeleton,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { useIconPack } from "../hooks/useIconPack";
-import { FaMagnifyingGlass, FaPen } from "react-icons/fa6";
+import { InputGroup } from "../../components/ui/input-group";
+import { Button } from "../../components/ui/button";
+import {
+  PaginationNextTrigger,
+  PaginationPageText,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "../../components/ui/pagination";
 
 interface Props {
   iconParam: string;
+  iconSize: number;
   setIconParam: (icon: string) => void;
 }
-const IconPicker = ({ iconParam, setIconParam }: Props) => {
+const IconPicker = ({ iconSize, iconParam, setIconParam }: Props) => {
   const [searchText, setSearchText] = useState("");
-
+  const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const size = 100;
+  let size = 100;
   const iconPack = useIconPack();
-
+  const ref = useRef<HTMLInputElement>(null);
   if (!iconPack) {
-    return <Skeleton variant="rectangular" width={210} height={40} />;
+    return <Skeleton variant="pulse" width={210} height={40} />;
   }
 
   let iconsFiltered = iconPack.filter((icon) => {
@@ -43,72 +49,79 @@ const IconPicker = ({ iconParam, setIconParam }: Props) => {
       .substring(2)
       .includes(searchText.toLowerCase());
   });
-  const maxPages = Math.ceil(iconsFiltered?.length!! / size);
+  const itemCount = iconsFiltered.length;
+  if (itemCount < 100) size = itemCount;
   iconsFiltered = iconsFiltered.slice((page - 1) * size, page * size);
-
   return (
-    <>
-      <Popover>
-        <PopoverTrigger>
-          <Center>
+    <HStack>
+      <PopoverRoot open={open} initialFocusEl={() => ref.current}>
+        <PopoverTrigger asChild onClick={() => setOpen(true)}>
+          <Button variant={"plain"} size={"xs"}>
             {iconParam ? (
               <Icon
-                as={iconsFiltered.find((icon) => icon.name === iconParam)?.icon}
-                boxSize={8}
+                as={iconPack.find((icon) => icon.name === iconParam)?.icon}
+                boxSize={iconSize}
               />
             ) : (
-              <Icon as={FaPen} boxSize={8} />
+              <Icon as={FaPen} boxSize={iconSize} />
             )}
-          </Center>
+          </Button>
         </PopoverTrigger>
-        <Portal>
-          <PopoverContent>
-            <PopoverArrow />
-            <PopoverHeader>
-              <InputGroup>
+        <PopoverContent portalled={false}>
+          <PopoverArrow />
+          <PopoverHeader>
+            <HStack>
+              <InputGroup width="full" startElement={<FaMagnifyingGlass />}>
                 <Input
+                  ref={ref}
                   placeholder="Search"
-                  size="small"
-                  variant="outlined"
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                 />
-                <InputLeftElement>
-                  <FaMagnifyingGlass />
-                </InputLeftElement>
               </InputGroup>
-            </PopoverHeader>
-            <PopoverCloseButton />
-            <PopoverBody>
-              <SimpleGrid columns={10} gap={2}>
-                {iconsFiltered.map((icon) => (
-                  <Icon
-                    key={icon.name}
-                    as={icon.icon}
-                    onClick={() => setIconParam(icon.name)}
-                  />
-                ))}
-              </SimpleGrid>
-            </PopoverBody>
-            <PopoverFooter>
-              <Center>
-                <ButtonGroup>
-                  {page !== 1 && (
-                    <Button onClick={() => setPage(page - 1)}>Previous</Button>
-                  )}
-                  <Center>
-                    {page} / {maxPages}
-                  </Center>{" "}
-                  {page < maxPages && (
-                    <Button onClick={() => setPage(page + 1)}>Next</Button>
-                  )}
-                </ButtonGroup>
-              </Center>
-            </PopoverFooter>
-          </PopoverContent>
-        </Portal>
-      </Popover>
-    </>
+              <Button
+                variant={"plain"}
+                size="xs"
+                onClick={() => setOpen(false)}
+              >
+                <FaCheck />
+              </Button>
+            </HStack>
+          </PopoverHeader>
+
+          <PopoverBody>
+            <SimpleGrid columns={10} gap={2}>
+              {iconsFiltered.map((icon) => (
+                <IconButton
+                  boxSize={4}
+                  variant="ghost"
+                  key={icon.name}
+                  as={icon.icon}
+                  onClick={() => setIconParam(icon.name)}
+                />
+              ))}
+            </SimpleGrid>
+          </PopoverBody>
+          <PopoverFooter justifyContent="center">
+            <PaginationRoot
+              count={itemCount}
+              pageSize={size}
+              defaultPage={1}
+              page={page}
+              siblingCount={1}
+              size="xs"
+              onPageChange={(e) => setPage(e.page)}
+            >
+              <HStack gap="4">
+                <PaginationPrevTrigger />
+                <PaginationPageText format="long" flex="1" />
+                <PaginationNextTrigger />
+              </HStack>
+            </PaginationRoot>
+          </PopoverFooter>
+        </PopoverContent>
+      </PopoverRoot>
+    </HStack>
   );
 };
 export default IconPicker;

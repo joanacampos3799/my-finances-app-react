@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Category from "../Category";
 import APIClient from "../../common/apiClient";
 import { useLoginData } from "../../auth/contexts/AuthContext";
-import { toast } from "../../common/toast";
 import { mutationKeys, queryKeys } from "../../common/constants";
+import { toaster } from "../../components/ui/toaster";
 
 const apiClient = new APIClient<Category>("/categories/new");
 
@@ -12,15 +12,15 @@ const useAddCategory = (onAdd: () => void) => {
   const { userId, userToken } = useLoginData();
 
   const { mutate: addCategory } = useMutation({
-    mutationKey: [mutationKeys.addCategory],
+    mutationKey: [queryKeys.categories, mutationKeys.addCategory],
     mutationFn: (category: Category) =>
       apiClient.post(category, userId!!, userToken!!),
     onMutate: () => onAdd(),
 
     onSuccess: (newCategory: Category) => {
-      toast({
+      toaster.create({
         title: `Category ${newCategory.Name} added!`,
-        status: "success",
+        type: "success",
       });
     },
     onSettled: () => {
@@ -33,9 +33,9 @@ const useAddCategory = (onAdd: () => void) => {
 
     onError: (error, newCategory) => {
       console.log(error.message);
-      toast({
+      toaster.create({
         title: `There was an error adding Category ${newCategory.Name}`,
-        status: "error",
+        type: "error",
       });
     },
   });
