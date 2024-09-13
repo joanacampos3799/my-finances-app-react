@@ -7,6 +7,7 @@ import { queryKeys } from "../../common/constants";
 import Category from "../Category";
 import { EmptyState } from "../../components/ui/empty-state";
 import { BiCategory } from "react-icons/bi";
+import Helper from "../../common/helper";
 const CategoriesPage = () => {
   const categories = useCategories();
   const pendingData = useMutationState({
@@ -21,21 +22,12 @@ const CategoriesPage = () => {
   const pendingCat = pendingData ? pendingData[0] : null;
   let catData = categories.data;
   let catCount = categories.count;
+
+  const helper = new Helper<Category>();
   if (pendingCat) {
-    if (categories.data.find((cat) => cat.Id === pendingCat.Id)) {
-      if (pendingCat.Name === "Deleted") {
-        catCount = catCount - 1;
-        catData = catData.filter((cat) => cat.Id !== pendingCat.Id);
-      } else {
-        catData = catData.map((c) => {
-          if (c.Id === pendingCat.Id) return pendingCat;
-          else return c;
-        });
-      }
-    } else {
-      catCount = catCount + 1;
-      catData = [...catData, pendingCat];
-    }
+    const { tCount, tData } = helper.getPendingData(categories, pendingCat);
+    catData = tData;
+    catCount = tCount;
   }
 
   return (

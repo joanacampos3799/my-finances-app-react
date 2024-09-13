@@ -2,7 +2,7 @@ import { HStack, Icon } from "@chakra-ui/react";
 import { SignedIn, UserButton, SignedOut, useAuth } from "@clerk/clerk-react";
 import { GiReceiveMoney } from "react-icons/gi";
 import { Link } from "react-router-dom";
-import CategoriesButton from "./CategoriesButton";
+import NavBarButton from "./NavBarButton";
 
 const NavBar = () => {
   const { isSignedIn } = useAuth();
@@ -14,7 +14,11 @@ const NavBar = () => {
           <Icon as={GiReceiveMoney} boxSize={8} />
         </Link>
         <SignedIn>
-          <CategoriesButton />
+          <NavBarButton link="/s/categories" title="Categories" />
+          <NavBarButton
+            link="/s/banks-accounts"
+            title="Manage Banks & Accounts"
+          />
         </SignedIn>
       </HStack>
       <HStack>

@@ -36,7 +36,7 @@ const NewCategoryDrawer = ({ isEmpty }: Props) => {
   const [open, setOpen] = useState(false);
   const addCategory = useAddCategory(() => {
     setIcon("");
-    if (ref.current) ref.current.value = "-1";
+    if (ref.current) ref.current.value = "";
     setSelectedTT([]);
     setOpen(false);
   });
