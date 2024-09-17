@@ -1,4 +1,4 @@
-import MovementType from "../movement-types/MovementType";
+import EnumType from "./EnumType";
 
 export const queryKeys = {
   categories: "categories",
@@ -20,7 +20,7 @@ export const mutationKeys = {
   deleteAccount: "delete-account",
 };
 
-export const movementTypes: MovementType[] = [
+export const movementTypes: EnumType[] = [
   {
     id: 0,
     name: "Both",
@@ -32,5 +32,28 @@ export const movementTypes: MovementType[] = [
   {
     id: 2,
     name: "Income",
+  },
+];
+
+export const accountTypes: EnumType[] = [
+  {
+    id: 0,
+    name: "Debit",
+  },
+  {
+    id: 1,
+    name: "Credit",
+  },
+  {
+    id: 2,
+    name: "Savings",
+  },
+  {
+    id: 3,
+    name: "Food",
+  },
+  {
+    id: 4,
+    name: "Virtual",
   },
 ];

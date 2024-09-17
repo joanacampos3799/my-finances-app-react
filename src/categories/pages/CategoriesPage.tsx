@@ -7,7 +7,7 @@ import { queryKeys } from "../../common/constants";
 import Category from "../Category";
 import { EmptyState } from "../../components/ui/empty-state";
 import { BiCategory } from "react-icons/bi";
-import Helper from "../../common/helper";
+import { HelperEntity } from "../../common/helper";
 const CategoriesPage = () => {
   const categories = useCategories();
   const pendingData = useMutationState({
@@ -23,7 +23,7 @@ const CategoriesPage = () => {
   let catData = categories.data;
   let catCount = categories.count;
 
-  const helper = new Helper<Category>();
+  const helper = new HelperEntity<Category>();
   if (pendingCat) {
     const { tCount, tData } = helper.getPendingData(categories, pendingCat);
     catData = tData;

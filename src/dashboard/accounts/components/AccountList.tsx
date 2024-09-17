@@ -1,19 +1,21 @@
 import { Heading } from "@chakra-ui/react";
 import { List } from "@chakra-ui/react/list";
-import useBanks from "../../../manage-banks-accounts/hooks/useBanks";
 import AccountComponent from "./AccountComponent";
+import useAccounts from "../../../manage-banks-accounts/hooks/useAccounts";
 
 const AccountList = () => {
-  const banks = useBanks();
+  const accounts = useAccounts();
   return (
     <>
-      {banks && banks.count > 0 ? (
+      {accounts && accounts.count > 0 ? (
         <>
-          <Heading paddingBottom={2}>Accounts</Heading>
+          <Heading size={"md"} paddingTop={6} paddingBottom={2}>
+            Accounts
+          </Heading>
           <List.Root gap="2" variant="plain" align="center">
-            {banks.data.map((bank) => (
-              <List.Item key={bank.Id}>
-                <AccountComponent bank={bank} />
+            {accounts.data.map((account) => (
+              <List.Item key={account.Id}>
+                <AccountComponent account={account} />
               </List.Item>
             ))}
           </List.Root>

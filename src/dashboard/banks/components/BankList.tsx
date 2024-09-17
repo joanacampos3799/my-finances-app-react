@@ -9,7 +9,9 @@ const BankList = () => {
     <>
       {banks && banks.count > 0 ? (
         <>
-          <Heading paddingBottom={2}>Banks</Heading>
+          <Heading size="md" paddingBottom={2}>
+            Banks
+          </Heading>
           <List.Root gap="2" variant="plain" align="center">
             {banks.data.map((bank) => (
               <List.Item key={bank.Id}>

@@ -1,25 +1,25 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-import { Bank } from "../Bank";
 import APIClient from "../../common/apiClient";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { mutationKeys, queryKeys } from "../../common/constants";
 import { toaster } from "../../components/ui/toaster";
+import Account from "../Account";
 
-const apiClient = new APIClient<Bank>("/banks/new");
+const apiClient = new APIClient<Account>("/accounts/new");
 
-const useAddBank = (onAdd: () => void) => {
+const useAddAccount = (onAdd: () => void) => {
   const queryClient = useQueryClient();
   const { userId, userToken } = useLoginData();
 
-  const { mutate: addBank } = useMutation({
-    mutationKey: [queryKeys.banks, mutationKeys.addBank],
-    mutationFn: (bank: Bank) => apiClient.post(bank, userId!!, userToken!!),
+  const { mutate: addAccount } = useMutation({
+    mutationKey: [queryKeys.accounts, mutationKeys.addAccount],
+    mutationFn: (account: Account) =>
+      apiClient.post(account, userId!!, userToken!!),
     onMutate: () => onAdd(),
 
-    onSuccess: (newBank: Bank) => {
+    onSuccess: (newAccount: Account) => {
       toaster.create({
-        title: `Bank ${newBank.Name} added!`,
+        title: `Acccount ${newAccount.Name} added!`,
         type: "success",
       });
     },
@@ -27,19 +27,19 @@ const useAddBank = (onAdd: () => void) => {
       // return promise to maintain 'inProgress' status until query invalidation
       //    is complete
       return queryClient.invalidateQueries({
-        queryKey: [queryKeys.banks],
+        queryKey: [queryKeys.accounts],
       });
     },
 
-    onError: (error, newBank) => {
+    onError: (error, newAccount) => {
       toaster.create({
-        title: `There was an error adding the bank ${newBank.Name}`,
+        title: `There was an error adding the account ${newAccount.Name}`,
         type: "error",
       });
     },
   });
 
-  return addBank;
+  return addAccount;
 };
 
-export default useAddBank;
+export default useAddAccount;

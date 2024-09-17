@@ -16,10 +16,10 @@ export function useUpdateBank() {
     mutationKey: [queryKeys.banks, mutationKeys.updateBank],
     mutationFn: (bank: Bank) =>
       apiClient.update(bank.Id!!, bank, userId!!, userToken!!),
-    onSuccess: (data: Bank) => {
+    onSuccess: (data: Bank, variables: Bank) => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.banks] });
       toaster.create({
-        title: `You have updated the ${data.Name} bank`,
+        title: `You have updated the ${variables.Name} bank`,
         type: "success",
       });
     },

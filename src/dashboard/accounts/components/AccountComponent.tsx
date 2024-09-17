@@ -1,25 +1,24 @@
 import { Box, FormatNumber, HStack, Icon } from "@chakra-ui/react";
-import React from "react";
-import { FaBuildingColumns } from "react-icons/fa6";
-import { Bank } from "../../../manage-banks-accounts/Bank";
+import { FaMoneyBills } from "react-icons/fa6";
+import Account from "../../../manage-banks-accounts/Account";
 
 interface Props {
-  bank: Bank;
+  account: Account;
 }
-const AccountComponent = ({ bank }: Props) => {
+const AccountComponent = ({ account }: Props) => {
   return (
     <Box>
       <HStack>
         <Icon asChild boxSize={4}>
-          <FaBuildingColumns />
+          <FaMoneyBills />
         </Icon>
 
-        {bank.Name}
+        {account.Name}
       </HStack>
       <HStack>
         <Box boxSize={4}></Box>
         <FormatNumber
-          value={bank.Balance ?? 0}
+          value={account.Balance ?? 0}
           style="currency"
           currency="EUR"
         />

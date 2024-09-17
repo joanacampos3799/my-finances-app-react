@@ -3,16 +3,22 @@ import useBanks from "../hooks/useBanks";
 import { queryKeys } from "../../common/constants";
 import { useMutationState } from "@tanstack/react-query";
 import { Bank } from "../Bank";
-import Helper from "../../common/helper";
+import { HelperEntity } from "../../common/helper";
 import { EmptyState } from "../../components/ui/empty-state";
 import { FaBuildingColumns } from "react-icons/fa6";
 import NewBankModal from "../components/NewBankModal";
 import BanksGrid from "../components/BanksGrid";
+import useAccounts from "../hooks/useAccounts";
+import Account from "../Account";
+import { HiWallet } from "react-icons/hi2";
+import NewAccountDrawer from "../components/NewAccountDrawer";
+import AccountsGrid from "../components/AccountsGrid";
 
 const BanksAccountsPage = () => {
   const banks = useBanks();
+  const accounts = useAccounts();
 
-  const pendingData = useMutationState({
+  const pendingBankData = useMutationState({
     filters: {
       mutationKey: [queryKeys.banks],
       status: "pending",
@@ -21,19 +27,61 @@ const BanksAccountsPage = () => {
       return mutation.state.variables as Bank;
     },
   });
-  const pendingBank = pendingData ? pendingData[0] : null;
+  const pendingBank = pendingBankData ? pendingBankData[0] : null;
   let bankData = banks.data;
   let bankCount = banks.count;
-  const helper = new Helper<Bank>();
+
+  const bankHelper = new HelperEntity<Bank>();
   if (pendingBank) {
-    const { tCount, tData } = helper.getPendingData(banks, pendingBank);
+    const { tCount, tData } = bankHelper.getPendingData(banks, pendingBank);
     bankCount = tCount;
     bankData = tData;
+  }
+
+  const pendingAccountData = useMutationState({
+    filters: {
+      mutationKey: [queryKeys.accounts],
+      status: "pending",
+    },
+    select: (mutation) => {
+      return mutation.state.variables as Account;
+    },
+  });
+
+  const pendingAccount = pendingAccountData ? pendingAccountData[0] : null;
+  let accountData = accounts.data;
+  let accountCount = accounts.count;
+  const accountHelper = new HelperEntity<Account>();
+  if (pendingAccount) {
+    const { tCount, tData } = accountHelper.getPendingData(
+      accounts,
+      pendingAccount
+    );
+    accountCount = tCount;
+    accountData = tData;
   }
 
   return (
     <Box>
       <Box>
+        <Center>
+          <Heading>Accounts</Heading>
+        </Center>
+        {!accountData || accountCount === 0 ? (
+          <EmptyState
+            icon={<HiWallet />}
+            title="Start adding your accounts"
+            description="Add one of your accounts to get started"
+          >
+            <NewAccountDrawer isEmpty={true} />
+          </EmptyState>
+        ) : (
+          <Box>
+            <AccountsGrid key={"accounts"} accounts={accountData} />
+          </Box>
+        )}
+      </Box>
+      <Box paddingTop={4}>
         <Center>
           <Heading>Banks</Heading>
         </Center>
@@ -47,14 +95,9 @@ const BanksAccountsPage = () => {
           </EmptyState>
         ) : (
           <Box>
-            <BanksGrid banks={bankData} />
+            <BanksGrid key={"banks"} banks={bankData} />
           </Box>
         )}
-      </Box>
-      <Box paddingTop={4}>
-        <Center>
-          <Heading>Accounts</Heading>
-        </Center>
       </Box>
     </Box>
   );

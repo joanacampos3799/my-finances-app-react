@@ -6,7 +6,7 @@ interface Entity {
   deleted?: boolean;
 }
 
-class Helper<T extends Entity> {
+export class HelperEntity<T extends Entity> {
   getPendingData = (data: FetchResponse<T>, pendingData: T) => {
     let tData = data.data ?? [];
     let tCount = data.count ?? 0;
@@ -27,6 +27,25 @@ class Helper<T extends Entity> {
 
     return { tCount, tData };
   };
+
+  getMappedEntity = (data: T[]) => {
+    return data.map((d) => {
+      const mappedBank = { label: d.Name, value: d.Id };
+      return mappedBank;
+    });
+  };
 }
 
-export default Helper;
+interface Enum {
+  id: number;
+  name: string;
+}
+
+export class HelperEnum<T extends Enum> {
+  getMappedEnum = (data: T[]) => {
+    return data.map((d) => {
+      const mappedBank = { label: d.name, value: d.id };
+      return mappedBank;
+    });
+  };
+}

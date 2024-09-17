@@ -1,5 +1,6 @@
 import { Box, Center, Grid, GridItem, Heading, Show } from "@chakra-ui/react";
 import BankList from "../banks/components/BankList";
+import AccountList from "../accounts/components/AccountList";
 
 export default function DashboardPage() {
   return (
@@ -19,6 +20,7 @@ export default function DashboardPage() {
       >
         <Show when="lg">
           <GridItem area="aside" paddingX={5}>
+            <AccountList />
             <BankList />
           </GridItem>
         </Show>
