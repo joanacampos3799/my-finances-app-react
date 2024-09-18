@@ -19,6 +19,10 @@ const NavBar = () => {
             link="/s/banks-accounts"
             title="Manage Banks & Accounts"
           />
+          <NavBarButton
+            link="/s/fixed-transactions"
+            title="Manage Fixed Transactions"
+          />
         </SignedIn>
       </HStack>
       <HStack>

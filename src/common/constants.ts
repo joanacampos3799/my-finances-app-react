@@ -4,6 +4,8 @@ export const queryKeys = {
   categories: "categories",
   banks: "banks",
   accounts: "accounts",
+  fixedTransactions: "fixed-transactions",
+  fixedTransaction: "fixed-transaction",
   token: "token",
   user: "user",
 };
@@ -18,6 +20,9 @@ export const mutationKeys = {
   addAccount: "new-account",
   updateAccount: "update-account",
   deleteAccount: "delete-account",
+  addFixedTransaction: "new-fixed-transaction",
+  updateFixedTransaction: "update-fixed-transaction",
+  deleteFixedTransaction: "update-active-fixed-transaction",
 };
 
 export const movementTypes: EnumType[] = [

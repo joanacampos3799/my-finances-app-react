@@ -2,7 +2,7 @@ import Category from "../Category";
 import { movementTypes } from "../../common/constants";
 import { FaCheck } from "react-icons/fa6";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-import IconPicker from "./IconPicker";
+import IconPicker from "../../common/components/IconPicker";
 import { BsChevronDown } from "react-icons/bs";
 import { useUpdateCategory } from "../hooks/useUpdateCategory";
 import {

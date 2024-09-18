@@ -1,6 +1,6 @@
 import Category from "../Category";
 import { TbArrowBarToDown, TbArrowBarUp } from "react-icons/tb";
-import { useIconPack } from "../hooks/useIconPack";
+import { useIconPack } from "../../common/hooks/useIconPack";
 import { movementTypes } from "../../common/constants";
 import { FaPen } from "react-icons/fa6";
 import DeleteCategoryAlert from "./DeleteCategoryAlert";

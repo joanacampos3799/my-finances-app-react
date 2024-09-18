@@ -65,7 +65,7 @@ const BanksAccountsPage = () => {
     <Box>
       <Box>
         <Center>
-          <Heading>Accounts</Heading>
+          <Heading size={"3xl"}>Accounts</Heading>
         </Center>
         {!accountData || accountCount === 0 ? (
           <EmptyState
@@ -83,7 +83,7 @@ const BanksAccountsPage = () => {
       </Box>
       <Box paddingTop={4}>
         <Center>
-          <Heading>Banks</Heading>
+          <Heading size={"3xl"}>Banks</Heading>
         </Center>
         {!bankData || bankCount === 0 ? (
           <EmptyState

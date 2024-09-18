@@ -1,4 +1,4 @@
-import IconPicker from "./IconPicker";
+import IconPicker from "../../common/components/IconPicker";
 import { useRef, useState } from "react";
 import useAddCategory from "../hooks/useAddCategory";
 import { useLoginData } from "../../auth/contexts/AuthContext";
