@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { Bank } from "../Bank";
 import APIClient from "../../common/apiClient";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { mutationKeys, queryKeys } from "../../common/constants";
 import { toaster } from "../../components/ui/toaster";
+import BankRequest from "../models/BankRequest";
 
-const apiClient = new APIClient<Bank>("/banks/new");
+const apiClient = new APIClient<BankRequest>("/banks/new");
 
 const useAddBank = (onAdd: () => void) => {
   const queryClient = useQueryClient();
@@ -14,10 +14,11 @@ const useAddBank = (onAdd: () => void) => {
 
   const { mutate: addBank } = useMutation({
     mutationKey: [queryKeys.banks, mutationKeys.addBank],
-    mutationFn: (bank: Bank) => apiClient.post(bank, userId!!, userToken!!),
+    mutationFn: (bank: BankRequest) =>
+      apiClient.post(bank, userId!!, userToken!!),
     onMutate: () => onAdd(),
 
-    onSuccess: (newBank: Bank) => {
+    onSuccess: (newBank: BankRequest) => {
       toaster.create({
         title: `Bank ${newBank.Name} added!`,
         type: "success",

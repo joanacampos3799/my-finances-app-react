@@ -4,9 +4,9 @@ import APIClient from "../../common/apiClient";
 
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { toaster } from "../../components/ui/toaster";
-import Account from "../Account";
+import AccountList from "../models/AccountList";
 
-const apiClient = new APIClient<Account>("/accounts");
+const apiClient = new APIClient<AccountList>("/accounts");
 
 export function useDeleteAccount() {
   const queryClient = useQueryClient();
@@ -15,9 +15,9 @@ export function useDeleteAccount() {
 
   const { mutate: deleteAccount } = useMutation({
     mutationKey: [queryKeys.accounts, mutationKeys.deleteAccount],
-    mutationFn: (data: Account) =>
+    mutationFn: (data: AccountList) =>
       apiClient.delete(data.Id!!, userId!!, userToken!!),
-    onSuccess: (data: Account, variables: Account) => {
+    onSuccess: (data: AccountList, variables: AccountList) => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.accounts] });
       toaster.create({
         title: `You have deleted the ${data.Name} account`,

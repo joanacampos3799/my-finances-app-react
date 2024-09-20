@@ -1,15 +1,14 @@
 import { UUID } from "crypto";
 
-export default interface FixedTransaction {
+export default interface Transaction {
   Id?: number | undefined;
   Name: string;
+  Description?: string;
+  Date: Date;
+  accountId: number;
   Amount: number;
-  PaymentDay: number;
-  Icon: string;
   categories: number[];
-  Periodicity: number;
   userId: UUID;
   transactionType: number;
   deleted?: boolean;
-  active: boolean;
 }

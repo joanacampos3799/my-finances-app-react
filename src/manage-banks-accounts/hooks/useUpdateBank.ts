@@ -3,9 +3,9 @@ import { mutationKeys, queryKeys } from "../../common/constants";
 import APIClient from "../../common/apiClient";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { toaster } from "../../components/ui/toaster";
-import { Bank } from "../Bank";
+import BankRequest from "../models/BankRequest";
 
-const apiClient = new APIClient<Bank>("/banks");
+const apiClient = new APIClient<BankRequest>("/banks");
 
 export function useUpdateBank() {
   const queryClient = useQueryClient();
@@ -14,9 +14,9 @@ export function useUpdateBank() {
 
   const { mutate: updateBank } = useMutation({
     mutationKey: [queryKeys.banks, mutationKeys.updateBank],
-    mutationFn: (bank: Bank) =>
+    mutationFn: (bank: BankRequest) =>
       apiClient.update(bank.Id!!, bank, userId!!, userToken!!),
-    onSuccess: (data: Bank, variables: Bank) => {
+    onSuccess: (data: BankRequest, variables: BankRequest) => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.banks] });
       toaster.create({
         title: `You have updated the ${variables.Name} bank`,

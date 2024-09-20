@@ -2,14 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import APIClient, { FetchResponse } from "../../common/apiClient";
 import { queryKeys } from "../../common/constants";
 import { useLoginData } from "../../auth/contexts/AuthContext";
-import FixedTransaction from "../FixedTransaction";
+import FixedTransactionList from "../model/FixedTransactionsList";
 
-const apiClient = new APIClient<FixedTransaction>("/fixed-transactions");
+const apiClient = new APIClient<FixedTransactionList>("/fixed-transactions");
 
 const useFixedTransactions = () => {
   const { userId, userToken } = useLoginData();
 
-  const fallback: FetchResponse<FixedTransaction> = {
+  const fallback: FetchResponse<FixedTransactionList> = {
     data: [],
     count: 0,
   };

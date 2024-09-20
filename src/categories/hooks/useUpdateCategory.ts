@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { mutationKeys, queryKeys } from "../../common/constants";
 import APIClient from "../../common/apiClient";
-import Category from "../Category";
+import Category from "../model/Category";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { toaster } from "../../components/ui/toaster";
 

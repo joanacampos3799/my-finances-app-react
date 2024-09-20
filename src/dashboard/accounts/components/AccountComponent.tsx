@@ -1,6 +1,6 @@
 import { Box, FormatNumber, HStack, Icon } from "@chakra-ui/react";
 import { FaMoneyBills } from "react-icons/fa6";
-import Account from "../../../manage-banks-accounts/Account";
+import Account from "../../../manage-banks-accounts/models/Account";
 
 interface Props {
   account: Account;
@@ -9,7 +9,7 @@ const AccountComponent = ({ account }: Props) => {
   return (
     <Box>
       <HStack>
-        <Icon asChild boxSize={4}>
+        <Icon boxSize={4}>
           <FaMoneyBills />
         </Icon>
 

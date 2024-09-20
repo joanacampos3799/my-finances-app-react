@@ -3,7 +3,7 @@ import APIClient from "../../common/apiClient";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { mutationKeys, queryKeys } from "../../common/constants";
 import { toaster } from "../../components/ui/toaster";
-import FixedTransaction from "../FixedTransaction";
+import FixedTransaction from "../model/FixedTransaction";
 
 const apiClient = new APIClient<FixedTransaction>("/fixed-transactions/new");
 

@@ -1,5 +1,5 @@
-export interface Bank {
-  Id?: number | undefined;
+export default interface BankRequest {
+  Id?: number;
   Name: string;
   Balance?: number;
   userId: string;

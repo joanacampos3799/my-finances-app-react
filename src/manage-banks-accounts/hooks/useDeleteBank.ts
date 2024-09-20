@@ -4,9 +4,9 @@ import APIClient from "../../common/apiClient";
 
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { toaster } from "../../components/ui/toaster";
-import { Bank } from "../Bank";
+import BankList from "../models/BankList";
 
-const apiClient = new APIClient<Bank>("/banks");
+const apiClient = new APIClient<BankList>("/banks");
 
 export function useDeleteBank() {
   const queryClient = useQueryClient();
@@ -15,9 +15,9 @@ export function useDeleteBank() {
 
   const { mutate: deleteBank } = useMutation({
     mutationKey: [queryKeys.banks, mutationKeys.deleteBank],
-    mutationFn: (data: Bank) =>
+    mutationFn: (data: BankList) =>
       apiClient.delete(data.Id!!, userId!!, userToken!!),
-    onSuccess: (data: Bank, variables: Bank) => {
+    onSuccess: (data: BankList, variables: BankList) => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.banks] });
       toaster.create({
         title: `You have deleted the ${data.Name} bank`,

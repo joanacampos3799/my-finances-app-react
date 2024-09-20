@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   DialogBody,
   DialogContent,
@@ -6,17 +6,18 @@ import {
   DialogHeader,
   DialogRoot,
   DialogTrigger,
-} from "../../components/ui/dialog";
-import { Button, Card, Input } from "@chakra-ui/react";
-import { Field } from "../../components/ui/field";
-import useAddBank from "../hooks/useAddBank";
-import { useLoginData } from "../../auth/contexts/AuthContext";
+} from "../../../components/ui/dialog";
+import { Button } from "../../../components/ui/button";
+import { Field } from "../../../components/ui/field";
+import { Card, Input } from "@chakra-ui/react";
 import { FaPlus } from "react-icons/fa6";
+import { useLoginData } from "../../../auth/contexts/AuthContext";
+import useAddBank from "../../../manage-banks-accounts/hooks/useAddBank";
 
 interface Props {
   isEmpty: boolean;
 }
-const NewBankModal = ({ isEmpty }: Props) => {
+const NewTransactionDialog = ({ isEmpty }: Props) => {
   const [open, setOpen] = useState(false);
   const { userId } = useLoginData();
   const addBank = useAddBank(() => {
@@ -82,4 +83,4 @@ const NewBankModal = ({ isEmpty }: Props) => {
   );
 };
 
-export default NewBankModal;
+export default NewTransactionDialog;

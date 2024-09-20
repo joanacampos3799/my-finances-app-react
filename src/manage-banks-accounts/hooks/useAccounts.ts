@@ -2,14 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import APIClient, { FetchResponse } from "../../common/apiClient";
 import { queryKeys } from "../../common/constants";
-import Account from "../Account";
+import AccountList from "../models/AccountList";
 
-const apiClient = new APIClient<Account>("/accounts");
+const apiClient = new APIClient<AccountList>("/accounts");
 
 const useAccounts = () => {
   const { userId, userToken } = useLoginData();
 
-  const fallback: FetchResponse<Account> = {
+  const fallback: FetchResponse<AccountList> = {
     data: [],
     count: 0,
   };

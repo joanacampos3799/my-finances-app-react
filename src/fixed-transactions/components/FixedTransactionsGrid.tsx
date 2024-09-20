@@ -1,63 +1,65 @@
-import { GridItem, Show, SimpleGrid } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { Button } from "../../components/ui/button";
-import { FaCheck } from "react-icons/fa6";
-import FixedTransaction from "../FixedTransaction";
-import { useDeleteFixedTransaction } from "../hooks/useUpdateActiveFixedTransaction";
+import { FormatNumber, GridItem } from "@chakra-ui/react";
+import { useState } from "react";
 import FixedTransactionsCard from "./FixedTransactionsCard";
 import NewFixedTransactionDrawer from "./NewFixedTransactionDrawer";
-import DeleteFixedTransactionCard from "./DeleteFixedTransactionCard";
+import Grid from "../../common/components/Grid";
+import DeleteCard from "../../common/components/DeleteCard";
+import FixedTransactionList from "../model/FixedTransactionsList";
+import { useUpdateFixedTransaction } from "../hooks/useUpdateFixedTransaction";
 
 interface Props {
-  fixedTransactions: FixedTransaction[];
+  fixedTransactions: FixedTransactionList[];
 }
 const FixedTransactionsGrid = ({ fixedTransactions }: Props) => {
-  const [toDelete, setToDelete] = useState<FixedTransaction[]>([]);
+  const [toDelete, setToDelete] = useState<FixedTransactionList[]>([]);
   const [deleting, setDeleting] = useState(false);
-  const deleteFixedTransactions = useDeleteFixedTransaction();
+  const updateFixedTransactions = useUpdateFixedTransaction();
   const handleDelete = () => {
-    debugger;
     toDelete.forEach((element) => {
-      element.deleted = true;
-      deleteFixedTransactions(element);
+      element.active = !element.active;
+      updateFixedTransactions(element);
     });
     setToDelete([]);
     setDeleting(false);
   };
-  return (
-    <SimpleGrid columns={{ sm: 1, md: 2, lg: 4, xl: 5 }} gap={6} padding="10px">
-      <GridItem colSpan={{ sm: 0, md: 1, lg: 3, xl: 4 }}></GridItem>
-      <GridItem>
-        {deleting ? (
-          <Button float={"right"} onClick={handleDelete}>
-            {" "}
-            <FaCheck />
-          </Button>
-        ) : (
-          <Button float={"right"} onClick={() => setDeleting(true)}>
-            {" "}
-            Delete Fixed Transactions
-          </Button>
-        )}
-      </GridItem>
+  const buttonAction = fixedTransactions[0].active ? "Delete" : "Restore";
 
+  return (
+    <Grid
+      action={buttonAction}
+      key={buttonAction}
+      name={"Fixed Transactions"}
+      handleDelete={handleDelete}
+      addComponent={
+        <NewFixedTransactionDrawer
+          active={fixedTransactions[0].active}
+          isEmpty={false}
+        />
+      }
+      deleting={deleting}
+      setDeleting={setDeleting}
+    >
       {fixedTransactions.map((fixed) => (
         <GridItem key={fixed.Id}>
           {!deleting ? (
-            <FixedTransactionsCard fixed={fixed} />
+            <FixedTransactionsCard key={fixed.Id + "card"} fixed={fixed} />
           ) : (
-            <DeleteFixedTransactionCard
-              fixed={fixed}
+            <DeleteCard
+              data={fixed}
               toDelete={toDelete}
               setToDelete={setToDelete}
-            />
+              icon={fixed.Icon}
+            >
+              <FormatNumber
+                value={fixed.Amount}
+                style="currency"
+                currency="EUR"
+              />
+            </DeleteCard>
           )}
         </GridItem>
       ))}
-      <Show when={!deleting}>
-        <NewFixedTransactionDrawer isEmpty={false} />
-      </Show>
-    </SimpleGrid>
+    </Grid>
   );
 };
 

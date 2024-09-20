@@ -1,19 +1,79 @@
-import { SimpleGrid } from "@chakra-ui/react";
+import { FormatNumber, GridItem, HStack, Icon } from "@chakra-ui/react";
 import CategoryCard from "./CategoryCard";
-import Category from "../Category";
 import NewCategoryDrawer from "./NewCategoryDrawer";
+import Grid from "../../common/components/Grid";
+import { useState } from "react";
+import { useDeleteCategory } from "../hooks/useDeleteCategory";
+import DeleteCard from "../../common/components/DeleteCard";
+import CategoryList from "../model/CategoryList";
+import { TbArrowBarToDown, TbArrowBarUp } from "react-icons/tb";
 
 interface Props {
-  categories: Category[];
+  categories: CategoryList[];
 }
 const CategoryGrid = ({ categories }: Props) => {
+  const [toDelete, setToDelete] = useState<CategoryList[]>([]);
+  const [deleting, setDeleting] = useState(false);
+
+  const deleteCategory = useDeleteCategory();
+
+  const handleDelete = () => {
+    toDelete.forEach((element) => {
+      element.deleted = true;
+      deleteCategory(element);
+    });
+    setToDelete([]);
+    setDeleting(false);
+  };
   return (
-    <SimpleGrid columns={{ sm: 1, md: 2, lg: 4, xl: 5 }} gap={6} padding="10px">
+    <Grid
+      key={"categories"}
+      action={"Delete"}
+      name={"Categories"}
+      handleDelete={handleDelete}
+      addComponent={<NewCategoryDrawer isEmpty={false} />}
+      deleting={deleting}
+      setDeleting={setDeleting}
+    >
       {categories.map((category) => (
-        <CategoryCard key={category.Id} category={category} />
+        <GridItem key={category.Id}>
+          {!deleting ? (
+            <CategoryCard category={category} />
+          ) : (
+            <DeleteCard
+              data={category}
+              toDelete={toDelete}
+              setToDelete={setToDelete}
+              icon={category.Icon}
+            >
+              <HStack>
+                {category.MonthlySpent != null && (
+                  <HStack>
+                    <Icon as={TbArrowBarUp} />
+
+                    <FormatNumber
+                      value={category.MonthlySpent}
+                      style="currency"
+                      currency="EUR"
+                    />
+                  </HStack>
+                )}
+                {category.MonthlyEarned != null && (
+                  <HStack>
+                    <Icon as={TbArrowBarToDown} />
+                    <FormatNumber
+                      value={category.MonthlyEarned}
+                      style="currency"
+                      currency="EUR"
+                    />
+                  </HStack>
+                )}
+              </HStack>
+            </DeleteCard>
+          )}
+        </GridItem>
       ))}
-      <NewCategoryDrawer isEmpty={false} />
-    </SimpleGrid>
+    </Grid>
   );
 };
 

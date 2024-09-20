@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import APIClient, { FetchResponse } from "../../common/apiClient";
-import Category from "../Category";
 import { queryKeys } from "../../common/constants";
 import { useLoginData } from "../../auth/contexts/AuthContext";
+import CategoryList from "../model/CategoryList";
 
-const apiClient = new APIClient<Category>("/categories");
+const apiClient = new APIClient<CategoryList>("/categories");
 
 const useCategories = () => {
   const { userId, userToken } = useLoginData();
 
-  const fallback: FetchResponse<Category> = {
+  const fallback: FetchResponse<CategoryList> = {
     data: [],
     count: 0,
   };

@@ -3,9 +3,12 @@ import { mutationKeys, queryKeys } from "../../common/constants";
 import APIClient from "../../common/apiClient";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { toaster } from "../../components/ui/toaster";
-import FixedTransaction from "../FixedTransaction";
+import FixedTransaction from "../model/FixedTransaction";
+import FixedTransactionList from "../model/FixedTransactionsList";
 
-const apiClient = new APIClient<FixedTransaction>("/fixed-transactions");
+const apiClient = new APIClient<FixedTransaction | FixedTransactionList>(
+  "/fixed-transactions"
+);
 
 export function useUpdateFixedTransaction() {
   const queryClient = useQueryClient();
@@ -17,9 +20,12 @@ export function useUpdateFixedTransaction() {
       queryKeys.fixedTransactions,
       mutationKeys.updateFixedTransaction,
     ],
-    mutationFn: (fixed: FixedTransaction) =>
+    mutationFn: (fixed: FixedTransaction | FixedTransactionList) =>
       apiClient.update(fixed.Id!!, fixed, userId!!, userToken!!),
-    onSuccess: (data: FixedTransaction, variables: FixedTransaction) => {
+    onSuccess: (
+      data: FixedTransaction | FixedTransactionList,
+      variables: FixedTransaction | FixedTransactionList
+    ) => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.fixedTransactions],
       });

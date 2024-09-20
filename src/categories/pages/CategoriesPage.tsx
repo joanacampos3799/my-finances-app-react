@@ -4,10 +4,10 @@ import NewCategoryDrawer from "../components/NewCategoryDrawer";
 import useCategories from "../hooks/useCategories";
 import { useMutationState } from "@tanstack/react-query";
 import { queryKeys } from "../../common/constants";
-import Category from "../Category";
 import { EmptyState } from "../../components/ui/empty-state";
 import { BiCategory } from "react-icons/bi";
 import { HelperEntity } from "../../common/helper";
+import CategoryList from "../model/CategoryList";
 const CategoriesPage = () => {
   const categories = useCategories();
   const pendingData = useMutationState({
@@ -16,14 +16,14 @@ const CategoriesPage = () => {
       status: "pending",
     },
     select: (mutation) => {
-      return mutation.state.variables as Category;
+      return mutation.state.variables as CategoryList;
     },
   });
   const pendingCat = pendingData ? pendingData[0] : null;
   let catData = categories.data;
   let catCount = categories.count;
 
-  const helper = new HelperEntity<Category>();
+  const helper = new HelperEntity<CategoryList>();
   if (pendingCat) {
     const { tCount, tData } = helper.getPendingData(categories, pendingCat);
     catData = tData;
@@ -45,9 +45,7 @@ const CategoriesPage = () => {
           <NewCategoryDrawer isEmpty={true} />
         </EmptyState>
       ) : (
-        <>
-          <CategoryGrid categories={catData} />
-        </>
+        <CategoryGrid key={"cat"} categories={catData} />
       )}
     </Box>
   );
