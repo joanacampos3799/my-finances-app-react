@@ -32,11 +32,11 @@ export class HelperEntity<T extends Entity> {
     return { tCount, tData };
   };
 
-  getMappedCheckboxEntity = (data: T[]) => {
+  getMappedCheckboxEntity = (data: T[], selectedIds?: number[]) => {
     return data.map((d) => {
       const mapped: EntitySelected<T> = {
         data: d,
-        checked: false,
+        checked: selectedIds?.includes(d.Id!!) ?? false,
       };
       return mapped;
     });

@@ -9,7 +9,7 @@ import { Button } from "../../components/ui/button";
 import { LuCheck, LuChevronDown } from "react-icons/lu";
 
 interface TObj {
-  Id: number;
+  Id?: number;
   Name: string;
 }
 

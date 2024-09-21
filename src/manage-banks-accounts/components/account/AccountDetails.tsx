@@ -1,58 +1,63 @@
-import { useRef, useState } from "react";
-
+import { useRef, useState, useEffect } from "react";
 import { FormatNumber, HStack, Input } from "@chakra-ui/react";
 import { DataListItem, DataListRoot } from "../../../components/ui/data-list";
 import { accountTypes } from "../../../common/constants";
 import { Tag } from "../../../components/ui/tag";
 import { useUpdateAccount } from "../../hooks/useUpdateAccount";
-import { HelperEntity, HelperEnum } from "../../../common/helper";
-
 import useBanks from "../../hooks/useBanks";
-import EnumType from "../../../common/EnumType";
 import useAccount from "../../hooks/useAccount";
-import BankList from "../../models/BankList";
 import DialogComponent from "../../../common/components/DialogComponent";
 import RadioMenu from "../../../common/components/RadioMenu";
 import CheckBoxMenu from "../../../common/components/CheckBoxMenu";
 import NumberInput from "../../../common/components/NumberInput";
+import { HelperEntity, HelperEnum } from "../../../common/helper";
+
+interface checboxItem {
+  data: {
+    Id: number;
+    Name: string;
+  };
+  checked: boolean;
+}
 
 interface Props {
   id: number;
 }
 
 const AccountDetails = ({ id }: Props) => {
-  const account = useAccount(id);
-  const [accountAux, setAccountAux] = useState(account);
-  const [updating, setUpdating] = useState(false);
-  const nameRef = useRef<HTMLInputElement>(null);
-  const [initialBalance, setInitialBalance] = useState(
-    account.InitialBalance ?? 0
-  );
+  const account = useAccount(id); // Fetch the account data
   const updateAccount = useUpdateAccount();
   const { data: banks } = useBanks();
-  const [selectedBank, setSelectedBank] = useState("" + (account.bankId ?? 0));
-  const banksSelect = new HelperEntity<BankList>().getMappedRadioEntity(banks);
 
-  const [selectedAccountTypes, setSelectedAccountTypes] = useState(
-    new HelperEnum<EnumType>().getMappedCheckboxEnum(
-      accountTypes,
-      account.Types
-    )
-  );
+  const nameRef = useRef<HTMLInputElement>(null);
+
+  // Initialize states with default values
+  const [updating, setUpdating] = useState(false);
+  const [initialBalance, setInitialBalance] = useState(0);
+  const [selectedBank, setSelectedBank] = useState("0");
+  const [selectedAccountTypes, setSelectedAccountTypes] = useState<
+    checboxItem[]
+  >([]);
+
+  // useEffect to update states when the account data is fetched
+  useEffect(() => {
+    if (account) {
+      setInitialBalance(account.InitialBalance ?? 0); // Update initial balance
+      setSelectedBank("" + (account.bankId ?? 0)); // Set the selected bank
+      setSelectedAccountTypes(
+        new HelperEnum().getMappedCheckboxEnum(accountTypes, account.Types)
+      ); // Set account types
+    }
+  }, [account]); // Runs whenever the account changes
 
   const handleUpdate = () => {
-    const bank =
-      +selectedBank > 0
-        ? banks.find((b) => b.Id === +selectedBank[0])
-        : undefined;
+    const bank = banks.find((b) => b.Id === +selectedBank) ?? undefined;
+
     updateAccount({
       Id: account.Id,
       userId: account.userId,
       Balance: account.Balance,
-      Name:
-        nameRef.current?.value && nameRef.current.value !== ""
-          ? nameRef.current.value
-          : account.Name,
+      Name: nameRef.current?.value || account.Name,
       bankId: bank?.Id,
       bankName: bank?.Name,
       InitialBalance: initialBalance,
@@ -60,28 +65,27 @@ const AccountDetails = ({ id }: Props) => {
         .filter((t) => t.checked)
         .map((at) => at.data.Id),
     });
+
     setUpdating(false);
-    setAccountAux(account);
   };
+
+  if (!account) return null; // Handle case where account data is not yet available
+
   return (
     <DialogComponent
-      size={"lg"}
+      size="lg"
       name={account.Name}
-      isAlert={false}
       updating={updating}
       handleUpdate={handleUpdate}
       setUpdating={setUpdating}
+      isAlert={false}
     >
       <DataListRoot>
-        {!updating ? (
-          <DataListItem label="Account Name" value={account.Name} />
-        ) : (
-          <DataListItem label="Account Name" value={""}>
-            <Input ref={nameRef} placeholder={account.Name} />
-          </DataListItem>
-        )}
+        <DataListItem label="Account Name" value={updating ? "" : account.Name}>
+          {updating && <Input ref={nameRef} placeholder={account.Name} />}
+        </DataListItem>
 
-        <DataListItem label="Current Balance" value={""}>
+        <DataListItem label="Current Balance" value="">
           <FormatNumber
             value={account.Balance ?? 0}
             style="currency"
@@ -89,61 +93,54 @@ const AccountDetails = ({ id }: Props) => {
           />
         </DataListItem>
 
-        <DataListItem label="Initial Balance" value={""}>
-          {!updating ? (
+        <DataListItem label="Initial Balance" value="">
+          {updating ? (
+            <NumberInput
+              number={initialBalance}
+              setNumber={setInitialBalance}
+              isCurrency
+            />
+          ) : (
             <FormatNumber
               value={account.InitialBalance ?? 0}
               style="currency"
               currency="EUR"
             />
-          ) : (
-            <NumberInput
-              number={initialBalance}
-              setNumber={setInitialBalance}
-              isCurrency={true}
-            />
           )}
         </DataListItem>
-        {!updating ? (
-          account.bankId !== undefined &&
-          account.bankId > 0 &&
-          account.bankName && (
-            <DataListItem label="Associated Bank" value={account.bankName} />
-          )
-        ) : (
-          <DataListItem label="Associated Bank" value={""}>
+
+        <DataListItem label="Associated Bank" value="">
+          {updating ? (
             <RadioMenu
-              data={banksSelect}
+              data={new HelperEntity().getMappedRadioEntity(banks)}
               selectedId={selectedBank}
               setSelectedId={setSelectedBank}
               placeholder="a bank"
             />
-          </DataListItem>
-        )}
-        {!updating ? (
-          account.Types &&
-          account.Types.length > 0 && (
-            <DataListItem label="Account Type(s)" value={""}>
-              <HStack>
-                {accountTypes
-                  .filter((at) => account.Types.includes(at.id))
-                  .map((i) => (
-                    <Tag key={i.id} rounded="md" variant="solid" pe="2">
-                      {i.name}
-                    </Tag>
-                  ))}
-              </HStack>
-            </DataListItem>
-          )
-        ) : (
-          <DataListItem label="Account Type(s)" value={""}>
+          ) : (
+            account.bankName && <span>{account.bankName}</span>
+          )}
+        </DataListItem>
+
+        <DataListItem label="Account Type(s)" value="">
+          {updating ? (
             <CheckBoxMenu
-              name={"Account Type(s)"}
               items={selectedAccountTypes}
               setItems={setSelectedAccountTypes}
+              name={"Account Types"}
             />
-          </DataListItem>
-        )}
+          ) : (
+            <HStack>
+              {accountTypes
+                .filter((at) => account.Types.includes(at.id))
+                .map((i) => (
+                  <Tag key={i.id} rounded="md" variant="solid" pe="2">
+                    {i.name}
+                  </Tag>
+                ))}
+            </HStack>
+          )}
+        </DataListItem>
       </DataListRoot>
     </DialogComponent>
   );

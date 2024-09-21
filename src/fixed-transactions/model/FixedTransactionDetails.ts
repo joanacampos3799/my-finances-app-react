@@ -11,4 +11,5 @@ export default interface FixedTransactionDetails {
   userId: UUID;
   transactionType: number;
   TotalSpent: number;
+  active: boolean;
 }
