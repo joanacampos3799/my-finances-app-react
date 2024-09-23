@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import useAddFixedTransaction from "../hooks/useAddFixedTransaction";
 import { movementTypes } from "../../common/constants";
@@ -12,6 +12,8 @@ import RadioMenu from "../../common/components/RadioMenu";
 import CheckBoxMenu from "../../common/components/CheckBoxMenu";
 import { HelperEntity } from "../../common/helper";
 import NumberInput from "../../common/components/NumberInput";
+import useForm from "../../common/hooks/useForm";
+import FixedTransactionFormObject from "../model/FixedTransactionFormObject";
 
 interface Props {
   isEmpty: boolean;
@@ -19,28 +21,23 @@ interface Props {
 }
 
 const NewFixedTransactionDrawer = ({ isEmpty, active }: Props) => {
-  const [icon, setIcon] = useState("");
-  const [amount, setAmount] = useState(0.0);
-  const [paymentDay, setPaymentDay] = useState(1);
-  const [periodicity, setPeriodicity] = useState(1);
-  const [selectedTT, setSelectedTT] = useState<string>("");
   const { userId } = useLoginData();
   const ref = useRef<HTMLInputElement>(null);
   const { data: categories } = useCategories();
   const initialState = new HelperEntity<CategoryList>().getMappedCheckboxEntity(
     categories
   );
-  const [selectedCategories, setSelectedCategories] = useState(initialState);
-
-  const addFixedTransaction = useAddFixedTransaction(() => {
-    setIcon("");
-    setAmount(0.0);
-    setPaymentDay(1);
-    setPeriodicity(1);
-    if (ref.current) ref.current.value = "";
-    setSelectedTT("");
-    setSelectedCategories(initialState);
-  });
+  const { values, handleChange, resetForm } =
+    useForm<FixedTransactionFormObject>({
+      Name: "",
+      icon: "",
+      amount: 0,
+      paymentDay: 1,
+      periodicity: 1,
+      selectedTT: "",
+      selectedCategories: initialState,
+    });
+  const addFixedTransaction = useAddFixedTransaction(() => resetForm());
 
   return (
     <DrawerComponent
@@ -54,21 +51,20 @@ const NewFixedTransactionDrawer = ({ isEmpty, active }: Props) => {
         id="new-fixed-form"
         onSubmit={(e) => {
           e.preventDefault();
-          if (ref.current && ref.current.value) {
-            addFixedTransaction({
-              Name: ref.current?.value,
-              Icon: icon,
-              Amount: amount,
-              transactionType: movementTypes[+selectedTT].id,
-              userId: userId!!,
-              PaymentDay: paymentDay,
-              Periodicity: periodicity,
-              active: active,
-              categories: selectedCategories
-                .filter((cat) => cat.checked)
-                .map((cat) => cat.data.Id!!),
-            });
-          }
+
+          addFixedTransaction({
+            Name: values.Name,
+            Icon: values.icon,
+            Amount: values.amount,
+            transactionType: movementTypes[+values.selectedTT].id,
+            userId: userId!!,
+            PaymentDay: values.paymentDay,
+            Periodicity: values.periodicity,
+            active: active,
+            categories: values.selectedCategories
+              .filter((cat) => cat.checked)
+              .map((cat) => cat.data.Id!!),
+          });
         }}
       >
         <Stack>
@@ -78,8 +74,8 @@ const NewFixedTransactionDrawer = ({ isEmpty, active }: Props) => {
                 <Box paddingTop={"2px"} paddingStart={4}>
                   <IconPicker
                     iconSize={7}
-                    iconParam={icon}
-                    setIconParam={setIcon}
+                    iconParam={values.icon}
+                    setIconParam={(i) => handleChange("icon", i)}
                   />
                 </Box>
               </Field>
@@ -89,6 +85,8 @@ const NewFixedTransactionDrawer = ({ isEmpty, active }: Props) => {
               <Field label="Name" required>
                 <Input
                   ref={ref}
+                  value={values.Name}
+                  onChange={(e) => handleChange("Name", e.target.value)}
                   id="name"
                   placeholder="Please enter fixed transaction name"
                 />
@@ -96,40 +94,37 @@ const NewFixedTransactionDrawer = ({ isEmpty, active }: Props) => {
             </Box>
           </HStack>
           <NumberInput
-            number={amount}
-            setNumber={setAmount}
+            number={values.amount}
+            setNumber={(val) => handleChange("amount", val)}
             isCurrency={true}
             label={"Amount"}
           />
-          <Box paddingTop="5px">
-            <RadioMenu
-              data={movementTypes.filter((m) => m.id !== 0)}
-              placeholder="Transaction Type"
-              selectedId={selectedTT}
-              setSelectedId={setSelectedTT}
-            />
-          </Box>
+          <RadioMenu
+            data={movementTypes.filter((m) => m.id !== 0)}
+            placeholder="Transaction Type"
+            selectedId={values.selectedTT}
+            setSelectedId={(v) => handleChange("selectedTT", v)}
+          />
 
-          <Box>
-            <Field label="Choose the categories">
-              <CheckBoxMenu
-                name={"Category"}
-                items={selectedCategories}
-                setItems={setSelectedCategories}
-              />
-            </Field>
-          </Box>
+          <Field label="Choose the categories">
+            <CheckBoxMenu
+              name={"Category"}
+              items={values.selectedCategories}
+              setItems={(val) => handleChange("selectedCategories", val)}
+            />
+          </Field>
+
           <HStack>
             <NumberInput
-              number={paymentDay}
-              setNumber={setPaymentDay}
+              number={values.paymentDay}
+              setNumber={(e) => handleChange("paymentDay", e)}
               isCurrency={false}
               label="Payment Day"
               helperText="Day of the month"
             />
             <NumberInput
-              number={periodicity}
-              setNumber={setPeriodicity}
+              number={values.periodicity}
+              setNumber={(v) => handleChange("periodicity", v)}
               isCurrency={false}
               label="Periodicity"
               helperText="In months"

@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
 import {
   MenuCheckboxItem,
   MenuContent,
@@ -8,19 +7,19 @@ import {
 import { Button } from "../../components/ui/button";
 import { LuCheck, LuChevronDown } from "react-icons/lu";
 
-interface TObj {
+export interface TObj {
   Id?: number;
   Name: string;
 }
 
-interface checkObj<T extends TObj> {
+export interface checkObj<T extends TObj> {
   checked: boolean;
   data: T;
 }
 interface Props<T extends TObj> {
   name: string;
   items: checkObj<T>[];
-  setItems: Dispatch<SetStateAction<checkObj<T>[]>>;
+  setItems: (value: checkObj<T>[]) => void;
 }
 const CheckBoxMenu = <T extends TObj>({ name, items, setItems }: Props<T>) => {
   return (

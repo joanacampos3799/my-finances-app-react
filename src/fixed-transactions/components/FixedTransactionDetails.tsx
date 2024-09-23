@@ -1,17 +1,17 @@
-import { FormatNumber, HStack, Input } from "@chakra-ui/react";
+import { FormatNumber, HStack } from "@chakra-ui/react";
 import { DataListItem, DataListRoot } from "../../components/ui/data-list";
 import { movementTypes } from "../../common/constants";
 import useCategories from "../../categories/hooks/useCategories";
 import useFixedTransaction from "../hooks/useFixedTransaction";
 import DialogComponent from "../../common/components/DialogComponent";
 import TagComponent from "../../common/components/TagComponent";
-import { useRef, useState, useEffect } from "react";
-import NumberInput from "../../common/components/NumberInput";
-import IconPicker from "../../common/components/IconPicker";
-import RadioMenu from "../../common/components/RadioMenu";
-import CheckBoxMenu from "../../common/components/CheckBoxMenu";
+import { useState, useEffect } from "react";
 import { HelperEntity } from "../../common/helper";
 import { useUpdateFixedTransaction } from "../hooks/useUpdateFixedTransaction";
+import useForm from "../../common/hooks/useForm";
+import FixedTransactionFormObject from "../model/FixedTransactionFormObject";
+import CategoryList from "../../categories/model/CategoryList";
+import FixedTransactionUpdateForm from "./FixedTransactionUpdateForm";
 
 interface Props {
   id: number;
@@ -19,10 +19,7 @@ interface Props {
 
 interface CheckboxCategoryItem {
   checked: boolean;
-  data: {
-    Id?: number;
-    Name: string;
-  };
+  data: CategoryList;
 }
 
 const FixedTransactionDetails = ({ id }: Props) => {
@@ -30,47 +27,50 @@ const FixedTransactionDetails = ({ id }: Props) => {
   const fixedTransaction = useFixedTransaction(id);
   const update = useUpdateFixedTransaction();
 
-  // State initialization
-  const [paymentDay, setPaymentDay] = useState<number>(0);
-  const [periodicity, setPeriodicity] = useState<number>(1);
-  const [selectedTT, setSelectedTT] = useState<string>("");
-  const [selectedCategories, setSelectedCategories] = useState<
-    CheckboxCategoryItem[]
-  >([]);
-  const [amount, setAmount] = useState<number>(0);
-  const [icon, setIcon] = useState<string>("");
+  // Initialize the useForm hook with the initial values
+  const { values, handleChange, setValues } =
+    useForm<FixedTransactionFormObject>({
+      paymentDay: 0,
+      periodicity: 1,
+      selectedTT: "",
+      selectedCategories: [] as CheckboxCategoryItem[],
+      amount: 0,
+      icon: "",
+      Name: "",
+    });
   const [updating, setUpdating] = useState(false);
-  const nameRef = useRef<HTMLInputElement>(null);
 
   // Update state when fixedTransaction data is available
   useEffect(() => {
     if (fixedTransaction) {
-      setPaymentDay(fixedTransaction.PaymentDay);
-      setPeriodicity(fixedTransaction.Periodicity);
-      setSelectedTT("" + fixedTransaction.transactionType);
-      setAmount(fixedTransaction.Amount);
-      setIcon(fixedTransaction.Icon);
-      setSelectedCategories(
-        new HelperEntity().getMappedCheckboxEntity(
-          categories.data,
-          fixedTransaction.categories
-        )
-      );
+      setValues({
+        paymentDay: fixedTransaction.PaymentDay,
+        periodicity: fixedTransaction.Periodicity,
+        selectedTT: "" + fixedTransaction.transactionType,
+        amount: fixedTransaction.Amount,
+        icon: fixedTransaction.Icon,
+        Name: fixedTransaction.Name,
+        selectedCategories:
+          new HelperEntity<CategoryList>().getMappedCheckboxEntity(
+            categories.data,
+            fixedTransaction.categories
+          ),
+      });
     }
-  }, [fixedTransaction, categories]);
+  }, [fixedTransaction, categories, setValues]);
 
   const handleUpdate = () => {
     update({
       Id: fixedTransaction.Id,
-      Name: nameRef.current?.value || fixedTransaction.Name,
-      Icon: icon,
-      Amount: amount,
-      transactionType: +selectedTT,
+      Name: values.Name,
+      Icon: values.icon,
+      Amount: values.amount,
+      transactionType: +values.selectedTT,
       userId: fixedTransaction.userId!,
-      PaymentDay: paymentDay,
-      Periodicity: periodicity,
+      PaymentDay: values.paymentDay,
+      Periodicity: values.periodicity,
       active: fixedTransaction.active,
-      categories: selectedCategories
+      categories: values.selectedCategories
         .filter((cat) => cat.checked)
         .map((cat) => cat.data.Id!),
     });
@@ -87,98 +87,53 @@ const FixedTransactionDetails = ({ id }: Props) => {
       handleUpdate={handleUpdate}
     >
       <DataListRoot>
-        <DataListItem label="Name" value={""}>
-          {updating ? (
-            <HStack>
-              <IconPicker
-                iconParam={icon}
-                iconSize={4}
-                setIconParam={setIcon}
+        {updating ? (
+          <FixedTransactionUpdateForm
+            handleChange={handleChange}
+            values={values}
+          />
+        ) : (
+          <>
+            <DataListItem label="Name" value={fixedTransaction.Name} />
+            <DataListItem label="Amount" value={""}>
+              <FormatNumber
+                value={fixedTransaction.Amount}
+                style="currency"
+                currency="EUR"
               />
-              <Input ref={nameRef} defaultValue={fixedTransaction.Name} />
-            </HStack>
-          ) : (
-            fixedTransaction.Name
-          )}
-        </DataListItem>
-
-        <DataListItem label="Amount" value={""}>
-          {updating ? (
-            <NumberInput number={amount} setNumber={setAmount} isCurrency />
-          ) : (
-            <FormatNumber
-              value={fixedTransaction.Amount}
-              style="currency"
-              currency="EUR"
+            </DataListItem>
+            <DataListItem
+              label="Payment Day"
+              value={fixedTransaction.PaymentDay}
             />
-          )}
-        </DataListItem>
-
+            <DataListItem
+              label="Periodicity"
+              value={`Every ${fixedTransaction.Periodicity > 1 ? fixedTransaction.Periodicity : ""} month${fixedTransaction.Periodicity > 1 ? "s" : ""}`}
+            />
+            <DataListItem label="Transaction Type" value={""}>
+              {
+                movementTypes.find(
+                  (mt) => mt.id === fixedTransaction.transactionType
+                )?.name
+              }
+            </DataListItem>
+            <DataListItem label="Categories" value={""}>
+              <HStack>
+                {categories.data
+                  .filter((cat) => fixedTransaction.categories.includes(cat.Id))
+                  .map((i) => (
+                    <TagComponent key={i.Id} name={i.Name} icon={i.Icon} />
+                  ))}
+              </HStack>
+            </DataListItem>
+          </>
+        )}
         <DataListItem label="Total Spent" value={""}>
           <FormatNumber
             value={fixedTransaction.TotalSpent}
             style="currency"
             currency="EUR"
           />
-        </DataListItem>
-
-        <DataListItem label="Payment Day" value={""}>
-          {updating ? (
-            <NumberInput
-              number={paymentDay}
-              setNumber={setPaymentDay}
-              helperText="Day of the month"
-              isCurrency={false}
-            />
-          ) : (
-            fixedTransaction.PaymentDay
-          )}
-        </DataListItem>
-
-        <DataListItem label="Periodicity" value={""}>
-          {updating ? (
-            <NumberInput
-              number={periodicity}
-              setNumber={setPeriodicity}
-              helperText="In months"
-              isCurrency={false}
-            />
-          ) : (
-            `Every ${fixedTransaction.Periodicity > 1 ? fixedTransaction.Periodicity : ""} month${fixedTransaction.Periodicity > 1 ? "s" : ""}`
-          )}
-        </DataListItem>
-
-        <DataListItem label="Transaction Type" value={""}>
-          {updating ? (
-            <RadioMenu
-              data={movementTypes.filter((m) => m.id !== 0)}
-              placeholder="Transaction Type"
-              selectedId={selectedTT}
-              setSelectedId={setSelectedTT}
-            />
-          ) : (
-            movementTypes.find(
-              (mt) => mt.id === fixedTransaction.transactionType
-            )?.name
-          )}
-        </DataListItem>
-
-        <DataListItem label="Categories" value={""}>
-          {updating ? (
-            <CheckBoxMenu
-              name="Category"
-              items={selectedCategories}
-              setItems={setSelectedCategories}
-            />
-          ) : (
-            <HStack>
-              {categories.data
-                .filter((cat) => fixedTransaction.categories.includes(cat.Id))
-                .map((i) => (
-                  <TagComponent key={i.Id} name={i.Name} icon={i.Icon} />
-                ))}
-            </HStack>
-          )}
         </DataListItem>
       </DataListRoot>
     </DialogComponent>

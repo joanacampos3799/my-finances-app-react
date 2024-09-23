@@ -1,12 +1,12 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import useCategory from "../hooks/useCategory";
-import { useUpdateCategory } from "../hooks/useUpdateCategory";
 import DialogComponent from "../../common/components/DialogComponent";
 import { DataListItem, DataListRoot } from "../../components/ui/data-list";
-import { HStack, Input } from "@chakra-ui/react";
 import { movementTypes } from "../../common/constants";
-import RadioMenu from "../../common/components/RadioMenu";
-import IconPicker from "../../common/components/IconPicker";
+import CategoryUpdateForm from "./CategoryUpdateForm";
+import { useUpdateCategory } from "../hooks/useUpdateCategory";
+import useForm from "../../common/hooks/useForm";
+import CategoryFormObject from "../model/CategoryFormObject";
 
 interface Props {
   id: number;
@@ -15,65 +15,46 @@ interface Props {
 const CategoryDetails = ({ id }: Props) => {
   const category = useCategory(id);
   const [updating, setUpdating] = useState(false);
-  const [icon, setIcon] = useState(category.Icon);
-  const [selectedCTId, setSelectedCTId] = useState<string>(
-    "" + category.CategoryType
-  );
-  const ref = useRef<HTMLInputElement>(null);
+  const { values, handleChange } = useForm<CategoryFormObject>({
+    Name: category.Name,
+    icon: category.Icon,
+    selectedTT: "" + category.CategoryType,
+  });
   const updateCategory = useUpdateCategory();
+
+  // Move handleUpdate to the parent
 
   const handleUpdate = () => {
     updateCategory({
       Id: category.Id,
-      Name:
-        ref.current && ref.current.value && ref.current.value !== ""
-          ? ref.current.value
-          : category.Name,
-      Icon: icon,
-      CategoryType: +selectedCTId,
+      Name: values.Name,
+      Icon: values.icon,
+      CategoryType: +values.selectedTT,
       userId: category.userId,
     });
     setUpdating(false);
   };
+
   return (
     <DialogComponent
-      size={"lg"}
+      size="lg"
       name={category.Name}
       isAlert={false}
       updating={updating}
-      handleUpdate={handleUpdate}
       setUpdating={setUpdating}
+      handleUpdate={handleUpdate} // Pass handleUpdate to DialogComponent
     >
       <DataListRoot>
         {!updating ? (
-          <DataListItem label="Category Name" value={category.Name} />
-        ) : (
-          <DataListItem label="Category Name and Icon" value={""}>
-            <HStack>
-              {" "}
-              <IconPicker
-                iconParam={icon}
-                iconSize={4}
-                setIconParam={setIcon}
-              />
-              <Input ref={ref} defaultValue={category.Name} />
-            </HStack>
-          </DataListItem>
-        )}
-
-        {!updating ? (
-          <DataListItem
-            label="Category Type"
-            value={movementTypes[category.CategoryType].name}
-          />
-        ) : (
-          <DataListItem label="Category Type" value={""}>
-            <RadioMenu
-              data={movementTypes}
-              selectedId={selectedCTId}
-              setSelectedId={setSelectedCTId}
+          <>
+            <DataListItem label="Category Name" value={category.Name} />
+            <DataListItem
+              label="Category Type"
+              value={movementTypes[category.CategoryType].name}
             />
-          </DataListItem>
+          </>
+        ) : (
+          <CategoryUpdateForm values={values} handleChange={handleChange} />
         )}
       </DataListRoot>
     </DialogComponent>

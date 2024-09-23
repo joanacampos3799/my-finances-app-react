@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect } from "react";
-import { FormatNumber, HStack, Input } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { FormatNumber, HStack } from "@chakra-ui/react";
 import { DataListItem, DataListRoot } from "../../../components/ui/data-list";
 import { accountTypes } from "../../../common/constants";
 import { Tag } from "../../../components/ui/tag";
@@ -7,18 +7,10 @@ import { useUpdateAccount } from "../../hooks/useUpdateAccount";
 import useBanks from "../../hooks/useBanks";
 import useAccount from "../../hooks/useAccount";
 import DialogComponent from "../../../common/components/DialogComponent";
-import RadioMenu from "../../../common/components/RadioMenu";
-import CheckBoxMenu from "../../../common/components/CheckBoxMenu";
-import NumberInput from "../../../common/components/NumberInput";
-import { HelperEntity, HelperEnum } from "../../../common/helper";
-
-interface checboxItem {
-  data: {
-    Id: number;
-    Name: string;
-  };
-  checked: boolean;
-}
+import { HelperEnum } from "../../../common/helper";
+import useForm from "../../../common/hooks/useForm";
+import AccountFormObject from "../../models/AccountFormObject";
+import AccountUpdateForm from "./AccountUpdateForm";
 
 interface Props {
   id: number;
@@ -29,39 +21,43 @@ const AccountDetails = ({ id }: Props) => {
   const updateAccount = useUpdateAccount();
   const { data: banks } = useBanks();
 
-  const nameRef = useRef<HTMLInputElement>(null);
-
   // Initialize states with default values
   const [updating, setUpdating] = useState(false);
-  const [initialBalance, setInitialBalance] = useState(0);
-  const [selectedBank, setSelectedBank] = useState("0");
-  const [selectedAccountTypes, setSelectedAccountTypes] = useState<
-    checboxItem[]
-  >([]);
+
+  const { values, handleChange, setValues } = useForm<AccountFormObject>({
+    Name: "",
+    ib: 0,
+    selectedBank: "0",
+    selectedAccountTypes: [],
+  });
 
   // useEffect to update states when the account data is fetched
   useEffect(() => {
     if (account) {
-      setInitialBalance(account.InitialBalance ?? 0); // Update initial balance
-      setSelectedBank("" + (account.bankId ?? 0)); // Set the selected bank
-      setSelectedAccountTypes(
-        new HelperEnum().getMappedCheckboxEnum(accountTypes, account.Types)
-      ); // Set account types
+      setValues({
+        ib: account.InitialBalance ?? 0,
+        Name: account.Name,
+        selectedBank: "" + (account.bankId ?? 0),
+        selectedAccountTypes: new HelperEnum().getMappedCheckboxEnum(
+          accountTypes,
+          account.Types
+        ),
+      });
     }
-  }, [account]); // Runs whenever the account changes
+  }, [account, setValues]); // Runs whenever the account changes
 
   const handleUpdate = () => {
-    const bank = banks.find((b) => b.Id === +selectedBank) ?? undefined;
+    const bank = banks.find((b) => b.Id === +values.selectedBank) ?? undefined;
 
     updateAccount({
       Id: account.Id,
       userId: account.userId,
       Balance: account.Balance,
-      Name: nameRef.current?.value || account.Name,
+      Name: values.Name,
       bankId: bank?.Id,
       bankName: bank?.Name,
-      InitialBalance: initialBalance,
-      Types: selectedAccountTypes
+      InitialBalance: values.ib,
+      Types: values.selectedAccountTypes
         .filter((t) => t.checked)
         .map((at) => at.data.Id),
     });
@@ -80,56 +76,36 @@ const AccountDetails = ({ id }: Props) => {
       setUpdating={setUpdating}
       isAlert={false}
     >
-      <DataListRoot>
-        <DataListItem label="Account Name" value={updating ? "" : account.Name}>
-          {updating && <Input ref={nameRef} placeholder={account.Name} />}
-        </DataListItem>
+      {updating ? (
+        <AccountUpdateForm
+          values={values}
+          banks={banks}
+          handleChange={handleChange}
+        />
+      ) : (
+        <DataListRoot>
+          <DataListItem label="Account Name" value={account.Name} />
 
-        <DataListItem label="Current Balance" value="">
-          <FormatNumber
-            value={account.Balance ?? 0}
-            style="currency"
-            currency="EUR"
-          />
-        </DataListItem>
-
-        <DataListItem label="Initial Balance" value="">
-          {updating ? (
-            <NumberInput
-              number={initialBalance}
-              setNumber={setInitialBalance}
-              isCurrency
+          <DataListItem label="Current Balance" value="">
+            <FormatNumber
+              value={account.Balance ?? 0}
+              style="currency"
+              currency="EUR"
             />
-          ) : (
+          </DataListItem>
+
+          <DataListItem label="Initial Balance" value="">
             <FormatNumber
               value={account.InitialBalance ?? 0}
               style="currency"
               currency="EUR"
             />
-          )}
-        </DataListItem>
+          </DataListItem>
 
-        <DataListItem label="Associated Bank" value="">
-          {updating ? (
-            <RadioMenu
-              data={new HelperEntity().getMappedRadioEntity(banks)}
-              selectedId={selectedBank}
-              setSelectedId={setSelectedBank}
-              placeholder="a bank"
-            />
-          ) : (
-            account.bankName && <span>{account.bankName}</span>
+          {account.bankName && (
+            <DataListItem label="Associated Bank" value={account.bankName} />
           )}
-        </DataListItem>
-
-        <DataListItem label="Account Type(s)" value="">
-          {updating ? (
-            <CheckBoxMenu
-              items={selectedAccountTypes}
-              setItems={setSelectedAccountTypes}
-              name={"Account Types"}
-            />
-          ) : (
+          <DataListItem label="Account Type(s)" value="">
             <HStack>
               {accountTypes
                 .filter((at) => account.Types.includes(at.id))
@@ -139,9 +115,9 @@ const AccountDetails = ({ id }: Props) => {
                   </Tag>
                 ))}
             </HStack>
-          )}
-        </DataListItem>
-      </DataListRoot>
+          </DataListItem>
+        </DataListRoot>
+      )}
     </DialogComponent>
   );
 };

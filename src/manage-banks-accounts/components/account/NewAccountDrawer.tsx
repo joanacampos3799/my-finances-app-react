@@ -1,13 +1,9 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useLoginData } from "../../../auth/contexts/AuthContext";
 import { accountTypes } from "../../../common/constants";
 import { Box, Input, Stack } from "@chakra-ui/react";
 import { Field } from "../../../components/ui/field";
 import useAddAccount from "../../hooks/useAddAccount";
-import {
-  NumberInputField,
-  NumberInputRoot,
-} from "../../../components/ui/number-input";
 import useBanks from "../../hooks/useBanks";
 import { HelperEntity, HelperEnum } from "../../../common/helper";
 import EnumType from "../../../common/EnumType";
@@ -15,6 +11,9 @@ import BankList from "../../models/BankList";
 import DrawerComponent from "../../../common/components/DrawerComponent";
 import CheckBoxMenu from "../../../common/components/CheckBoxMenu";
 import RadioMenu from "../../../common/components/RadioMenu";
+import useForm from "../../../common/hooks/useForm";
+import AccountFormObject from "../../models/AccountFormObject";
+import NumberInput from "../../../common/components/NumberInput";
 
 interface Props {
   isEmpty: boolean;
@@ -23,20 +22,17 @@ interface Props {
 const NewAccountDrawer = ({ isEmpty }: Props) => {
   const { userId } = useLoginData();
   const { data: banks } = useBanks();
-  const nameRef = useRef<HTMLInputElement>(null);
-  const [ib, setIb] = useState(0);
-  const [selectedBank, setSelectedBank] = useState("0");
   const initialState = new HelperEnum<EnumType>().getMappedCheckboxEnum(
     accountTypes
   );
-  const [selectedAccountTypes, setSelectedAccountTypes] =
-    useState(initialState);
-  const addAccount = useAddAccount(() => {
-    if (nameRef.current) nameRef.current.value = "";
-    setSelectedBank("0");
-    setIb(0);
-    setSelectedAccountTypes(initialState);
+  const { values, handleChange, resetForm } = useForm<AccountFormObject>({
+    Name: "",
+    ib: 0,
+    selectedBank: "0",
+    selectedAccountTypes: initialState,
   });
+  const nameRef = useRef<HTMLInputElement>(null);
+  const addAccount = useAddAccount(() => resetForm());
   const banksSelect = new HelperEntity<BankList>().getMappedRadioEntity(banks);
 
   return (
@@ -53,23 +49,19 @@ const NewAccountDrawer = ({ isEmpty }: Props) => {
           e.preventDefault();
 
           const bank =
-            +selectedBank > 0
-              ? banks.find((b) => b.Id === +selectedBank)
-              : undefined;
+            banks.find((b) => b.Id === +values.selectedBank) ?? undefined;
 
-          if (nameRef.current && nameRef.current.value) {
-            addAccount({
-              Name: nameRef.current?.value,
-              bankId: bank?.Id,
-              bankName: bank?.Name,
-              Types: selectedAccountTypes
-                .filter((t) => t.checked)
-                .map((at) => at.data.Id),
-              userId: userId!!,
-              InitialBalance: ib,
-              Balance: ib,
-            });
-          }
+          addAccount({
+            Name: values.Name,
+            bankId: bank?.Id,
+            bankName: bank?.Name,
+            Types: values.selectedAccountTypes
+              .filter((t) => t.checked)
+              .map((at) => at.data.Id),
+            userId: userId!!,
+            InitialBalance: values.ib,
+            Balance: values.ib,
+          });
         }}
       >
         <Stack>
@@ -77,43 +69,35 @@ const NewAccountDrawer = ({ isEmpty }: Props) => {
             <Field label="Name" required>
               <Input
                 ref={nameRef}
+                value={values.Name}
+                onChange={(e) => handleChange("Name", e.target.value)}
                 id="name"
                 placeholder="Please enter Account name"
               />
             </Field>
           </Box>
           <Box>
-            <Field label="Initial Balance">
-              <NumberInputRoot
-                pattern="[0-9]*(,[0-9]+)?&nbsp;€"
-                locale="pt-PT"
-                width={"full"}
-                value={"" + ib}
-                onValueChange={(e) => setIb(e.valueAsNumber)}
-                defaultValue="0"
-                formatOptions={{
-                  style: "currency",
-                  currency: "EUR",
-                }}
-              >
-                <NumberInputField />
-              </NumberInputRoot>
-            </Field>
+            <NumberInput
+              number={values.ib}
+              setNumber={(e) => handleChange("ib", e)}
+              isCurrency
+            />
           </Box>
 
           <Box paddingTop="5px">
             <RadioMenu
+              hasArrow
               data={banksSelect}
-              selectedId={selectedBank}
-              setSelectedId={setSelectedBank}
+              selectedId={values.selectedBank}
+              setSelectedId={(v) => handleChange("selectedBank", v)}
               placeholder="a bank"
             />
           </Box>
           <Field label="Account Types">
             <CheckBoxMenu
               name={"Choose Account types"}
-              items={selectedAccountTypes}
-              setItems={setSelectedAccountTypes}
+              items={values.selectedAccountTypes}
+              setItems={(v) => handleChange("selectedAccountTypes", v)}
             />
           </Field>
         </Stack>

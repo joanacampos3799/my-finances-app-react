@@ -1,5 +1,4 @@
 import { Box, Group, Icon } from "@chakra-ui/react";
-import { Dispatch, SetStateAction } from "react";
 import { Field } from "../../components/ui/field";
 import { LuEuro } from "react-icons/lu";
 import {
@@ -9,7 +8,7 @@ import {
 
 interface Props {
   number: number;
-  setNumber: Dispatch<SetStateAction<number>>;
+  setNumber: (val: number) => void;
   isCurrency: boolean;
   label?: string;
   helperText?: string;

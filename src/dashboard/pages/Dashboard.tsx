@@ -17,7 +17,7 @@ import { queryKeys } from "../../common/constants";
 import Transaction from "../transactions/Transaction";
 import { HelperEntity } from "../../common/helper";
 import TabContent from "../transactions/components/TabContent";
-import NewTransactionDialog from "../transactions/components/NewTransactionDialog";
+import NewTransactionDrawer from "../transactions/components/NewTransactionDrawer";
 
 export default function DashboardPage() {
   const transactions = useTransactions();
@@ -73,12 +73,12 @@ export default function DashboardPage() {
           {!transData || transCount === 0 ? (
             <EmptyState
               paddingTop="10%"
-              paddingEnd={"20%"}
+              paddingEnd={"25%"}
               icon={<FaMoneyBillTransfer />}
               title="Start adding transactions"
               description="Add a new transaction to get started"
             >
-              <NewTransactionDialog isEmpty={true} />
+              <NewTransactionDrawer isEmpty={true} />
             </EmptyState>
           ) : (
             <Tabs.Root defaultValue={years[0]} variant="plain">

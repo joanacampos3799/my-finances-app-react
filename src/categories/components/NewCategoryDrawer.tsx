@@ -1,5 +1,5 @@
 import IconPicker from "../../common/components/IconPicker";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import useAddCategory from "../hooks/useAddCategory";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { movementTypes } from "../../common/constants";
@@ -7,20 +7,21 @@ import { Box, Input, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field";
 import DrawerComponent from "../../common/components/DrawerComponent";
 import RadioMenu from "../../common/components/RadioMenu";
+import useForm from "../../common/hooks/useForm";
+import CategoryFormObject from "../model/CategoryFormObject";
 
 interface Props {
   isEmpty: boolean;
 }
 const NewCategoryDrawer = ({ isEmpty }: Props) => {
-  const [icon, setIcon] = useState("");
-  const [selectedTT, setSelectedTT] = useState<string>("-1");
   const { userId } = useLoginData();
-  const ref = useRef<HTMLInputElement>(null);
-  const addCategory = useAddCategory(() => {
-    setIcon("");
-    if (ref.current) ref.current.value = "";
-    setSelectedTT("-1");
+  const { values, resetForm, handleChange } = useForm<CategoryFormObject>({
+    Name: "",
+    icon: "",
+    selectedTT: "-1",
   });
+  const ref = useRef<HTMLInputElement>(null);
+  const addCategory = useAddCategory(() => resetForm());
 
   return (
     <DrawerComponent
@@ -37,8 +38,8 @@ const NewCategoryDrawer = ({ isEmpty }: Props) => {
           if (ref.current && ref.current.value) {
             addCategory({
               Name: ref.current?.value,
-              Icon: icon,
-              CategoryType: movementTypes[+selectedTT].id,
+              Icon: values.icon,
+              CategoryType: movementTypes[+values.selectedTT].id,
               userId: userId!!,
             });
           }
@@ -49,8 +50,8 @@ const NewCategoryDrawer = ({ isEmpty }: Props) => {
             <Field label="Choose an Icon">
               <IconPicker
                 iconSize={8}
-                iconParam={icon}
-                setIconParam={setIcon}
+                iconParam={values.icon}
+                setIconParam={(i) => handleChange("icon", i)}
               />
             </Field>
           </Box>
@@ -68,9 +69,10 @@ const NewCategoryDrawer = ({ isEmpty }: Props) => {
           <Box paddingTop="5px">
             <Field label="Category Type">
               <RadioMenu
+                hasArrow
                 data={movementTypes}
-                selectedId={selectedTT}
-                setSelectedId={setSelectedTT}
+                selectedId={values.selectedTT}
+                setSelectedId={(val) => handleChange("selectedTT", val)}
                 placeholder="a category type"
               />
             </Field>

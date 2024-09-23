@@ -1,4 +1,3 @@
-import React, { Dispatch, SetStateAction } from "react";
 import {
   MenuContent,
   MenuRadioItem,
@@ -8,6 +7,7 @@ import {
 } from "../../components/ui/menu";
 import { Button } from "../../components/ui/button";
 import { LuChevronDown } from "react-icons/lu";
+import { ConditionalValue } from "@chakra-ui/react";
 
 interface obj {
   id: number;
@@ -17,30 +17,42 @@ interface obj {
 interface Props<T extends obj> {
   data: T[];
   selectedId: string;
-  setSelectedId: Dispatch<SetStateAction<string>>;
+  setSelectedId: (value: string) => void;
   placeholder?: string;
+  width?: string;
+  hasArrow: boolean;
+  variant?: ConditionalValue<
+    "outline" | "solid" | "subtle" | "surface" | "ghost" | "plain" | undefined
+  >;
 }
 const RadioMenu = <T extends obj>({
   data,
   selectedId,
   setSelectedId,
   placeholder,
+  variant,
+  width,
+  hasArrow,
 }: Props<T>) => {
   return (
     <MenuRoot closeOnSelect={true}>
       <MenuTrigger asChild>
         <Button
           fontWeight={"normal"}
-          variant={"outline"}
+          variant={variant ?? "outline"}
           justifyContent={"space-between"}
-          width={"full"}
+          width={width ?? "full"}
         >
           {data.find((d) => d.id === +selectedId)?.name ??
             `Select ${placeholder}`}
-          <LuChevronDown />
+          {hasArrow && <LuChevronDown />}
         </Button>
       </MenuTrigger>
-      <MenuContent minW="25rem" portalled={false} width={"full"}>
+      <MenuContent
+        minW={width ?? "25rem"}
+        portalled={false}
+        width={width ?? "full"}
+      >
         <MenuRadioItemGroup
           value={selectedId}
           onValueChange={(e) => setSelectedId(e.value)}

@@ -6,4 +6,5 @@ export default interface FixedTransactionList {
   deleted?: boolean;
   active: boolean;
   transactionType: number;
+  categories: number[];
 }
