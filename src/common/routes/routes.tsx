@@ -10,7 +10,7 @@ import ConditionalRoute from "./ConditionalRoute";
 import RootLayout from "../../welcome/layouts/RootLayout";
 import DashboardLayout from "../../welcome/layouts/DashboardLayout";
 import BanksAccountsPage from "../../manage-banks-accounts/pages/BanksAccountsPage";
-import TransactionsPage from "../../transactions/components/page/TransactionsPage";
+import TransactionsPage from "../../transactions/page/TransactionsPage";
 
 const router = createBrowserRouter([
   {

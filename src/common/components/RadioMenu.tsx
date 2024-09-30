@@ -20,6 +20,7 @@ interface Props<T extends obj> {
   setSelectedId: (value: string) => void;
   placeholder?: string;
   width?: string;
+  minW?: string;
   color?: boolean;
   hasArrow: boolean;
   variant?: ConditionalValue<
@@ -33,6 +34,7 @@ const RadioMenu = <T extends obj>({
   placeholder,
   variant,
   width,
+  minW,
   color,
   hasArrow,
 }: Props<T>) => {
@@ -54,7 +56,7 @@ const RadioMenu = <T extends obj>({
         </Button>
       </MenuTrigger>
       <MenuContent
-        minW={width ?? "25rem"}
+        minW={minW ?? width ?? "25rem"}
         portalled={false}
         width={width ?? "full"}
       >

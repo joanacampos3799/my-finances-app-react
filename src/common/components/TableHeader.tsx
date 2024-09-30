@@ -1,7 +1,7 @@
 import { chakra, HStack, Table } from "@chakra-ui/react";
 import { LuChevronDown, LuChevronsUpDown, LuChevronUp } from "react-icons/lu";
 
-interface CategoryHeaderProps {
+interface Props {
   label: string;
   w: string;
   isSorting: boolean;
@@ -9,13 +9,7 @@ interface CategoryHeaderProps {
   sortFn: () => void;
 }
 
-const CategoryHeader = ({
-  label,
-  isSorting,
-  sortingState,
-  sortFn,
-  w,
-}: CategoryHeaderProps) => {
+const TableHeader = ({ label, isSorting, sortingState, sortFn, w }: Props) => {
   return (
     <Table.ColumnHeader
       w={w}
@@ -41,4 +35,4 @@ const CategoryHeader = ({
   );
 };
 
-export default CategoryHeader;
+export default TableHeader;

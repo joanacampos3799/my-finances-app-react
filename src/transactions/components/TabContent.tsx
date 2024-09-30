@@ -5,7 +5,7 @@ import {
   AccordionRoot,
 } from "../../components/ui/accordion";
 import Transaction from "../model/Transaction";
-import MyTransactionTable from "./MyTransactionTable";
+import TransactionTable from "./TransactionTable";
 import { format } from "date-fns/format";
 interface Props {
   transactions: Transaction[];
@@ -38,7 +38,7 @@ const TabContent = ({ transactions }: Props) => {
         <AccordionItem key={item.name} value={item.name}>
           <AccordionItemTrigger>{item.name}</AccordionItemTrigger>
           <AccordionItemContent>
-            <MyTransactionTable data={item.transactions} />
+            <TransactionTable data={item.transactions} />
           </AccordionItemContent>
         </AccordionItem>
       ))}

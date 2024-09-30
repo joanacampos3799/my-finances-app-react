@@ -6,7 +6,7 @@ import {
   PopoverRoot,
   PopoverTrigger,
 } from "../../components/ui/popover";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import chakraColors from "../chakraColors";
 import { Slider } from "../../components/ui/slider";
 
@@ -48,7 +48,7 @@ const ColorPicker = ({ color, setColor }: Props) => {
 
   return (
     <PopoverRoot>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <Button
           size="sm"
           bgColor={color || fallbackColor}

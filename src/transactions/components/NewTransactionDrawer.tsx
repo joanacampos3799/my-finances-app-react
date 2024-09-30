@@ -31,19 +31,21 @@ import AccountList from "../../manage-banks-accounts/models/AccountList";
 import DatePicker from "../../common/components/DatePicker";
 import { format } from "date-fns";
 import TransactionFormObject from "../model/TransactionFormObject";
+import Transaction from "../model/Transaction";
 
 interface Props {
-  isEmpty: boolean;
+  Transaction?: Transaction;
+  categoriesIds?: number[];
 }
-
-const NewTransactionDrawer = ({ isEmpty }: Props) => {
+const NewTransactionDrawer = ({ Transaction, categoriesIds }: Props) => {
   const [isFixedTransaction, setIsFixedTransaction] = useState(false);
   const { userId } = useLoginData();
   const { data: categories } = useCategories();
   const { data: fixedTransactions } = useFixedTransactions();
   const { data: accounts } = useAccounts();
   const initialState = new HelperEntity<Category>().getMappedCheckboxEntity(
-    categories
+    categories,
+    categoriesIds
   );
   const ref = useRef(null);
   const { values, resetForm, handleChange } = useForm<TransactionFormObject>({
@@ -69,7 +71,6 @@ const NewTransactionDrawer = ({ isEmpty }: Props) => {
 
   return (
     <DrawerComponent
-      isEmpty={isEmpty}
       placement={"end"}
       name="Transaction"
       formName="new-transaction-form"
@@ -148,7 +149,7 @@ const NewTransactionDrawer = ({ isEmpty }: Props) => {
                     <DataListItem label="Categories" value={""}>
                       <HStack>
                         {categories
-                          .filter((cat) => fixed.categories.includes(cat.Id))
+                          .filter((cat) => fixed.categories.includes(cat.Id!!))
                           .map((i) => (
                             <TagComponent
                               key={i.Id}

@@ -1,9 +1,12 @@
 import { BiCategory } from "react-icons/bi";
 import { EmptyState } from "../../components/ui/empty-state";
-
-const CategoryEmptyState = () => {
+interface Props {
+  keyname: string;
+}
+const CategoryEmptyState = ({ keyname }: Props) => {
   return (
     <EmptyState
+      key={keyname}
       bgColor={"gray.100"}
       paddingTop="10%"
       icon={<BiCategory />}

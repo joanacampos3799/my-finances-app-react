@@ -3,7 +3,7 @@ import { useRef } from "react";
 import useAddCategory from "../hooks/useAddCategory";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { movementTypes } from "../../common/constants";
-import { Flex, Heading, Input } from "@chakra-ui/react";
+import { Flex, Heading, Input, Show } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field";
 import DrawerComponent from "../../common/components/DrawerComponent";
 import RadioMenu from "../../common/components/RadioMenu";
@@ -44,6 +44,7 @@ const NewCategoryDrawer = ({ category }: Props) => {
         onSubmit={(e) => {
           e.preventDefault();
           if (category) {
+            console.log("update");
             updateCategory({
               Id: category.Id,
               Name: values.Name,
@@ -86,7 +87,9 @@ const NewCategoryDrawer = ({ category }: Props) => {
           <Field label="Name" required mt={6}>
             <Input
               ref={ref}
-              id="name"
+              id="Name"
+              value={values.Name}
+              onChange={(e) => handleChange("Name", e.target.value)}
               placeholder="Please enter Category name"
             />
           </Field>
@@ -94,19 +97,22 @@ const NewCategoryDrawer = ({ category }: Props) => {
           <Field label="Category Type" mt={4}>
             <RadioMenu
               hasArrow
+              minW="17rem"
               data={movementTypes}
               selectedId={values.selectedTT}
               setSelectedId={(val) => handleChange("selectedTT", val)}
               placeholder="a category type"
             />
           </Field>
-          <Field label="Budget" mt={4}>
-            <NumberInput
-              number={values.budget}
-              setNumber={(val) => handleChange("budget", val)}
-              isCurrency
-            />
-          </Field>
+          <Show when={values.selectedTT === "0"}>
+            <Field label="Budget" mt={4}>
+              <NumberInput
+                number={values.budget}
+                setNumber={(val) => handleChange("budget", val)}
+                isCurrency
+              />
+            </Field>
+          </Show>
         </Flex>
       </form>
     </DrawerComponent>

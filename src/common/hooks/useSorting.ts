@@ -1,9 +1,9 @@
 import { useState } from "react";
-import useAmount from "./useAmount";
+import useInsights from "./useInsights";
 import Transaction from "../../transactions/model/Transaction";
 
 const useSorting = () => {
-  const { getTransactionsTotalAmount } = useAmount();
+  const { getTransactionsTotalAmount } = useInsights();
   const [sorting, setSorting] = useState<{
     state: "asc" | "desc" | null;
     column: string | null;
@@ -74,13 +74,14 @@ const useSorting = () => {
       );
   };
 
-  const SortTotal = <T, V>(
+  const SortTotal = <T>(
     array: T[],
     subArray: keyof T,
     type: keyof T,
     period: string,
     header: string,
-    id: keyof T
+    id: keyof T,
+    filterType?: number
   ) => {
     const state = getNextState(header);
     setSorting({ column: header, state: state });
@@ -89,12 +90,12 @@ const useSorting = () => {
         const totalA = getTransactionsTotalAmount(
           a[subArray] as Transaction[],
           period,
-          a[type] as number
+          filterType ? filterType : (a[type] as number)
         );
         const totalB = getTransactionsTotalAmount(
           b[subArray] as Transaction[],
           period,
-          b[type] as number
+          filterType ? filterType : (b[type] as number)
         );
         return state === "asc" ? totalA - totalB : totalB - totalA;
       });
@@ -103,8 +104,30 @@ const useSorting = () => {
         (a, b) => (a[id] as unknown as number) - (b[id] as unknown as number)
       );
   };
+
+  const SortSum = <T>(
+    array: T[],
+    subArray: keyof T,
+    header: string,
+    id: keyof T
+  ) => {
+    const state = getNextState(header);
+    setSorting({ column: header, state: state });
+    if (state !== null) {
+      return array.sort((a, b) => {
+        const sumA = (a[subArray] as Transaction[]).length;
+
+        const sumB = (b[subArray] as Transaction[]).length;
+        return state === "asc" ? sumA - sumB : sumB - sumA;
+      });
+    } else
+      return array.sort(
+        (a, b) => (a[id] as unknown as number) - (b[id] as unknown as number)
+      );
+  };
   return {
     SortTotal,
+    SortSum,
     isSorting,
     getSortingState,
     sortNumber,

@@ -1,18 +1,16 @@
-import React from "react";
 import {
   ProgressBar,
-  ProgressLabel,
   ProgressRoot,
   ProgressValueText,
 } from "../../components/ui/progress";
-import useAmount from "../../common/hooks/useAmount";
+import useInsights from "../../common/hooks/useInsights";
 import { HStack } from "@chakra-ui/react";
 interface Props {
   budget: number;
   spent: number;
 }
 const BudgetProgress = ({ budget, spent }: Props) => {
-  const { getPercentage } = useAmount();
+  const { getPercentage } = useInsights();
   const perc = getPercentage(spent, budget);
   let color = "teal";
 

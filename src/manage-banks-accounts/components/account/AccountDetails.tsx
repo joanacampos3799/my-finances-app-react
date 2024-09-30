@@ -70,7 +70,7 @@ const AccountDetails = ({ id }: Props) => {
   return (
     <DialogComponent
       size="lg"
-      name={account.Name}
+      title={account.Name}
       updating={updating}
       handleUpdate={handleUpdate}
       setUpdating={setUpdating}

@@ -1,13 +1,14 @@
 import { Icon, Flex, Heading } from "@chakra-ui/react";
 import { SignedIn, UserButton, SignedOut } from "@clerk/clerk-react";
 import { GiReceiveMoney } from "react-icons/gi";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import NavBarButton from "./NavBarButton";
-import { Button } from "../../components/ui/button";
 import {
   LuCalendarClock,
+  LuClipboardEdit,
   LuHome,
   LuLineChart,
+  LuLogIn,
   LuSettings,
   LuWalletCards,
 } from "react-icons/lu";
@@ -111,12 +112,20 @@ const NavBar = () => {
           </Flex>
         </SignedIn>
         <SignedOut>
-          <Button>
-            <Link to="/sign-in">Sign In</Link>
-          </Button>
-          <Button>
-            <Link to="/sign-up">Get Started</Link>
-          </Button>
+          <NavBarButton
+            link="/sign-in"
+            title="Sign In"
+            icon={LuLogIn}
+            isOpen={sideBarOpen}
+            active={activePage === "/s/settings"}
+          />
+          <NavBarButton
+            link="/sign-up"
+            title="Get Started"
+            icon={LuClipboardEdit}
+            isOpen={sideBarOpen}
+            active={activePage === "/s/settings"}
+          />
         </SignedOut>
       </Flex>
     </Flex>

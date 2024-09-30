@@ -1,27 +1,33 @@
-import { Flex, HStack, Table } from "@chakra-ui/react";
+import { Flex, HStack, Show, Table } from "@chakra-ui/react";
 import { useDeleteCategory } from "../hooks/useDeleteCategory";
 import Category from "../model/Category";
 import CategoryEmptyState from "./CategoryEmptyState";
 import useSorting from "../../common/hooks/useSorting";
-import useAmount from "../../common/hooks/useAmount";
 import {
   PaginationItems,
   PaginationNextTrigger,
   PaginationPrevTrigger,
   PaginationRoot,
 } from "../../components/ui/pagination";
-import CategoryHeader from "./CategoryHeader";
+import TableHeader from "../../common/components/TableHeader";
 import CategoryRow from "./CategoryRow";
 import { useState } from "react";
 
 interface Props {
   categories: Category[];
   period: string;
+  categoryTypeId: number;
 }
-const CategoriesList = ({ categories, period }: Props) => {
-  const { getSortingState, sortString, sortNumber, isSorting, SortTotal } =
-    useSorting();
-  const { getTransactionsTotalAmount } = useAmount();
+const CategoriesList = ({ categories, period, categoryTypeId }: Props) => {
+  const {
+    getSortingState,
+    sortString,
+    sortNumber,
+    isSorting,
+    SortTotal,
+    SortSum,
+  } = useSorting();
+
   const [sortedCategories, setSortedCategories] =
     useState<Category[]>(categories);
   const deleteCategory = useDeleteCategory();
@@ -46,9 +52,9 @@ const CategoriesList = ({ categories, period }: Props) => {
           <Table.Root stickyHeader colorPalette={"teal"}>
             <Table.Header>
               <Table.Row>
-                <CategoryHeader
+                <TableHeader
                   label="Name"
-                  w={"150px"}
+                  w={"100px"}
                   sortFn={() => {
                     setSortedCategories(
                       sortString(categories, "Name", "Name", "Id")
@@ -57,36 +63,110 @@ const CategoriesList = ({ categories, period }: Props) => {
                   isSorting={isSorting("Name")}
                   sortingState={getSortingState()}
                 />
-                <CategoryHeader
-                  label="Total Amount"
-                  w={"150px"}
-                  sortFn={() => {
-                    setSortedCategories(
-                      SortTotal(
-                        categories,
-                        "Transactions",
-                        "CategoryType",
-                        period,
-                        "Total Amount",
-                        "Id"
-                      )
-                    );
-                  }} // Add sorting logic if needed
-                  isSorting={isSorting("Total Amount")}
+                <Show when={categoryTypeId !== 2}>
+                  <TableHeader
+                    label="Total Amount"
+                    w={"140px"}
+                    sortFn={() => {
+                      setSortedCategories(
+                        SortTotal(
+                          categories,
+                          "Transactions",
+                          "CategoryType",
+                          period,
+                          "Total Amount",
+                          "Id"
+                        )
+                      );
+                    }} // Add sorting logic if needed
+                    isSorting={isSorting("Total Amount")}
+                    sortingState={getSortingState()}
+                  />
+                </Show>
+                <Show when={categoryTypeId === 2}>
+                  <TableHeader
+                    label="Net Balance"
+                    w={"150px"}
+                    sortFn={() => {
+                      setSortedCategories(
+                        SortTotal(
+                          categories,
+                          "Transactions",
+                          "CategoryType",
+                          period,
+                          "Net Balance",
+                          "Id"
+                        )
+                      );
+                    }} // Add sorting logic if needed
+                    isSorting={isSorting("Net Balance")}
+                    sortingState={getSortingState()}
+                  />
+                  <TableHeader
+                    label="Total Expenses"
+                    w={"150px"}
+                    sortFn={() => {
+                      setSortedCategories(
+                        SortTotal(
+                          categories,
+                          "Transactions",
+                          "CategoryType",
+                          period,
+                          "Total Expenses",
+                          "Id",
+                          0
+                        )
+                      );
+                    }} // Add sorting logic if needed
+                    isSorting={isSorting("Total Expenses")}
+                    sortingState={getSortingState()}
+                  />
+                  <TableHeader
+                    label="Total Income"
+                    w={"150px"}
+                    sortFn={() => {
+                      setSortedCategories(
+                        SortTotal(
+                          categories,
+                          "Transactions",
+                          "CategoryType",
+                          period,
+                          "Total Income",
+                          "Id",
+                          1
+                        )
+                      );
+                    }}
+                    isSorting={isSorting("Total Income")}
+                    sortingState={getSortingState()}
+                  />
+                </Show>
+                <TableHeader
+                  label={"#Transactions"}
+                  w={"80px"}
+                  isSorting={isSorting("#Transactions")}
                   sortingState={getSortingState()}
-                />
-                <CategoryHeader
-                  label={`Budget (${period})`}
-                  w={"150px"}
-                  sortFn={() => {
+                  sortFn={() =>
                     setSortedCategories(
-                      sortNumber(categories, "Budget", "Budget", "Id")
-                    );
-                  }}
-                  isSorting={isSorting("Budget")}
-                  sortingState={getSortingState()}
+                      SortSum(categories, "Transactions", "#Transactions", "Id")
+                    )
+                  }
                 />
-                <Table.ColumnHeader w="300px">Progress</Table.ColumnHeader>
+                <Show when={categoryTypeId === 0}>
+                  <TableHeader
+                    label={`Budget (${period})`}
+                    w={"170px"}
+                    sortFn={() => {
+                      setSortedCategories(
+                        sortNumber(categories, "Budget", "Budget", "Id")
+                      );
+                    }}
+                    isSorting={isSorting("Budget")}
+                    sortingState={getSortingState()}
+                  />
+
+                  <Table.ColumnHeader w={"250px"}>Progress</Table.ColumnHeader>
+                </Show>
                 <Table.ColumnHeader w="80px" textAlign={"end"}>
                   Actions
                 </Table.ColumnHeader>
@@ -98,7 +178,6 @@ const CategoriesList = ({ categories, period }: Props) => {
                   key={category.Id + "-category"}
                   category={category}
                   period={period}
-                  getTransactionsTotalAmount={getTransactionsTotalAmount}
                   onDelete={handleDelete}
                 />
               ))}
@@ -113,7 +192,7 @@ const CategoriesList = ({ categories, period }: Props) => {
           </PaginationRoot>
         </Flex>
       ) : (
-        <CategoryEmptyState />
+        <CategoryEmptyState keyname={categoryTypeId + "-empty"} />
       )}
     </Flex>
   );

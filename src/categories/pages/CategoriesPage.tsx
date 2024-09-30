@@ -65,7 +65,7 @@ const CategoriesPage = () => {
       </Box>
 
       {!catData || catCount === 0 ? (
-        <CategoryEmptyState />
+        <CategoryEmptyState keyname={"mainEmpty"} />
       ) : (
         <Tabs.Root
           defaultValue={"Expenses"}
@@ -74,18 +74,19 @@ const CategoriesPage = () => {
         >
           <Tabs.List width={"full"} border={0}>
             {movementTypes.map((ct) => (
-              <Tabs.Trigger key={ct.id + "movTypesTab"} value={ct.name}>
+              <Tabs.Trigger key={ct.id + "-movTypesTab"} value={ct.name}>
                 <Icon color={"teal.500"} as={ct.icon!!} />
                 {ct.name}
               </Tabs.Trigger>
             ))}
           </Tabs.List>
           {movementTypes.map((ct) => (
-            <Tabs.Content value={ct.name}>
+            <Tabs.Content key={ct.name + "-contentTab"} value={ct.name}>
               <CategoriesList
                 key={ct.name + "-grid"}
                 categories={catData.filter((c) => c.CategoryType == ct.id)}
                 period={timePeriods[+period].name}
+                categoryTypeId={ct.id}
               />
             </Tabs.Content>
           ))}

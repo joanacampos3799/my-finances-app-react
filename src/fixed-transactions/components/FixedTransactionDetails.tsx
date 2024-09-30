@@ -80,7 +80,7 @@ const FixedTransactionDetails = ({ id }: Props) => {
     <DialogComponent
       size="xl"
       icon={fixedTransaction.Icon}
-      name={fixedTransaction.Name}
+      title={fixedTransaction.Name}
       isAlert={false}
       updating={updating}
       setUpdating={setUpdating}

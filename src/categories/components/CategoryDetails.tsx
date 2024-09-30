@@ -1,26 +1,121 @@
 import DialogComponent from "../../common/components/DialogComponent";
-import { DataListItem, DataListRoot } from "../../components/ui/data-list";
-import { movementTypes } from "../../common/constants";
 
-import { useUpdateCategory } from "../hooks/useUpdateCategory";
-import useForm from "../../common/hooks/useForm";
-import CategoryFormObject from "../model/CategoryFormObject";
 import Category from "../model/Category";
+import TransactionTable from "../../transactions/components/TransactionTable";
+import {
+  Editable,
+  Flex,
+  FormatNumber,
+  Heading,
+  HStack,
+  Separator,
+  Show,
+  Text,
+} from "@chakra-ui/react";
+import NewTransactionDrawer from "../../transactions/components/NewTransactionDrawer";
+import { useState } from "react";
+import { useUpdateCategory } from "../hooks/useUpdateCategory";
+import useInsights from "../../common/hooks/useInsights";
+import { Tag } from "../../components/ui/tag";
 
 interface Props {
   category: Category;
+  total: number;
+  period: string;
 }
 
-const CategoryDetails = ({ category }: Props) => {
+const CategoryDetails = ({ category, total, period }: Props) => {
+  const [notes, setNotes] = useState(category.Notes);
+  const { getTransactionsAverageAmount, budgetInsight, spendingTrendInsight } =
+    useInsights();
+  const update = useUpdateCategory(() => {});
+  const handleUpdate = () => {
+    update({ ...category, Notes: notes });
+  };
   return (
-    <DialogComponent size="lg" name={category.Name} isAlert={false}>
-      <DataListRoot>
-        <DataListItem label="Category Name" value={category.Name} />
-        <DataListItem
-          label="Category Type"
-          value={movementTypes[category.CategoryType].name}
-        />
-      </DataListRoot>
+    <DialogComponent
+      icon={category.Icon}
+      size="xl"
+      title={category.Name + "' Transactions"}
+      footer={<NewTransactionDrawer categoriesIds={[category.Id!!]} />}
+    >
+      <Flex direction={"column"} gap={5} mb={3}>
+        <Flex direction={"row"} gap={10}>
+          <Show when={category.Budget}>
+            <HStack>
+              <Heading color={"teal.800"} size={"sm"}>
+                {" "}
+                Budget Amount{" "}
+              </Heading>
+              <FormatNumber
+                value={category.Budget!!}
+                style="currency"
+                currency="Eur"
+              />
+            </HStack>
+          </Show>
+          <HStack>
+            <Heading color={"teal.800"} size={"sm"}>
+              {" "}
+              Total Sending
+            </Heading>
+            <FormatNumber value={total} style="currency" currency="Eur" />
+          </HStack>
+          <Show when={category.Budget}>
+            <HStack>
+              <Heading color={"teal.800"} size={"sm"}>
+                {" "}
+                Budget Status
+              </Heading>
+              <Tag
+                variant="subtle"
+                colorPalette={total > category.Budget!! ? "red" : "green"}
+              >
+                {total > category.Budget!! ? "Over Budget" : "Within Budget"}
+              </Tag>
+            </HStack>
+          </Show>
+        </Flex>
+        <Flex direction={"row"} gap={10}>
+          <HStack>
+            <Heading color={"teal.800"} size="sm">
+              Total Transactions
+            </Heading>
+            {category.Transactions.length}
+          </HStack>
+          <HStack>
+            <Heading color={"teal.800"} size="sm">
+              Average Transaction Amount
+            </Heading>
+
+            <FormatNumber
+              value={getTransactionsAverageAmount(category.Transactions)}
+              style="currency"
+              currency="Eur"
+            />
+          </HStack>
+        </Flex>
+      </Flex>
+
+      <Separator />
+      <Flex direction={"column"} mt={3} gap={3}>
+        <Show when={category.Budget}>
+          <Text>{budgetInsight(total, category.Budget!!)}</Text>
+        </Show>
+        <Text>{spendingTrendInsight(category.Transactions, period)}</Text>
+      </Flex>
+      <Editable.Root
+        mt={3}
+        textAlign="start"
+        value={notes}
+        onValueChange={(e) => setNotes(e.value)}
+        defaultValue="Add a note..."
+        onValueCommit={handleUpdate}
+      >
+        <Editable.Preview />
+        <Editable.Textarea />
+      </Editable.Root>
+      <TransactionTable data={category.Transactions} fromCategory />
     </DialogComponent>
   );
 };

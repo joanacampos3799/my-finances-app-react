@@ -11,23 +11,31 @@ import {
 } from "../../components/ui/dialog";
 import { Button } from "../../components/ui/button";
 import { LuSearch } from "react-icons/lu";
-import { ConditionalValue, Heading, HStack, Icon } from "@chakra-ui/react";
+import {
+  ConditionalValue,
+  Flex,
+  Heading,
+  HStack,
+  Icon,
+} from "@chakra-ui/react";
 import { useIconPack } from "../hooks/useIconPack";
 
 interface Props {
   size: ConditionalValue<"sm" | "md" | "lg" | "xl" | "xs" | "full" | undefined>;
   icon?: string;
-  name: string;
-  isAlert: boolean;
+  iconColor?: string;
+  title: string;
   updating?: boolean;
+  footer?: JSX.Element;
   handleUpdate?: () => void;
   setUpdating?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const DialogComponent = ({
   size,
+  footer,
   icon,
-  isAlert,
-  name,
+  iconColor,
+  title,
   children,
 }: PropsWithChildren<Props>) => {
   const iconPack = useIconPack();
@@ -46,21 +54,24 @@ const DialogComponent = ({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            <HStack>
-              {icon && (
-                <Icon
-                  boxSize={4}
-                  as={iconPack?.find((i) => i.name === icon)?.icon}
-                />
-              )}
-              <Heading>{name} Details</Heading>
-            </HStack>
-          </DialogTitle>
-          <DialogCloseTrigger />
+          <Flex direction={"row"} justifyContent={"space-between"}>
+            <DialogTitle>
+              <HStack>
+                {icon && (
+                  <Icon
+                    boxSize={4}
+                    color={iconColor ?? "teal.800"}
+                    as={iconPack?.find((i) => i.name === icon)?.icon}
+                  />
+                )}
+                <Heading color={"teal.800"}>{title}</Heading>
+              </HStack>
+            </DialogTitle>
+            <DialogCloseTrigger />
+          </Flex>
         </DialogHeader>
         <DialogBody>{children}</DialogBody>
-        <DialogFooter> </DialogFooter>
+        <DialogFooter> {footer}</DialogFooter>
       </DialogContent>
     </DialogRoot>
   );

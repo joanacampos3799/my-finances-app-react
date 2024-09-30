@@ -1,14 +1,12 @@
-import React from "react";
-import NewTransactionDrawer from "../NewTransactionDrawer";
-import { FaMoneyBillTransfer } from "react-icons/fa6";
-import { EmptyState } from "../../../components/ui/empty-state";
+import NewTransactionDrawer from "../components/NewTransactionDrawer";
 import { HStack, Tabs } from "@chakra-ui/react";
-import { HelperEntity } from "../../../common/helper";
-import Transaction from "../../model/Transaction";
-import useTransactions from "../../hooks/useTransactions";
+import { HelperEntity } from "../../common/helper";
+import Transaction from "../model/Transaction";
+import useTransactions from "../hooks/useTransactions";
 import { useMutationState } from "@tanstack/react-query";
-import { queryKeys } from "../../../common/constants";
-import TabContent from "../TabContent";
+import { queryKeys } from "../../common/constants";
+import TabContent from "../components/TabContent";
+import TransactionEmptyState from "../components/TransactionEmptyState";
 
 const TransactionsPage = () => {
   const transactions = useTransactions();
@@ -41,19 +39,11 @@ const TransactionsPage = () => {
     <>
       {" "}
       {!transData || transCount === 0 ? (
-        <EmptyState
-          paddingTop="10%"
-          paddingEnd={"25%"}
-          icon={<FaMoneyBillTransfer />}
-          title="Start adding transactions"
-          description="Add a new transaction to get started"
-        >
-          <NewTransactionDrawer isEmpty />
-        </EmptyState>
+        <TransactionEmptyState />
       ) : (
         <>
           <HStack float={"right"}>
-            <NewTransactionDrawer isEmpty />
+            <NewTransactionDrawer />
           </HStack>
           <Tabs.Root defaultValue={years[0]} variant="plain">
             <Tabs.List>

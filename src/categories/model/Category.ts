@@ -10,5 +10,6 @@ export default interface Category {
   Color: string;
   CategoryType: number;
   Transactions: Transaction[];
+  Notes?: string;
   deleted?: boolean;
 }

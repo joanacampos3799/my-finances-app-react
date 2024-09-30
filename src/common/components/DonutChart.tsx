@@ -1,5 +1,4 @@
-import { Box, Center, Flex, FormatNumber, Text } from "@chakra-ui/react";
-import { useDrawingArea } from "@mui/x-charts";
+import { Center, Flex, FormatNumber } from "@chakra-ui/react";
 import { PieChart } from "@mui/x-charts/PieChart";
 export interface PieObject {
   label: string;
@@ -14,10 +13,9 @@ const DonutChart = ({ data, caption }: Props) => {
   const total = data.map((d) => d.value).reduce((acc, val) => acc + val, 0);
   const valueFormatter = (item: { value: number }) =>
     `${item.value.toFixed(2)}€`;
-
   return (
     <>
-      {(data.length > 0 || total > 0) && (
+      {data.length > 0 && total > 0 && (
         <Flex
           direction={"column"}
           justifyContent={"center"}
