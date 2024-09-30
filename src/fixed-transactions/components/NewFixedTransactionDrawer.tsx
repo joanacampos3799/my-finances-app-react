@@ -7,7 +7,7 @@ import IconPicker from "../../common/components/IconPicker";
 import { Field } from "../../components/ui/field";
 import useCategories from "../../categories/hooks/useCategories";
 import DrawerComponent from "../../common/components/DrawerComponent";
-import CategoryList from "../../categories/model/CategoryList";
+import Category from "../../categories/model/Category";
 import RadioMenu from "../../common/components/RadioMenu";
 import CheckBoxMenu from "../../common/components/CheckBoxMenu";
 import { HelperEntity } from "../../common/helper";
@@ -24,7 +24,7 @@ const NewFixedTransactionDrawer = ({ isEmpty, active }: Props) => {
   const { userId } = useLoginData();
   const ref = useRef<HTMLInputElement>(null);
   const { data: categories } = useCategories();
-  const initialState = new HelperEntity<CategoryList>().getMappedCheckboxEntity(
+  const initialState = new HelperEntity<Category>().getMappedCheckboxEntity(
     categories
   );
   const { values, handleChange, resetForm } =
@@ -100,6 +100,7 @@ const NewFixedTransactionDrawer = ({ isEmpty, active }: Props) => {
             label={"Amount"}
           />
           <RadioMenu
+            hasArrow
             data={movementTypes.filter((m) => m.id !== 0)}
             placeholder="Transaction Type"
             selectedId={values.selectedTT}

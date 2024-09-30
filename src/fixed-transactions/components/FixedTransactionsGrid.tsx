@@ -30,12 +30,6 @@ const FixedTransactionsGrid = ({ fixedTransactions }: Props) => {
       key={buttonAction}
       name={"Fixed Transactions"}
       handleDelete={handleDelete}
-      addComponent={
-        <NewFixedTransactionDrawer
-          active={fixedTransactions[0].active}
-          isEmpty={false}
-        />
-      }
       deleting={deleting}
       setDeleting={setDeleting}
     >

@@ -28,7 +28,12 @@ const ListCard = <T extends Entity>({
   const iconPack = useIconPack();
 
   return (
-    <Card.Root variant={"elevated"} width={"full"} height={"8rem"}>
+    <Card.Root
+      variant={"subtle"}
+      width={"full"}
+      height={"8rem"}
+      bgColor={"white"}
+    >
       <Card.Header>
         <HStack justifyContent="space-between">
           <HStack justifyContent="center">

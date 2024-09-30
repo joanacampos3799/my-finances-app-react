@@ -10,7 +10,7 @@ import { HelperEntity } from "../../common/helper";
 import { useUpdateFixedTransaction } from "../hooks/useUpdateFixedTransaction";
 import useForm from "../../common/hooks/useForm";
 import FixedTransactionFormObject from "../model/FixedTransactionFormObject";
-import CategoryList from "../../categories/model/CategoryList";
+import Category from "../../categories/model/Category";
 import FixedTransactionUpdateForm from "./FixedTransactionUpdateForm";
 
 interface Props {
@@ -19,7 +19,7 @@ interface Props {
 
 interface CheckboxCategoryItem {
   checked: boolean;
-  data: CategoryList;
+  data: Category;
 }
 
 const FixedTransactionDetails = ({ id }: Props) => {
@@ -51,7 +51,7 @@ const FixedTransactionDetails = ({ id }: Props) => {
         icon: fixedTransaction.Icon,
         Name: fixedTransaction.Name,
         selectedCategories:
-          new HelperEntity<CategoryList>().getMappedCheckboxEntity(
+          new HelperEntity<Category>().getMappedCheckboxEntity(
             categories.data,
             fixedTransaction.categories
           ),

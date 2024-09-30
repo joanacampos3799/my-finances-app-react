@@ -46,7 +46,7 @@ const BanksGrid = ({ banks }: Props) => {
             >
               <FormatNumber
                 value={bank.Balance ?? 0}
-                style="currency"
+                style={"currency"}
                 currency="EUR"
               />
             </DeleteCard>

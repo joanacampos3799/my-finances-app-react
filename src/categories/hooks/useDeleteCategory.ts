@@ -3,9 +3,9 @@ import { mutationKeys, queryKeys } from "../../common/constants";
 import APIClient from "../../common/apiClient";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { toaster } from "../../components/ui/toaster";
-import CategoryList from "../model/CategoryList";
+import Category from "../model/Category";
 
-const apiClient = new APIClient<CategoryList>("/categories");
+const apiClient = new APIClient<Category>("/categories");
 
 export function useDeleteCategory() {
   const queryClient = useQueryClient();
@@ -14,9 +14,9 @@ export function useDeleteCategory() {
 
   const { mutate: deleteCategory } = useMutation({
     mutationKey: [queryKeys.categories, mutationKeys.deleteCategory],
-    mutationFn: (data: CategoryList) =>
+    mutationFn: (data: Category) =>
       apiClient.delete(data.Id!!, userId!!, userToken!!),
-    onSuccess: (data: CategoryList, variables: CategoryList) => {
+    onSuccess: (data: Category, variables: Category) => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.categories] });
       toaster.create({
         title: `You have deleted the ${data.Name} category`,

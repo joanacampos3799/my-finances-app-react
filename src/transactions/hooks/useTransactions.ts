@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import APIClient, { FetchResponse } from "../../../common/apiClient";
-import Transaction from "../Transaction";
-import { useLoginData } from "../../../auth/contexts/AuthContext";
-import { queryKeys } from "../../../common/constants";
+import APIClient, { FetchResponse } from "../../common/apiClient";
+import Transaction from "../model/Transaction";
+import { useLoginData } from "../../auth/contexts/AuthContext";
+import { queryKeys } from "../../common/constants";
 
 const apiClient = new APIClient<Transaction>("/transactions");
 

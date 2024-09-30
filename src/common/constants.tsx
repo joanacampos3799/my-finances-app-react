@@ -1,3 +1,8 @@
+import {
+  LuArrowDownToLine,
+  LuArrowDownUp,
+  LuArrowUpFromLine,
+} from "react-icons/lu";
 import EnumType from "./EnumType";
 
 export const queryKeys = {
@@ -32,15 +37,18 @@ export const mutationKeys = {
 export const movementTypes: EnumType[] = [
   {
     id: 0,
-    name: "Both",
+    name: "Expenses",
+    icon: LuArrowUpFromLine,
   },
   {
     id: 1,
-    name: "Expense",
+    name: "Income",
+    icon: LuArrowDownToLine,
   },
   {
     id: 2,
-    name: "Income",
+    name: "Mixed",
+    icon: LuArrowDownUp,
   },
 ];
 
@@ -64,5 +72,28 @@ export const accountTypes: EnumType[] = [
   {
     id: 4,
     name: "Virtual",
+  },
+];
+
+export const timePeriods = [
+  {
+    id: 0,
+    name: "Monthly",
+    period: 1,
+  },
+  {
+    id: 1,
+    name: "Quarterly",
+    period: 4,
+  },
+  {
+    id: 1,
+    name: "Half-yearly",
+    period: 6,
+  },
+  {
+    id: 2,
+    name: "Yearly",
+    period: 12,
   },
 ];

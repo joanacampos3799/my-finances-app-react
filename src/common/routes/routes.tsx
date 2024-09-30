@@ -10,6 +10,7 @@ import ConditionalRoute from "./ConditionalRoute";
 import RootLayout from "../../welcome/layouts/RootLayout";
 import DashboardLayout from "../../welcome/layouts/DashboardLayout";
 import BanksAccountsPage from "../../manage-banks-accounts/pages/BanksAccountsPage";
+import TransactionsPage from "../../transactions/components/page/TransactionsPage";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
           {
             path: "/s/fixed-transactions",
             element: <FixedTransactionsPage />,
+          },
+          {
+            path: "/s/transactions",
+            element: <TransactionsPage />,
           },
         ],
       },

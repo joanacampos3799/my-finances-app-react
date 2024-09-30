@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import APIClient from "../../../common/apiClient";
-import Transaction from "../Transaction";
-import { useLoginData } from "../../../auth/contexts/AuthContext";
-import { mutationKeys, queryKeys } from "../../../common/constants";
-import { toaster } from "../../../components/ui/toaster";
+import APIClient from "../../common/apiClient";
+import Transaction from "../model/Transaction";
+import { useLoginData } from "../../auth/contexts/AuthContext";
+import { mutationKeys, queryKeys } from "../../common/constants";
+import { toaster } from "../../components/ui/toaster";
 
 const apiClient = new APIClient<Transaction>("/transactions");
 

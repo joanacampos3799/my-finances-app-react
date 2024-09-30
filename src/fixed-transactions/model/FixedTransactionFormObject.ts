@@ -1,4 +1,4 @@
-import CategoryList from "../../categories/model/CategoryList";
+import Category from "../../categories/model/Category";
 
 export default interface FixedTransactionFormObject {
   Name: string;
@@ -8,7 +8,7 @@ export default interface FixedTransactionFormObject {
   paymentDay: number;
   periodicity: number;
   selectedCategories: {
-    data: CategoryList;
+    data: Category;
     checked: boolean;
   }[];
 }

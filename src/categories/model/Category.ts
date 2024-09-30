@@ -1,12 +1,14 @@
 import { UUID } from "crypto";
+import Transaction from "../../transactions/model/Transaction";
 
 export default interface Category {
   Id?: number;
   Name: string;
-  Icon: string;
+  Budget?: number;
   userId: UUID;
-  MonthlySpent?: number;
-  MonthlyEarned?: number;
+  Icon: string;
+  Color: string;
   CategoryType: number;
+  Transactions: Transaction[];
   deleted?: boolean;
 }

@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { ClerkProvider } from "@clerk/clerk-react";
-import { Box } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
 import { Toaster } from "../../components/ui/toaster";
 
@@ -19,11 +19,20 @@ export default function RootLayout() {
       routerReplace={(to) => navigate(to, { replace: true })}
       publishableKey={PUBLISHABLE_KEY}
     >
-      <Box w="100%" h="calc(100vh)">
-        <NavBar />
-        <Toaster />
-        <Outlet />
-      </Box>
+      <Toaster />
+      <Flex direction={"row"} w="100%" h="calc(100vh)">
+        <Flex direction={"column"}>
+          <NavBar />
+        </Flex>
+        <Flex
+          direction={"column"}
+          w="100%"
+          bgColor={"gray.100"}
+          overflow={"auto"}
+        >
+          <Outlet />
+        </Flex>
+      </Flex>
     </ClerkProvider>
   );
 }

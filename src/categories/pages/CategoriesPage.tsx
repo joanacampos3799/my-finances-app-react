@@ -1,29 +1,33 @@
-import { Box, Center, Heading } from "@chakra-ui/react";
-import CategoryGrid from "../components/CategoryGrid";
+import { Box, Flex, Heading, HStack, Icon, Tabs, Text } from "@chakra-ui/react";
+import CategoriesList from "../components/CategoriesList";
 import NewCategoryDrawer from "../components/NewCategoryDrawer";
 import useCategories from "../hooks/useCategories";
 import { useMutationState } from "@tanstack/react-query";
-import { queryKeys } from "../../common/constants";
-import { EmptyState } from "../../components/ui/empty-state";
-import { BiCategory } from "react-icons/bi";
+import { movementTypes, queryKeys, timePeriods } from "../../common/constants";
 import { HelperEntity } from "../../common/helper";
-import CategoryList from "../model/CategoryList";
+import RadioMenu from "../../common/components/RadioMenu";
+import { useState } from "react";
+import CategoryKPIs from "../components/CategoryKPIs";
+import CategoryEmptyState from "../components/CategoryEmptyState";
+import Category from "../model/Category";
+import CollapsibleTitle from "../components/CollapsibleTitle";
 const CategoriesPage = () => {
   const categories = useCategories();
+  const [period, setPeriod] = useState("0");
   const pendingData = useMutationState({
     filters: {
       mutationKey: [queryKeys.categories],
       status: "pending",
     },
     select: (mutation) => {
-      return mutation.state.variables as CategoryList;
+      return mutation.state.variables as Category;
     },
   });
   const pendingCat = pendingData ? pendingData[0] : null;
   let catData = categories.data;
   let catCount = categories.count;
 
-  const helper = new HelperEntity<CategoryList>();
+  const helper = new HelperEntity<Category>();
   if (pendingCat) {
     const { tCount, tData } = helper.getPendingData(categories, pendingCat);
     catData = tData;
@@ -31,21 +35,61 @@ const CategoriesPage = () => {
   }
 
   return (
-    <Box>
-      <Center>
-        <Heading size="3xl">Categories</Heading>
-      </Center>
-      {!catData || catCount === 0 ? (
-        <EmptyState
-          paddingTop="10%"
-          icon={<BiCategory />}
-          title="Start adding categories"
-          description="Add a new Category to get started"
+    <Box padding={"5px"}>
+      <Box>
+        <HStack
+          justifyContent={"space-between"}
+          alignItems={"flex-start"}
+          justifyItems={"flex-end"}
         >
-          <NewCategoryDrawer isEmpty={true} />
-        </EmptyState>
+          <CollapsibleTitle />
+          <Flex
+            direction={"row"}
+            gap={2}
+            alignItems={"flex-start"}
+            justifyItems={"flex-end"}
+          >
+            <RadioMenu
+              color
+              width="fit-content"
+              data={timePeriods}
+              selectedId={period}
+              setSelectedId={setPeriod}
+              hasArrow
+            />
+            <NewCategoryDrawer />
+          </Flex>
+        </HStack>
+
+        <CategoryKPIs period={timePeriods[+period].name} data={catData} />
+      </Box>
+
+      {!catData || catCount === 0 ? (
+        <CategoryEmptyState />
       ) : (
-        <CategoryGrid key={"cat"} categories={catData} />
+        <Tabs.Root
+          defaultValue={"Expenses"}
+          justify={"end"}
+          colorPalette={"teal"}
+        >
+          <Tabs.List width={"full"} border={0}>
+            {movementTypes.map((ct) => (
+              <Tabs.Trigger key={ct.id} value={ct.name}>
+                <Icon color={"teal.500"} as={ct.icon!!} />
+                {ct.name}
+              </Tabs.Trigger>
+            ))}
+          </Tabs.List>
+          {movementTypes.map((ct) => (
+            <Tabs.Content value={ct.name}>
+              <CategoriesList
+                key={ct.name + "-grid"}
+                categories={catData.filter((c) => c.CategoryType == ct.id)}
+                period={timePeriods[+period].name}
+              />
+            </Tabs.Content>
+          ))}
+        </Tabs.Root>
       )}
     </Box>
   );

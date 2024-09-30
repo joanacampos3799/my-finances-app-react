@@ -1,11 +1,11 @@
 import { useRef, useState } from "react";
-import { useLoginData } from "../../../auth/contexts/AuthContext";
-import useCategories from "../../../categories/hooks/useCategories";
-import { HelperEntity } from "../../../common/helper";
-import CategoryList from "../../../categories/model/CategoryList";
+import { useLoginData } from "../../auth/contexts/AuthContext";
+import useCategories from "../../categories/hooks/useCategories";
+import { HelperEntity } from "../../common/helper";
+import Category from "../../categories/model/Category";
 import useAddTransaction from "../hooks/useAddTransaction";
-import DrawerComponent from "../../../common/components/DrawerComponent";
-import { movementTypes } from "../../../common/constants";
+import DrawerComponent from "../../common/components/DrawerComponent";
+import { movementTypes } from "../../common/constants";
 
 import {
   Box,
@@ -15,21 +15,22 @@ import {
   Stack,
   Textarea,
 } from "@chakra-ui/react";
-import { Field } from "../../../components/ui/field";
-import NumberInput from "../../../common/components/NumberInput";
-import RadioMenu from "../../../common/components/RadioMenu";
-import CheckBoxMenu from "../../../common/components/CheckBoxMenu";
-import FixedTransactionList from "../../../fixed-transactions/model/FixedTransactionsList";
-import { Switch } from "../../../components/ui/switch";
+import { Field } from "../../components/ui/field";
+import NumberInput from "../../common/components/NumberInput";
+import RadioMenu from "../../common/components/RadioMenu";
+import CheckBoxMenu from "../../common/components/CheckBoxMenu";
+import FixedTransactionList from "../../fixed-transactions/model/FixedTransactionsList";
+import { Switch } from "../../components/ui/switch";
 import { LuCheck, LuX } from "react-icons/lu";
-import useFixedTransactions from "../../../fixed-transactions/hooks/useFixedTransactions";
-import { DataListItem, DataListRoot } from "../../../components/ui/data-list";
-import TagComponent from "../../../common/components/TagComponent";
-import useForm from "../../../common/hooks/useForm";
-import useAccounts from "../../../manage-banks-accounts/hooks/useAccounts";
-import AccountList from "../../../manage-banks-accounts/models/AccountList";
-import TransactionFormObject from "./TransactionFormObject";
-import DatePicker from "../../../common/components/DatePicker";
+import useFixedTransactions from "../../fixed-transactions/hooks/useFixedTransactions";
+import { DataListItem, DataListRoot } from "../../components/ui/data-list";
+import TagComponent from "../../common/components/TagComponent";
+import useForm from "../../common/hooks/useForm";
+import useAccounts from "../../manage-banks-accounts/hooks/useAccounts";
+import AccountList from "../../manage-banks-accounts/models/AccountList";
+import DatePicker from "../../common/components/DatePicker";
+import { format } from "date-fns";
+import TransactionFormObject from "../model/TransactionFormObject";
 
 interface Props {
   isEmpty: boolean;
@@ -41,7 +42,7 @@ const NewTransactionDrawer = ({ isEmpty }: Props) => {
   const { data: categories } = useCategories();
   const { data: fixedTransactions } = useFixedTransactions();
   const { data: accounts } = useAccounts();
-  const initialState = new HelperEntity<CategoryList>().getMappedCheckboxEntity(
+  const initialState = new HelperEntity<Category>().getMappedCheckboxEntity(
     categories
   );
   const ref = useRef(null);
@@ -78,12 +79,13 @@ const NewTransactionDrawer = ({ isEmpty }: Props) => {
         id="new-transaction-form"
         onSubmit={(e) => {
           e.preventDefault();
+          console.log(values);
           addTransaction({
             Name: values.Name,
             Amount: values.amount,
             transactionType: movementTypes[+values.selectedTT].id,
             userId: userId!!,
-            Date: values.date,
+            Date: format(values.date, "dd/MM/yyyy"),
             fixedTransactionId:
               values.selectedFixedId !== ""
                 ? +values.selectedFixedId

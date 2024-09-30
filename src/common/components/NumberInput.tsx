@@ -7,7 +7,7 @@ import {
 } from "../../components/ui/number-input";
 
 interface Props {
-  number: number;
+  number?: number;
   setNumber: (val: number) => void;
   isCurrency: boolean;
   label?: string;

@@ -4,7 +4,7 @@ export default interface Transaction {
   Id?: number | undefined;
   Name: string;
   Description?: string;
-  Date: Date;
+  Date: string;
   accountId: number;
   Amount: number;
   categories: number[];

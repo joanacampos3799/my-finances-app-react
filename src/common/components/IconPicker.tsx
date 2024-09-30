@@ -30,9 +30,10 @@ import {
 interface Props {
   iconParam: string;
   iconSize: number;
+  color?: string;
   setIconParam: (icon: string) => void;
 }
-const IconPicker = ({ iconSize, iconParam, setIconParam }: Props) => {
+const IconPicker = ({ color, iconSize, iconParam, setIconParam }: Props) => {
   const [searchText, setSearchText] = useState("");
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -59,6 +60,7 @@ const IconPicker = ({ iconSize, iconParam, setIconParam }: Props) => {
           <Button variant={"plain"} size={"xs"}>
             {iconParam ? (
               <Icon
+                color={color ?? "black"}
                 as={iconPack.find((icon) => icon.name === iconParam)?.icon}
                 boxSize={iconSize}
               />

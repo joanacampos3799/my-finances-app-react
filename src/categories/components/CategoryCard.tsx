@@ -1,12 +1,12 @@
 import { TbArrowBarToDown, TbArrowBarUp } from "react-icons/tb";
 
 import { FormatNumber, HStack, Icon } from "@chakra-ui/react";
-import CategoryList from "../model/CategoryList";
+import Category from "../model/CategoryList";
 import ListCard from "../../common/components/ListCard";
 import CategoryDetails from "./CategoryDetails";
 
 interface Props {
-  category: CategoryList;
+  category: Category;
 }
 const CategoryCard = ({ category }: Props) => {
   return (
@@ -14,7 +14,7 @@ const CategoryCard = ({ category }: Props) => {
       <HStack width={"full"} justifyContent="space-between">
         {category.MonthlySpent != null && (
           <HStack>
-            <Icon as={TbArrowBarUp} />
+            <Icon color={"red.600"} as={TbArrowBarUp} />
 
             <FormatNumber
               value={category.MonthlySpent}
@@ -25,7 +25,7 @@ const CategoryCard = ({ category }: Props) => {
         )}
         {category.MonthlyEarned != null && (
           <HStack>
-            <Icon as={TbArrowBarToDown} />
+            <Icon color={"green.400"} as={TbArrowBarToDown} />
             <FormatNumber
               value={category.MonthlyEarned}
               style="currency"

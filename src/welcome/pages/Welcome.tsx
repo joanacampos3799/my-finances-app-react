@@ -1,4 +1,4 @@
-import { Box, Center, Icon } from "@chakra-ui/react";
+import { Box, Center, Icon, Text } from "@chakra-ui/react";
 import { FaAngleDown } from "react-icons/fa6";
 
 import { useAuth } from "@clerk/clerk-react";
@@ -17,19 +17,15 @@ export default function WelcomePage() {
 
   return (
     <Box h="calc(90hv)" w="inherit">
-      <Center
-        bgGradient="linear(to-r, purple.300, orange.200, pink.200)"
-        bgClip="text"
-        fontSize="6xl"
-        fontWeight="extrabold"
-        h="calc(80vh)"
-      >
-        Welcome to your Finances Tracker
+      <Center h="calc(80vh)">
+        <Text fontSize="6xl" fontWeight="extrabold" color={"green.600"}>
+          Welcome to your Finances Tracker
+        </Text>
       </Center>
       <Icon
         className="arrow bounce"
         as={FaAngleDown}
-        color="gray.400"
+        color="green.400"
         boxSize={6}
       />
       <Description />

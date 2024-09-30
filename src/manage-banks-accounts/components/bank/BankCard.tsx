@@ -1,5 +1,4 @@
-import { Card, Editable, FormatNumber, HStack, Icon } from "@chakra-ui/react";
-import { FaBuildingColumns } from "react-icons/fa6";
+import { FormatNumber, HStack } from "@chakra-ui/react";
 
 import { useState } from "react";
 import { useUpdateBank } from "../../hooks/useUpdateBank";

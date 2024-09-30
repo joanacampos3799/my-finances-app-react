@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Center,
-  HStack,
-  Input,
-  SimpleGrid,
-} from "@chakra-ui/react";
+import { Button, Center, HStack, Input, SimpleGrid } from "@chakra-ui/react";
 import { useState } from "react";
 import {
   PopoverArrow,

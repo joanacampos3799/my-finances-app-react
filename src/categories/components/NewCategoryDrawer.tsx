@@ -3,81 +3,111 @@ import { useRef } from "react";
 import useAddCategory from "../hooks/useAddCategory";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { movementTypes } from "../../common/constants";
-import { Box, Input, Stack } from "@chakra-ui/react";
+import { Flex, Heading, Input } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field";
 import DrawerComponent from "../../common/components/DrawerComponent";
 import RadioMenu from "../../common/components/RadioMenu";
 import useForm from "../../common/hooks/useForm";
 import CategoryFormObject from "../model/CategoryFormObject";
+import NumberInput from "../../common/components/NumberInput";
+import Category from "../model/Category";
+import { useUpdateCategory } from "../hooks/useUpdateCategory";
+import ColorPicker from "../../common/components/ColorPicker";
 
 interface Props {
-  isEmpty: boolean;
+  category?: Category;
 }
-const NewCategoryDrawer = ({ isEmpty }: Props) => {
+const NewCategoryDrawer = ({ category }: Props) => {
   const { userId } = useLoginData();
   const { values, resetForm, handleChange } = useForm<CategoryFormObject>({
-    Name: "",
-    icon: "",
-    selectedTT: "-1",
+    Name: category ? category.Name : "",
+    icon: category ? category.Icon : "",
+    budget: category ? category.Budget : undefined,
+    selectedTT: category ? "" + category.CategoryType : "-1",
+    color: category ? category.Color : "",
   });
+
   const ref = useRef<HTMLInputElement>(null);
   const addCategory = useAddCategory(() => resetForm());
-
+  const updateCategory = useUpdateCategory(() => resetForm());
   return (
     <DrawerComponent
-      isEmpty={isEmpty}
       placement={"end"}
+      size={"xs"}
       name={"Category"}
       formName={"new-category-form"}
+      update={category !== undefined}
       refElement={ref.current}
     >
       <form
         id="new-category-form"
         onSubmit={(e) => {
           e.preventDefault();
-          if (ref.current && ref.current.value) {
-            addCategory({
-              Name: ref.current?.value,
+          if (category) {
+            updateCategory({
+              Id: category.Id,
+              Name: values.Name,
               Icon: values.icon,
+              CategoryType: +values.selectedTT,
+              userId: userId!!,
+              Budget: values.budget,
+              Color: values.color,
+              Transactions: category.Transactions,
+            });
+          } else {
+            addCategory({
+              Name: values.Name,
+              Icon: values.icon,
+              Budget: values.budget,
               CategoryType: movementTypes[+values.selectedTT].id,
               userId: userId!!,
+              Color: values.color,
+              Transactions: [],
             });
           }
         }}
       >
-        <Stack>
-          <Box>
-            <Field label="Choose an Icon">
+        <Flex direction="column">
+          <Flex direction={"column"}>
+            <Heading size={"sm"}>Choose an Icon and Color</Heading>
+            <Flex direction={"row"} pt={2} gap={3}>
               <IconPicker
                 iconSize={8}
                 iconParam={values.icon}
                 setIconParam={(i) => handleChange("icon", i)}
               />
-            </Field>
-          </Box>
-
-          <Box>
-            <Field label="Name" required>
-              <Input
-                ref={ref}
-                id="name"
-                placeholder="Please enter Category name"
+              <ColorPicker
+                color={values.color}
+                setColor={(c) => handleChange("color", c)}
               />
-            </Field>
-          </Box>
+            </Flex>
+          </Flex>
 
-          <Box paddingTop="5px">
-            <Field label="Category Type">
-              <RadioMenu
-                hasArrow
-                data={movementTypes}
-                selectedId={values.selectedTT}
-                setSelectedId={(val) => handleChange("selectedTT", val)}
-                placeholder="a category type"
-              />
-            </Field>
-          </Box>
-        </Stack>
+          <Field label="Name" required mt={6}>
+            <Input
+              ref={ref}
+              id="name"
+              placeholder="Please enter Category name"
+            />
+          </Field>
+
+          <Field label="Category Type" mt={4}>
+            <RadioMenu
+              hasArrow
+              data={movementTypes}
+              selectedId={values.selectedTT}
+              setSelectedId={(val) => handleChange("selectedTT", val)}
+              placeholder="a category type"
+            />
+          </Field>
+          <Field label="Budget" mt={4}>
+            <NumberInput
+              number={values.budget}
+              setNumber={(val) => handleChange("budget", val)}
+              isCurrency
+            />
+          </Field>
+        </Flex>
       </form>
     </DrawerComponent>
   );

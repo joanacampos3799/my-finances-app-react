@@ -20,6 +20,7 @@ interface Props<T extends obj> {
   setSelectedId: (value: string) => void;
   placeholder?: string;
   width?: string;
+  color?: boolean;
   hasArrow: boolean;
   variant?: ConditionalValue<
     "outline" | "solid" | "subtle" | "surface" | "ghost" | "plain" | undefined
@@ -32,16 +33,20 @@ const RadioMenu = <T extends obj>({
   placeholder,
   variant,
   width,
+  color,
   hasArrow,
 }: Props<T>) => {
   return (
     <MenuRoot closeOnSelect={true}>
       <MenuTrigger asChild>
         <Button
+          padding={!hasArrow ? -1 : 4}
           fontWeight={"normal"}
           variant={variant ?? "outline"}
           justifyContent={"space-between"}
           width={width ?? "full"}
+          colorPalette={color ? "teal" : undefined}
+          color={color ? "teal.600" : undefined}
         >
           {data.find((d) => d.id === +selectedId)?.name ??
             `Select ${placeholder}`}

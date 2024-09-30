@@ -10,10 +10,9 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog";
 import { Button } from "../../components/ui/button";
-import { LuCheck, LuMaximize2 } from "react-icons/lu";
+import { LuSearch } from "react-icons/lu";
 import { ConditionalValue, Heading, HStack, Icon } from "@chakra-ui/react";
 import { useIconPack } from "../hooks/useIconPack";
-import { FaPen } from "react-icons/fa6";
 
 interface Props {
   size: ConditionalValue<"sm" | "md" | "lg" | "xl" | "xs" | "full" | undefined>;
@@ -28,9 +27,6 @@ const DialogComponent = ({
   size,
   icon,
   isAlert,
-  updating,
-  handleUpdate,
-  setUpdating,
   name,
   children,
 }: PropsWithChildren<Props>) => {
@@ -38,8 +34,14 @@ const DialogComponent = ({
   return (
     <DialogRoot size={size} centered motionPreset="slide-in-bottom">
       <DialogTrigger asChild>
-        <Button variant={"ghost"}>
-          <LuMaximize2 />
+        <Button
+          h="40px"
+          w="40px"
+          variant={"outline"}
+          color={"teal.500"}
+          borderRadius={"md"}
+        >
+          <LuSearch />
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -58,18 +60,7 @@ const DialogComponent = ({
           <DialogCloseTrigger />
         </DialogHeader>
         <DialogBody>{children}</DialogBody>
-        <DialogFooter>
-          {" "}
-          {!isAlert && setUpdating && !updating ? (
-            <Button onClick={() => setUpdating(true)} variant={"outline"}>
-              <FaPen /> Update
-            </Button>
-          ) : (
-            <Button variant={"outline"} onClick={handleUpdate}>
-              <LuCheck /> Done
-            </Button>
-          )}
-        </DialogFooter>
+        <DialogFooter> </DialogFooter>
       </DialogContent>
     </DialogRoot>
   );
