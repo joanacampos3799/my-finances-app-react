@@ -1,6 +1,5 @@
 import { chakra, HStack, Table } from "@chakra-ui/react";
 import { LuChevronDown, LuChevronsUpDown, LuChevronUp } from "react-icons/lu";
-import useSorting from "../../common/hooks/useSorting";
 
 interface CategoryHeaderProps {
   label: string;

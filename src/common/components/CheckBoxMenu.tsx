@@ -39,7 +39,7 @@ const CheckBoxMenu = <T extends TObj>({ name, items, setItems }: Props<T>) => {
         {items.map((item) => (
           <MenuCheckboxItem
             justifyContent={"space-between"}
-            key={item.data.Id}
+            key={item.data.Id + "-checkMenu"}
             value={"" + item.data.Id}
             checked={item.checked}
             onCheckedChange={() =>

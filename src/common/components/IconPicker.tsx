@@ -97,7 +97,7 @@ const IconPicker = ({ color, iconSize, iconParam, setIconParam }: Props) => {
                 <IconButton
                   boxSize={4}
                   variant="ghost"
-                  key={icon.name}
+                  key={icon.name + "-icon"}
                   as={icon.icon}
                   onClick={() => setIconParam(icon.name)}
                 />

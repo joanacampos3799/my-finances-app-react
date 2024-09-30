@@ -63,7 +63,7 @@ const RadioMenu = <T extends obj>({
           onValueChange={(e) => setSelectedId(e.value)}
         >
           {data.map((b) => (
-            <MenuRadioItem key={b.id} value={"" + b.id}>
+            <MenuRadioItem key={b.id + "-radioItem"} value={"" + b.id}>
               {b.name}
             </MenuRadioItem>
           ))}

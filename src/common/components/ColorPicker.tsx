@@ -62,7 +62,7 @@ const ColorPicker = ({ color, setColor }: Props) => {
           <SimpleGrid columns={5} gap={2}>
             {Object.keys(chakraColors).map((c) => (
               <Button
-                key={c}
+                key={c + "-color"}
                 padding={0}
                 w="40px"
                 h={"40px"}

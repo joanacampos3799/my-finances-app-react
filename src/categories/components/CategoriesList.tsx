@@ -95,7 +95,7 @@ const CategoriesList = ({ categories, period }: Props) => {
             <Table.Body>
               {sortedCategories.map((category) => (
                 <CategoryRow
-                  key={category.Id}
+                  key={category.Id + "-category"}
                   category={category}
                   period={period}
                   getTransactionsTotalAmount={getTransactionsTotalAmount}

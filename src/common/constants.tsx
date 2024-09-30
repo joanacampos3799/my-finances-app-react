@@ -87,12 +87,12 @@ export const timePeriods = [
     period: 4,
   },
   {
-    id: 1,
+    id: 2,
     name: "Half-yearly",
     period: 6,
   },
   {
-    id: 2,
+    id: 3,
     name: "Yearly",
     period: 12,
   },

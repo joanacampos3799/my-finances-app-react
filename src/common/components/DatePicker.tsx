@@ -97,7 +97,7 @@ const DatePicker = ({ selectedDate, setSelectedDate }: Props) => {
         <PopoverBody>
           <SimpleGrid columns={7} gap={1}>
             {daysOfWeek.map((day) => (
-              <Center key={day}>{day}</Center>
+              <Center key={day + "-weekday"}>{day}</Center>
             ))}
             {daysInMonth(
               selectedDate.getFullYear(),

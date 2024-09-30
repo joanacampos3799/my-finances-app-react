@@ -37,7 +37,7 @@ const CategoryRow = ({
     : 0;
 
   return (
-    <Table.Row key={category.Id}>
+    <Table.Row key={category.Id + "-row"}>
       <Table.Cell w="150px">
         <HStack>
           <Icon

@@ -74,7 +74,7 @@ const CategoriesPage = () => {
         >
           <Tabs.List width={"full"} border={0}>
             {movementTypes.map((ct) => (
-              <Tabs.Trigger key={ct.id} value={ct.name}>
+              <Tabs.Trigger key={ct.id + "movTypesTab"} value={ct.name}>
                 <Icon color={"teal.500"} as={ct.icon!!} />
                 {ct.name}
               </Tabs.Trigger>
