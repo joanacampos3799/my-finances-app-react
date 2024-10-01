@@ -1,4 +1,4 @@
-import CategoryList from "../../../categories/model/CategoryList";
+import Category from "../../categories/model/Category";
 
 export default interface TransactionFormObject {
   amount: number;
@@ -9,7 +9,7 @@ export default interface TransactionFormObject {
   Name: string;
   selectedFixedId: string;
   selectedCategories: {
-    data: CategoryList;
+    data: Category;
     checked: boolean;
   }[];
 }

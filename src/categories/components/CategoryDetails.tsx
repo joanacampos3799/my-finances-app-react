@@ -21,11 +21,13 @@ import { Tag } from "../../components/ui/tag";
 interface Props {
   category: Category;
   total: number;
+  totalExpense: number;
+  totalIncome: number;
   period: string;
 }
 
 const CategoryDetails = ({ category, total, period }: Props) => {
-  const [notes, setNotes] = useState(category.Notes);
+  const [notes, setNotes] = useState(category.Notes ?? undefined);
   const { getTransactionsAverageAmount, budgetInsight, spendingTrendInsight } =
     useInsights();
   const update = useUpdateCategory(() => {});
@@ -36,7 +38,10 @@ const CategoryDetails = ({ category, total, period }: Props) => {
     <DialogComponent
       icon={category.Icon}
       size="xl"
-      title={category.Name + "' Transactions"}
+      title={
+        category.Name +
+        `'${category.Name.endsWith("s") ? "" : "s"} Transactions`
+      }
       footer={<NewTransactionDrawer categoriesIds={[category.Id!!]} />}
     >
       <Flex direction={"column"} gap={5} mb={3}>
@@ -55,11 +60,27 @@ const CategoryDetails = ({ category, total, period }: Props) => {
             </HStack>
           </Show>
           <HStack>
-            <Heading color={"teal.800"} size={"sm"}>
-              {" "}
-              Total Sending
-            </Heading>
-            <FormatNumber value={total} style="currency" currency="Eur" />
+            <Show when={category.CategoryType !== 1}>
+              <Heading color={"teal.800"} size={"sm"}>
+                {" "}
+                Total Spending
+              </Heading>
+              <FormatNumber value={total} style="currency" currency="Eur" />
+            </Show>
+            <Show when={category.CategoryType !== 0}>
+              <Heading color={"teal.800"} size={"sm"}>
+                {" "}
+                Total Income
+              </Heading>
+              <FormatNumber value={total} style="currency" currency="Eur" />
+            </Show>
+            <Show when={category.CategoryType === 2}>
+              <Heading color={"teal.800"} size={"sm"}>
+                {" "}
+                Net Balance
+              </Heading>
+              <FormatNumber value={total} style="currency" currency="Eur" />
+            </Show>
           </HStack>
           <Show when={category.Budget}>
             <HStack>

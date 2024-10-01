@@ -18,7 +18,7 @@ interface CategoryRowProps {
 
 const CategoryRow = ({ category, period, onDelete }: CategoryRowProps) => {
   const iconPack = useIconPack();
-  const { getTransactionsTotalAmount } = useInsights();
+  const { getTransactionsTotalAmount, getTransactionsTotal } = useInsights();
   const totalAmount = getTransactionsTotalAmount(category.Transactions, period);
 
   const totalExpense = getTransactionsTotalAmount(
@@ -66,7 +66,9 @@ const CategoryRow = ({ category, period, onDelete }: CategoryRowProps) => {
           <FormatNumber value={totalAmount} style={"currency"} currency="EUR" />
         </Table.Cell>
       </Show>
-      <Table.Cell>{category.Transactions.length}</Table.Cell>
+      <Table.Cell>
+        {getTransactionsTotal(category.Transactions, period)}
+      </Table.Cell>
       <Show when={category.CategoryType === 0}>
         <Table.Cell>
           {category.Budget ? (
@@ -93,6 +95,8 @@ const CategoryRow = ({ category, period, onDelete }: CategoryRowProps) => {
           <CategoryDetails
             category={category}
             total={totalAmount}
+            totalExpense={totalExpense}
+            totalIncome={totalIncome}
             period={period}
           />
           <NewCategoryDrawer category={category} />

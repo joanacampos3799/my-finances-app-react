@@ -68,10 +68,12 @@ const NewTransactionDrawer = ({ Transaction, categoriesIds }: Props) => {
   const accountsSelect = new HelperEntity<AccountList>().getMappedRadioEntity(
     accounts
   );
-
+  const [open, setOpen] = useState(false);
   return (
     <DrawerComponent
       placement={"end"}
+      open={open}
+      setOpen={setOpen}
       name="Transaction"
       formName="new-transaction-form"
       refElement={ref.current}
@@ -80,7 +82,7 @@ const NewTransactionDrawer = ({ Transaction, categoriesIds }: Props) => {
         id="new-transaction-form"
         onSubmit={(e) => {
           e.preventDefault();
-          console.log(values);
+
           addTransaction({
             Name: values.Name,
             Amount: values.amount,
@@ -184,7 +186,7 @@ const NewTransactionDrawer = ({ Transaction, categoriesIds }: Props) => {
             <Box paddingTop="5px">
               <RadioMenu
                 hasArrow
-                data={movementTypes.filter((m) => m.id !== 0)}
+                data={movementTypes.filter((m) => m.id !== 2)}
                 placeholder="Transaction Type"
                 selectedId={values.selectedTT}
                 setSelectedId={(val) => handleChange("selectedTT", val)}

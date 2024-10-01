@@ -3,6 +3,34 @@ import useDateFilter from "./useDateFilter";
 
 const useInsights = () => {
   const { parseDate, getStartEndDates } = useDateFilter();
+
+  const getTransactionsTotal = (
+    transactions: Transaction[],
+    period: string,
+    type?: number,
+    previous?: boolean
+  ) => {
+    const dates = getStartEndDates(period, previous);
+    // Filter by transaction type if necessary
+    if (type && type !== 2) {
+      transactions = transactions.filter((f) => f.transactionType === type);
+    }
+
+    if (
+      !dates ||
+      !dates.startDate ||
+      !dates.endDate ||
+      transactions.length === 0
+    ) {
+      return 0; // Return 0 if the date range is invalid or undefined
+    }
+
+    // Filter transactions by date range and calculate total amount
+    return transactions.filter((f) => {
+      const itemDate = parseDate(f.Date);
+      return itemDate >= dates.startDate && itemDate <= dates.endDate;
+    }).length;
+  };
   const getTransactionsTotalAmount = (
     transactions: Transaction[],
     period: string,
@@ -24,10 +52,6 @@ const useInsights = () => {
       return 0; // Return 0 if the date range is invalid or undefined
     }
 
-    transactions.filter((f) => {
-      const itemDate = parseDate(f.Date);
-      return itemDate >= dates.startDate && itemDate <= dates.endDate;
-    });
     // Filter transactions by date range and calculate total amount
     return transactions
       .filter((f) => {
@@ -60,10 +84,10 @@ const useInsights = () => {
   function budgetInsight(totalSpending: number, budget: number) {
     if (totalSpending > budget) {
       const overPercentage = ((totalSpending - budget) / budget) * 100;
-      return `You are over budget by $${(totalSpending - budget).toFixed(2)}, which is ${overPercentage.toFixed(2)}% more than your budget.`;
+      return `You are over budget by €${(totalSpending - budget).toFixed(2)}, which is ${overPercentage.toFixed(2)}% more than your budget.`;
     } else {
       const remainingPercentage = ((budget - totalSpending) / budget) * 100;
-      return `You are within your budget. You have $${(budget - totalSpending).toFixed(2)} remaining, which is ${remainingPercentage.toFixed(2)}% of your budget.`;
+      return `You are within your budget. You have €${(budget - totalSpending).toFixed(2)} remaining, which is ${remainingPercentage.toFixed(2)}% of your budget.`;
     }
   }
 
@@ -104,6 +128,7 @@ const useInsights = () => {
   return {
     getTransactionsAverageAmount,
     getTransactionsTotalAmount,
+    getTransactionsTotal,
     getPercentage,
     budgetInsight,
     spendingTrendInsight,

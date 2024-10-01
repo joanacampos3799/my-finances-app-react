@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, HStack, Icon, Tabs, Text } from "@chakra-ui/react";
+import { Box, Flex, HStack, Icon, Tabs } from "@chakra-ui/react";
 import CategoriesList from "../components/CategoriesList";
 import NewCategoryDrawer from "../components/NewCategoryDrawer";
 import useCategories from "../hooks/useCategories";
@@ -11,9 +11,11 @@ import CategoryKPIs from "../components/CategoryKPIs";
 import CategoryEmptyState from "../components/CategoryEmptyState";
 import Category from "../model/Category";
 import CollapsibleTitle from "../components/CollapsibleTitle";
+import ExportDrawer from "../components/ExportDrawer";
 const CategoriesPage = () => {
   const categories = useCategories();
   const [period, setPeriod] = useState("0");
+
   const pendingData = useMutationState({
     filters: {
       mutationKey: [queryKeys.categories],
@@ -57,6 +59,7 @@ const CategoriesPage = () => {
               setSelectedId={setPeriod}
               hasArrow
             />
+            <ExportDrawer period={period} />
             <NewCategoryDrawer />
           </Flex>
         </HStack>
@@ -84,7 +87,7 @@ const CategoriesPage = () => {
             <Tabs.Content key={ct.name + "-contentTab"} value={ct.name}>
               <CategoriesList
                 key={ct.name + "-grid"}
-                categories={catData.filter((c) => c.CategoryType == ct.id)}
+                categories={catData.filter((c) => c.CategoryType === ct.id)}
                 period={timePeriods[+period].name}
                 categoryTypeId={ct.id}
               />

@@ -78,6 +78,7 @@ const BanksAccountsPage = () => {
           </EmptyState>
         ) : (
           <Box>
+            <NewAccountDrawer isEmpty />
             <AccountsGrid key={"accounts"} accounts={accountData} />
           </Box>
         )}

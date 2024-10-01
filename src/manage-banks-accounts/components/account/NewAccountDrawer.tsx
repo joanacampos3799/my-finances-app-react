@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useLoginData } from "../../../auth/contexts/AuthContext";
 import { accountTypes } from "../../../common/constants";
 import { Box, Input, Stack } from "@chakra-ui/react";
@@ -34,14 +34,15 @@ const NewAccountDrawer = ({ isEmpty }: Props) => {
   const nameRef = useRef<HTMLInputElement>(null);
   const addAccount = useAddAccount(() => resetForm());
   const banksSelect = new HelperEntity<BankList>().getMappedRadioEntity(banks);
-
+  const [open, setOpen] = useState(false);
   return (
     <DrawerComponent
-      isEmpty={isEmpty}
       placement={"end"}
       name={"Account"}
       formName={"new-account-form"}
       refElement={nameRef.current}
+      open={open}
+      setOpen={setOpen}
     >
       <form
         id="new-account-form"

@@ -76,6 +76,20 @@ class APIClient<T> {
       .then((res) => res.data);
   };
 
+  export = (
+    params: { startDate: string; endDate: string; type?: number },
+    userId: UUID,
+    userToken: string
+  ) => {
+    return axiosInstance.get<T>(this.endpoint, {
+      headers: getHeaders(userId, userToken),
+      params: {
+        ...params,
+      },
+      responseType: "blob",
+    });
+  };
+
   setActive = (
     id: number,
     active: Boolean,

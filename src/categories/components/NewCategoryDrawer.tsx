@@ -1,9 +1,9 @@
 import IconPicker from "../../common/components/IconPicker";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import useAddCategory from "../hooks/useAddCategory";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { movementTypes } from "../../common/constants";
-import { Flex, Heading, Input, Show } from "@chakra-ui/react";
+import { Flex, Heading, Input, Show, Text } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field";
 import DrawerComponent from "../../common/components/DrawerComponent";
 import RadioMenu from "../../common/components/RadioMenu";
@@ -30,21 +30,32 @@ const NewCategoryDrawer = ({ category }: Props) => {
   const ref = useRef<HTMLInputElement>(null);
   const addCategory = useAddCategory(() => resetForm());
   const updateCategory = useUpdateCategory(() => resetForm());
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string>("");
   return (
     <DrawerComponent
       placement={"end"}
       size={"xs"}
-      name={"Category"}
+      name={category ? category.Name : "Category"}
       formName={"new-category-form"}
       update={category !== undefined}
       refElement={ref.current}
+      open={open}
+      setOpen={setOpen}
     >
       <form
         id="new-category-form"
         onSubmit={(e) => {
           e.preventDefault();
+
+          if (values.icon === "" || values.color === "") {
+            setError("Both icon and color are required");
+            return;
+          }
+
+          // Clear error if validation passes
+          setError("");
           if (category) {
-            console.log("update");
             updateCategory({
               Id: category.Id,
               Name: values.Name,
@@ -66,6 +77,7 @@ const NewCategoryDrawer = ({ category }: Props) => {
               Transactions: [],
             });
           }
+          setOpen(false);
         }}
       >
         <Flex direction="column">
@@ -82,6 +94,12 @@ const NewCategoryDrawer = ({ category }: Props) => {
                 setColor={(c) => handleChange("color", c)}
               />
             </Flex>
+            {/* Error message */}
+            {error && (
+              <Text color="red.500" mt={2}>
+                {error}
+              </Text>
+            )}
           </Flex>
 
           <Field label="Name" required mt={6}>
@@ -94,7 +112,7 @@ const NewCategoryDrawer = ({ category }: Props) => {
             />
           </Field>
 
-          <Field label="Category Type" mt={4}>
+          <Field label="Category Type" mt={4} required>
             <RadioMenu
               hasArrow
               minW="17rem"
@@ -107,7 +125,7 @@ const NewCategoryDrawer = ({ category }: Props) => {
           <Show when={values.selectedTT === "0"}>
             <Field label="Budget" mt={4}>
               <NumberInput
-                number={values.budget}
+                number={values.budget ?? 0}
                 setNumber={(val) => handleChange("budget", val)}
                 isCurrency
               />

@@ -20,6 +20,7 @@ export const mutationKeys = {
   addCategory: "new-category",
   deleteCategory: "delete-category",
   updateCategory: "update-category",
+  exportCategories: "export-categories",
   addBank: "new-bank",
   updateBank: "update-bank",
   deleteBank: "delete-bank",

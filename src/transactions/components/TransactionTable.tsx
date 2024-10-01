@@ -47,7 +47,7 @@ const TransactionTable = ({
       {accounts.length > 0 &&
       categories.length > 0 &&
       sortedTransactions.length > 0 ? (
-        <Flex direction={"column"}>
+        <Flex direction={"column"} gap={2} py={2} colorPalette={"teal"}>
           <Table.Root colorPalette={"teal"} stickyHeader>
             <Table.Header>
               <Table.Row>

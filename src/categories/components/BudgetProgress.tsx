@@ -18,7 +18,12 @@ const BudgetProgress = ({ budget, spent }: Props) => {
   else if (perc > 75 && perc < 100) color = "orange";
   else if (perc > 50 && perc <= 75) color = "yellow";
   return (
-    <ProgressRoot min={0} max={budget} value={spent} colorPalette={color}>
+    <ProgressRoot
+      min={0}
+      max={budget}
+      value={spent > budget ? budget : spent}
+      colorPalette={color}
+    >
       <HStack gap="5">
         <ProgressBar flex="1" />
         <ProgressValueText>{perc}%</ProgressValueText>

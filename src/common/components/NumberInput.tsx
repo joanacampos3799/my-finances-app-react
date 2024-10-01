@@ -32,8 +32,10 @@ const NumberInput = ({
           <NumberInputRoot
             width={"full"}
             value={"" + number}
-            onValueChange={(e) => setNumber(e.valueAsNumber)}
-            defaultValue="0.00"
+            min={0}
+            onValueChange={(e) =>
+              setNumber(e.value === "" ? 0 : e.valueAsNumber)
+            }
             formatOptions={{
               style: isCurrency ? "decimal" : undefined,
               minimumFractionDigits: isCurrency ? 2 : undefined,

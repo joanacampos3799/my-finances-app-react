@@ -20,12 +20,16 @@ interface Props {
     "sm" | "md" | "lg" | "xl" | "xs" | "full" | undefined
   >;
   update?: boolean;
+  open: boolean;
+  setOpen: (open: boolean) => void;
   name: string;
   formName: string;
   refElement: HTMLElement | null;
 }
 const DrawerComponent = ({
   children,
+  open,
+  setOpen,
   placement,
   size,
   name,
@@ -33,7 +37,6 @@ const DrawerComponent = ({
   refElement,
   update,
 }: PropsWithChildren<Props>) => {
-  const [open, setOpen] = useState(false);
   return (
     <DrawerRoot
       open={open}
@@ -55,7 +58,9 @@ const DrawerComponent = ({
       <DrawerContent offset="4" rounded="md">
         <DrawerHeader width={"full"}>
           <Flex direction={"row"} justifyContent={"space-between"}>
-            <DrawerTitle color={"teal.800"}>Add a new {name}</DrawerTitle>
+            <DrawerTitle color={"teal.800"}>
+              {update ? "Update " : "Add a new "} {name}
+            </DrawerTitle>
             <DrawerCloseTrigger boxSize={4} m={0} display={"inline-flex"} />
           </Flex>
         </DrawerHeader>
@@ -72,12 +77,7 @@ const DrawerComponent = ({
           >
             Cancel
           </Button>
-          <Button
-            colorPalette={"teal"}
-            type="submit"
-            onClick={() => setOpen(false)}
-            form={formName}
-          >
+          <Button colorPalette={"teal"} type="submit" form={formName}>
             Save
           </Button>
         </DrawerFooter>

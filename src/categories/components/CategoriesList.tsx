@@ -11,7 +11,7 @@ import {
 } from "../../components/ui/pagination";
 import TableHeader from "../../common/components/TableHeader";
 import CategoryRow from "./CategoryRow";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   categories: Category[];
@@ -30,8 +30,18 @@ const CategoriesList = ({ categories, period, categoryTypeId }: Props) => {
 
   const [sortedCategories, setSortedCategories] =
     useState<Category[]>(categories);
+  const [page, setPage] = useState(1);
+  const [catCount, setCatCount] = useState(categories.length);
+  useEffect(() => {
+    setCatCount(categories.length);
+    setSortedCategories(categories.slice((page - 1) * size, page * size));
+  }, [categories, setSortedCategories, page]);
   const deleteCategory = useDeleteCategory();
-
+  const size = 5;
+  const handlePageChange = (page: number) => {
+    setPage(page);
+    setSortedCategories(sortedCategories.slice((page - 1) * size, page * size));
+  };
   const handleDelete = (element: Category) => {
     element.deleted = true;
     deleteCategory(element);
@@ -183,7 +193,12 @@ const CategoriesList = ({ categories, period, categoryTypeId }: Props) => {
               ))}
             </Table.Body>
           </Table.Root>
-          <PaginationRoot count={sortedCategories.length} pageSize={5} page={1}>
+          <PaginationRoot
+            count={catCount}
+            pageSize={5}
+            page={page}
+            onPageChange={(e) => handlePageChange(e.page)}
+          >
             <HStack wrap="wrap" justifyContent={"center"}>
               <PaginationPrevTrigger />
               <PaginationItems />
