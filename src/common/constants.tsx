@@ -74,6 +74,10 @@ export const accountTypes: EnumType[] = [
     id: 4,
     name: "Virtual",
   },
+  {
+    id: 5,
+    name: "Investment",
+  },
 ];
 
 export const timePeriods = [

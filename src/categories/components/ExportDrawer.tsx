@@ -12,12 +12,11 @@ import {
 } from "../../components/ui/drawer";
 import { LuFileSpreadsheet } from "react-icons/lu";
 import ExportCategoriesButton from "./ExportCategoriesButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useDateFilter from "../../common/hooks/useDateFilter";
 import DatePicker from "../../common/components/DatePicker";
 import RadioMenu from "../../common/components/RadioMenu";
 import { movementTypes } from "../../common/constants";
-import { HelperEnum } from "../../common/helper";
 
 interface Props {
   period: string;
@@ -28,14 +27,19 @@ const ExportDrawer = ({ period }: Props) => {
 
   const [startDate, setStartDate] = useState<Date>(start);
   const [endDate, setEndDate] = useState<Date>(end);
+  useEffect(() => {
+    const { startDate: start, endDate: end } = getStartEndDates(period);
+    setStartDate(start);
+    setEndDate(end);
+  }, [period, getStartEndDates]);
   const [type, setType] = useState<string>("-1");
 
   return (
     <DrawerRoot placement={"bottom"}>
       <DrawerBackdrop />
-      <DrawerTrigger asChild>
-        <Button variant="outline" colorPalette={"teal"}>
-          Report <LuFileSpreadsheet />
+      <DrawerTrigger asChild ms={"10px"} mb={"-20px"}>
+        <Button colorPalette={"teal"}>
+          <LuFileSpreadsheet />
         </Button>
       </DrawerTrigger>
       <DrawerContent roundedTop={"2xl"}>

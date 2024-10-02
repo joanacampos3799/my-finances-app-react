@@ -33,6 +33,7 @@ const NumberInput = ({
             width={"full"}
             value={"" + number}
             min={0}
+            locale="pt-PT"
             onValueChange={(e) =>
               setNumber(e.value === "" ? 0 : e.valueAsNumber)
             }

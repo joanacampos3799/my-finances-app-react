@@ -60,7 +60,11 @@ const DatePicker = ({ selectedDate, setSelectedDate }: Props) => {
               variant={"plain"}
               size={"sm"}
               disabled={isSameMonth(selectedDate, subYears(currentDate, 10))}
-              onClick={() => setSelectedDate(subMonths(selectedDate, 1))}
+              onClick={() => {
+                setSelectedDate(subMonths(selectedDate, 1));
+                setMonth("" + subMonths(selectedDate, 1).getMonth());
+                setYear("" + subMonths(selectedDate, 1).getFullYear());
+              }}
             >
               <LuChevronLeft />
             </Button>
@@ -87,7 +91,11 @@ const DatePicker = ({ selectedDate, setSelectedDate }: Props) => {
               size={"sm"}
               variant={"plain"}
               disabled={isThisMonth(selectedDate)}
-              onClick={() => setSelectedDate(addMonths(selectedDate, 1))}
+              onClick={() => {
+                setSelectedDate(addMonths(selectedDate, 1));
+                setMonth("" + addMonths(selectedDate, 1).getMonth());
+                setYear("" + addMonths(selectedDate, 1).getFullYear());
+              }}
             >
               <LuChevronRight />
             </Button>

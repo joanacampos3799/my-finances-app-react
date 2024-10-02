@@ -1,3 +1,4 @@
+import { isAfter, parseISO } from "date-fns";
 import Transaction from "../../transactions/model/Transaction";
 import useDateFilter from "./useDateFilter";
 
@@ -33,33 +34,54 @@ const useInsights = () => {
   };
   const getTransactionsTotalAmount = (
     transactions: Transaction[],
-    period: string,
+    period?: string,
     type?: number,
     previous?: boolean
   ) => {
-    const dates = getStartEndDates(period, previous);
-    // Filter by transaction type if necessary
-    if (type && type !== 2) {
-      transactions = transactions.filter((f) => f.transactionType === type);
+    if (period === undefined) {
+      if (type && type !== 2) {
+        transactions = transactions.filter((f) => f.transactionType === type);
+      }
+      return transactions
+        .map((x) => x.Amount)
+        .reduce((acc, val) => acc + val, 0);
+    } else {
+      const dates = getStartEndDates(period, previous);
+      // Filter by transaction type if necessary
+      if (type && type !== 2) {
+        transactions = transactions.filter((f) => f.transactionType === type);
+      }
+
+      if (
+        !dates ||
+        !dates.startDate ||
+        !dates.endDate ||
+        transactions.length === 0
+      ) {
+        return 0; // Return 0 if the date range is invalid or undefined
+      }
+
+      // Filter transactions by date range and calculate total amount
+      return transactions
+        .filter((f) => {
+          const itemDate = parseDate(f.Date);
+          return itemDate >= dates.startDate && itemDate <= dates.endDate;
+        })
+        .map((x) => x.Amount)
+        .reduce((acc, val) => acc + val, 0); // Sum up the amounts
+    }
+  };
+  const findMostRecentTransaction = (transactions: Transaction[]) => {
+    if (transactions.length === 0) {
+      return "N/A"; // No transactions available
     }
 
-    if (
-      !dates ||
-      !dates.startDate ||
-      !dates.endDate ||
-      transactions.length === 0
-    ) {
-      return 0; // Return 0 if the date range is invalid or undefined
-    }
+    return transactions.reduce((mostRecent, current) => {
+      const currentDate = parseISO(current.Date);
+      const mostRecentDate = parseISO(mostRecent.Date);
 
-    // Filter transactions by date range and calculate total amount
-    return transactions
-      .filter((f) => {
-        const itemDate = parseDate(f.Date);
-        return itemDate >= dates.startDate && itemDate <= dates.endDate;
-      })
-      .map((x) => x.Amount)
-      .reduce((acc, val) => acc + val, 0); // Sum up the amounts
+      return isAfter(currentDate, mostRecentDate) ? current : mostRecent;
+    }).Date;
   };
   const getTransactionsAverageAmount = (transactions: Transaction[]) => {
     if (transactions.length === 0) {
@@ -128,6 +150,7 @@ const useInsights = () => {
   return {
     getTransactionsAverageAmount,
     getTransactionsTotalAmount,
+    findMostRecentTransaction,
     getTransactionsTotal,
     getPercentage,
     budgetInsight,

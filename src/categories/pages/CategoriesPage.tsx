@@ -10,8 +10,9 @@ import { useState } from "react";
 import CategoryKPIs from "../components/CategoryKPIs";
 import CategoryEmptyState from "../components/CategoryEmptyState";
 import Category from "../model/Category";
-import CollapsibleTitle from "../components/CollapsibleTitle";
+import CollapsibleTitle from "../../common/components/CollapsibleTitle";
 import ExportDrawer from "../components/ExportDrawer";
+
 const CategoriesPage = () => {
   const categories = useCategories();
   const [period, setPeriod] = useState("0");
@@ -44,7 +45,12 @@ const CategoriesPage = () => {
           alignItems={"flex-start"}
           justifyItems={"flex-end"}
         >
-          <CollapsibleTitle />
+          <CollapsibleTitle
+            title={"Categories"}
+            description={
+              " Welcome to the Categories Page, where you can easily manage your finances by organizing your transactions into meaningful categories."
+            }
+          />
           <Flex
             direction={"row"}
             gap={2}
@@ -59,7 +65,7 @@ const CategoriesPage = () => {
               setSelectedId={setPeriod}
               hasArrow
             />
-            <ExportDrawer period={period} />
+
             <NewCategoryDrawer />
           </Flex>
         </HStack>
@@ -70,30 +76,40 @@ const CategoriesPage = () => {
       {!catData || catCount === 0 ? (
         <CategoryEmptyState keyname={"mainEmpty"} />
       ) : (
-        <Tabs.Root
-          defaultValue={"Expenses"}
-          justify={"end"}
-          colorPalette={"teal"}
-        >
-          <Tabs.List width={"full"} border={0}>
+        <Box>
+          <Tabs.Root
+            defaultValue={"Expenses"}
+            justify={"end"}
+            colorPalette={"teal"}
+          >
+            {/* Wrap Tabs and ExportDrawer in an HStack or Flex for alignment */}
+            <Flex justify="space-between" mt={2}>
+              <ExportDrawer period={timePeriods[+period].name} />
+              <Tabs.List width={"full"} border={0}>
+                {movementTypes.map((ct) => (
+                  <Tabs.Trigger key={ct.id + "-movTypesTab"} value={ct.name}>
+                    <Icon color={"teal.500"} as={ct.icon!!} />
+                    {ct.name}
+                  </Tabs.Trigger>
+                ))}
+              </Tabs.List>
+
+              {/* Align the ExportDrawer button trigger here */}
+            </Flex>
+
+            {/* Render Tabs content */}
             {movementTypes.map((ct) => (
-              <Tabs.Trigger key={ct.id + "-movTypesTab"} value={ct.name}>
-                <Icon color={"teal.500"} as={ct.icon!!} />
-                {ct.name}
-              </Tabs.Trigger>
+              <Tabs.Content key={ct.name + "-contentTab"} value={ct.name}>
+                <CategoriesList
+                  key={ct.name + "-grid"}
+                  categories={catData.filter((c) => c.CategoryType === ct.id)}
+                  period={timePeriods[+period].name}
+                  categoryTypeId={ct.id}
+                />
+              </Tabs.Content>
             ))}
-          </Tabs.List>
-          {movementTypes.map((ct) => (
-            <Tabs.Content key={ct.name + "-contentTab"} value={ct.name}>
-              <CategoriesList
-                key={ct.name + "-grid"}
-                categories={catData.filter((c) => c.CategoryType === ct.id)}
-                period={timePeriods[+period].name}
-                categoryTypeId={ct.id}
-              />
-            </Tabs.Content>
-          ))}
-        </Tabs.Root>
+          </Tabs.Root>
+        </Box>
       )}
     </Box>
   );

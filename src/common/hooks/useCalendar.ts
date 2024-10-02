@@ -5,6 +5,7 @@ import {
   getDate,
   getDay,
   getDaysInMonth,
+  subMonths,
 } from "date-fns";
 
 interface Type {
@@ -37,15 +38,12 @@ const useCalendar = () => {
     const last = endOfMonth(first);
     const daysOfWeekFirst = getDay(first);
     const daysOfWeekLast = getDay(last);
+    const startDays = getDaysInMonth(subMonths(last, 1)) - daysOfWeekFirst + 1;
+    const endDays = 6 - daysOfWeekLast;
     return eachDayOfInterval({
       start:
-        daysOfWeekFirst === 0
-          ? first
-          : new Date(year, month - 1, getDaysInMonth(last) - daysOfWeekFirst),
-      end:
-        daysOfWeekLast === 6
-          ? last
-          : new Date(year, month + 1, 6 - daysOfWeekLast),
+        daysOfWeekFirst === 0 ? first : new Date(year, month - 1, startDays),
+      end: daysOfWeekLast === 6 ? last : new Date(year, month + 1, endDays),
     }).map((day) => ({
       value: getDate(day),
       date: day,

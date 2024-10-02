@@ -15,11 +15,7 @@ import useForm from "../../../common/hooks/useForm";
 import AccountFormObject from "../../models/AccountFormObject";
 import NumberInput from "../../../common/components/NumberInput";
 
-interface Props {
-  isEmpty: boolean;
-}
-
-const NewAccountDrawer = ({ isEmpty }: Props) => {
+const NewAccountDrawer = () => {
   const { userId } = useLoginData();
   const { data: banks } = useBanks();
   const initialState = new HelperEnum<EnumType>().getMappedCheckboxEnum(
