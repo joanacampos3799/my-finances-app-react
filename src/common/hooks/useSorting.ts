@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useInsights from "./useInsights";
 import Transaction from "../../transactions/model/Transaction";
+import InstitutionList from "../../institutions/model/InstitutionList";
 
 const useSorting = () => {
   const { getTransactionsTotalAmount } = useInsights();
@@ -51,16 +52,25 @@ const useSorting = () => {
           );
   };
 
-  const sortString = <T>(
+  const sortString = <T, V>(
     array: T[],
     property: keyof T,
     header: string,
-    id: keyof T
+    id: keyof T,
+    subProperty?: keyof V
   ) => {
     const state = getNextState(header);
     setSorting({ column: header, state: state });
     if (state !== null) {
       return array.sort((a, b) => {
+        if (subProperty) {
+          const aValue = (a[property] as V)[subProperty] as unknown as string;
+          const bValue = (b[property] as V)[subProperty] as unknown as string;
+
+          return state === "asc"
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        }
         const aValue = a[property] as unknown as string;
         const bValue = b[property] as unknown as string;
 

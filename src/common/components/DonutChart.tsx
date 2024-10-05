@@ -1,5 +1,6 @@
 import { Center, Flex, FormatNumber } from "@chakra-ui/react";
 import { PieChart } from "@mui/x-charts/PieChart";
+import { useEffect, useRef, useState } from "react";
 export interface PieObject {
   label: string;
   value: number;
@@ -22,17 +23,17 @@ const DonutChart = ({ data, caption }: Props) => {
           alignItems={"center"}
           bgColor={"white"}
           borderRadius={"md"}
-          p={1}
+          p={"10px"}
         >
           <PieChart
             series={[
               {
                 data: data,
-                innerRadius: 40,
-                outerRadius: 80,
+                innerRadius: 50,
+                outerRadius: 100,
                 cornerRadius: 5,
-                cx: 150,
-                cy: 100,
+                cx: 175,
+                cy: 125,
                 valueFormatter,
                 highlightScope: { fade: "global", highlight: "item" },
                 faded: {
@@ -45,12 +46,12 @@ const DonutChart = ({ data, caption }: Props) => {
             slotProps={{
               legend: { hidden: true }, // Hides the legend
             }}
-            width={300}
-            height={200}
+            width={350}
+            height={250}
           >
             <svg
-              width="300"
-              height="200"
+              width="350"
+              height="250"
               style={{
                 position: "absolute",
                 top: 0,
@@ -59,8 +60,8 @@ const DonutChart = ({ data, caption }: Props) => {
               }}
             >
               <text
-                x="155" // X position (centered)
-                y="105" // Y position (centered)
+                x="180" // X position (centered)
+                y="130" // Y position (centered)
                 textAnchor="middle"
                 dominantBaseline="middle"
                 fontSize="24"

@@ -61,6 +61,9 @@ const RadioMenu = <T extends obj>({
         width={width ?? "full"}
       >
         <MenuRadioItemGroup
+          zIndex="dropdown"
+          maxHeight={"30vh"}
+          overflowY={"auto"}
           value={selectedId}
           onValueChange={(e) => setSelectedId(e.value)}
         >

@@ -26,8 +26,8 @@ import useFixedTransactions from "../../fixed-transactions/hooks/useFixedTransac
 import { DataListItem, DataListRoot } from "../../components/ui/data-list";
 import TagComponent from "../../common/components/TagComponent";
 import useForm from "../../common/hooks/useForm";
-import useAccounts from "../../manage-banks-accounts/hooks/useAccounts";
-import AccountList from "../../manage-banks-accounts/models/AccountList";
+import useAccounts from "../../accounts/hooks/useAccounts";
+import AccountList from "../../accounts/models/AccountList";
 import DatePicker from "../../common/components/DatePicker";
 import { format } from "date-fns";
 import TransactionFormObject from "../model/TransactionFormObject";
@@ -36,8 +36,13 @@ import Transaction from "../model/Transaction";
 interface Props {
   Transaction?: Transaction;
   categoriesIds?: number[];
+  accountId?: number;
 }
-const NewTransactionDrawer = ({ Transaction, categoriesIds }: Props) => {
+const NewTransactionDrawer = ({
+  Transaction,
+  categoriesIds,
+  accountId,
+}: Props) => {
   const [isFixedTransaction, setIsFixedTransaction] = useState(false);
   const { userId } = useLoginData();
   const { data: categories } = useCategories();
@@ -53,7 +58,7 @@ const NewTransactionDrawer = ({ Transaction, categoriesIds }: Props) => {
     date: new Date(),
     description: "",
     selectedTT: "",
-    selectedAccount: "",
+    selectedAccount: accountId ? "" + accountId : "",
     Name: "",
     selectedFixedId: "",
     selectedCategories: initialState,
@@ -97,7 +102,8 @@ const NewTransactionDrawer = ({ Transaction, categoriesIds }: Props) => {
             accountId: +values.selectedAccount,
             categories: values.selectedCategories
               .filter((cat) => cat.checked)
-              .map((cat) => cat.data.Id!!),
+              .map((cat) => cat.data),
+            isFee: false,
           });
         }}
       >

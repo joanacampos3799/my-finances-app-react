@@ -9,14 +9,16 @@ import Category from "../model/Category";
 import NewCategoryDrawer from "./NewCategoryDrawer";
 import CategoryDetails from "./CategoryDetails";
 import useInsights from "../../common/hooks/useInsights";
+import usePeriodStore from "../../common/hooks/usePeriodStore";
 
 interface CategoryRowProps {
   category: Category;
-  period: string;
+
   onDelete: (category: any) => void;
 }
 
-const CategoryRow = ({ category, period, onDelete }: CategoryRowProps) => {
+const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
+  const { period } = usePeriodStore();
   const iconPack = useIconPack();
   const { getTransactionsTotalAmount, getTransactionsTotal } = useInsights();
   const totalAmount = getTransactionsTotalAmount(category.Transactions, period);
@@ -97,7 +99,6 @@ const CategoryRow = ({ category, period, onDelete }: CategoryRowProps) => {
             total={totalAmount}
             totalExpense={totalExpense}
             totalIncome={totalIncome}
-            period={period}
           />
           <NewCategoryDrawer category={category} />
           <Button

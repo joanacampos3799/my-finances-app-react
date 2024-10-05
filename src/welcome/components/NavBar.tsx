@@ -7,14 +7,16 @@ import {
   LuCalendarClock,
   LuClipboardEdit,
   LuHome,
+  LuLandmark,
   LuLineChart,
   LuLogIn,
   LuSettings,
   LuWalletCards,
 } from "react-icons/lu";
 import { useState } from "react";
-import { BiCategory } from "react-icons/bi";
+import { BiCategory, BiReceipt } from "react-icons/bi";
 import { LinkButton } from "../../components/ui/link-button";
+import { RiHandCoinLine } from "react-icons/ri";
 
 const NavBar = () => {
   const location = useLocation();
@@ -31,13 +33,7 @@ const NavBar = () => {
       direction={"column"}
       justifyContent="space-between"
     >
-      <Flex
-        p="5px"
-        flexDir="column"
-        w="100%"
-        alignItems={"flex-start"}
-        as="nav"
-      >
+      <Flex p="5px" flexDir="column" w="100%" alignItems={"flex-start"}>
         <LinkButton
           variant={"plain"}
           onClick={() => setSideBarOpen(!sideBarOpen)}
@@ -47,8 +43,9 @@ const NavBar = () => {
             MoneyTrack.
           </Heading>
         </LinkButton>
-
-        <SignedIn>
+      </Flex>
+      <SignedIn>
+        <Flex flexDir={"column"} gap={3} as="nav">
           <NavBarButton
             link="/s/dashboard"
             icon={LuHome}
@@ -64,11 +61,18 @@ const NavBar = () => {
             active={activePage === "/s/categories"}
           />
           <NavBarButton
-            link="/s/banks-accounts"
-            title="Banks & Accounts"
+            link="/s/institutions"
+            title="Institutions"
+            icon={LuLandmark}
+            isOpen={sideBarOpen}
+            active={activePage === "/s/institutions"}
+          />
+          <NavBarButton
+            link="/s/accounts"
+            title="Accounts"
             icon={LuWalletCards}
             isOpen={sideBarOpen}
-            active={activePage === "/s/banks-accounts"}
+            active={activePage === "/s/accounts"}
           />
           <NavBarButton
             link="/s/fixed-transactions"
@@ -84,8 +88,16 @@ const NavBar = () => {
             isOpen={sideBarOpen}
             active={activePage === "/s/transactions"}
           />
-        </SignedIn>
-      </Flex>
+          <NavBarButton
+            link="/s/debts"
+            icon={BiReceipt}
+            isOpen={sideBarOpen}
+            active={activePage === "/s/debts"}
+            title="Debts"
+          />
+        </Flex>
+      </SignedIn>
+
       <Flex
         p="5px"
         flexDir="column"

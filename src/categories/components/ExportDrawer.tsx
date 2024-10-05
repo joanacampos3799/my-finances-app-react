@@ -17,11 +17,10 @@ import useDateFilter from "../../common/hooks/useDateFilter";
 import DatePicker from "../../common/components/DatePicker";
 import RadioMenu from "../../common/components/RadioMenu";
 import { movementTypes } from "../../common/constants";
+import usePeriodStore from "../../common/hooks/usePeriodStore";
 
-interface Props {
-  period: string;
-}
-const ExportDrawer = ({ period }: Props) => {
+const ExportDrawer = () => {
+  const { period } = usePeriodStore();
   const { getStartEndDates } = useDateFilter();
   const { startDate: start, endDate: end } = getStartEndDates(period);
 

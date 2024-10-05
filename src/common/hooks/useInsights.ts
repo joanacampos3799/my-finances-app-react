@@ -1,6 +1,8 @@
 import { isAfter, parseISO } from "date-fns";
 import Transaction from "../../transactions/model/Transaction";
 import useDateFilter from "./useDateFilter";
+import AccountList from "../../accounts/models/AccountList";
+import { accountTypes } from "../constants";
 
 const useInsights = () => {
   const { parseDate, getStartEndDates } = useDateFilter();
@@ -13,7 +15,7 @@ const useInsights = () => {
   ) => {
     const dates = getStartEndDates(period, previous);
     // Filter by transaction type if necessary
-    if (type && type !== 2) {
+    if (type !== undefined && type !== 2) {
       transactions = transactions.filter((f) => f.transactionType === type);
     }
 
@@ -39,16 +41,17 @@ const useInsights = () => {
     previous?: boolean
   ) => {
     if (period === undefined) {
-      if (type && type !== 2) {
+      if (type !== undefined && type !== 2) {
         transactions = transactions.filter((f) => f.transactionType === type);
       }
+
       return transactions
         .map((x) => x.Amount)
         .reduce((acc, val) => acc + val, 0);
     } else {
       const dates = getStartEndDates(period, previous);
       // Filter by transaction type if necessary
-      if (type && type !== 2) {
+      if (type !== undefined && type !== 2) {
         transactions = transactions.filter((f) => f.transactionType === type);
       }
 
@@ -147,7 +150,23 @@ const useInsights = () => {
     }
   }
 
+  const calculateAccountTypeBalances = (accounts: AccountList[]) => {
+    const typeBalances: Record<string, number> = {};
+
+    accounts.forEach((account) => {
+      // Initialize balance if not present
+      const typeName = accountTypes[account.Type].name;
+      if (!typeBalances[typeName]) {
+        typeBalances[typeName] = 0;
+      }
+      typeBalances[typeName] += account.Balance;
+    });
+
+    return typeBalances;
+  };
+
   return {
+    calculateAccountTypeBalances,
     getTransactionsAverageAmount,
     getTransactionsTotalAmount,
     findMostRecentTransaction,

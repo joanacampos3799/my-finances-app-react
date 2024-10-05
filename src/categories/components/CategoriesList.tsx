@@ -12,13 +12,14 @@ import {
 import TableHeader from "../../common/components/TableHeader";
 import CategoryRow from "./CategoryRow";
 import { useEffect, useState } from "react";
+import usePeriodStore from "../../common/hooks/usePeriodStore";
 
 interface Props {
   categories: Category[];
-  period: string;
+
   categoryTypeId: number;
 }
-const CategoriesList = ({ categories, period, categoryTypeId }: Props) => {
+const CategoriesList = ({ categories, categoryTypeId }: Props) => {
   const {
     getSortingState,
     sortString,
@@ -28,6 +29,7 @@ const CategoriesList = ({ categories, period, categoryTypeId }: Props) => {
     SortSum,
   } = useSorting();
 
+  const { period } = usePeriodStore();
   const [sortedCategories, setSortedCategories] =
     useState<Category[]>(categories);
   const [page, setPage] = useState(1);
@@ -187,7 +189,6 @@ const CategoriesList = ({ categories, period, categoryTypeId }: Props) => {
                 <CategoryRow
                   key={category.Id + "-category"}
                   category={category}
-                  period={period}
                   onDelete={handleDelete}
                 />
               ))}

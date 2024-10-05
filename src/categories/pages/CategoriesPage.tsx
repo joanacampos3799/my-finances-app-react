@@ -12,10 +12,12 @@ import CategoryEmptyState from "../components/CategoryEmptyState";
 import Category from "../model/Category";
 import CollapsibleTitle from "../../common/components/CollapsibleTitle";
 import ExportDrawer from "../components/ExportDrawer";
+import TimePeriodMenu from "../../common/components/TimePeriodMenu";
+import usePeriodStore from "../../common/hooks/usePeriodStore";
 
 const CategoriesPage = () => {
   const categories = useCategories();
-  const [period, setPeriod] = useState("0");
+  const { period, setPeriod } = usePeriodStore();
 
   const pendingData = useMutationState({
     filters: {
@@ -38,7 +40,7 @@ const CategoriesPage = () => {
   }
 
   return (
-    <Box padding={"5px"}>
+    <Box padding={"15px"}>
       <Box>
         <HStack
           justifyContent={"space-between"}
@@ -57,20 +59,13 @@ const CategoriesPage = () => {
             alignItems={"flex-start"}
             justifyItems={"flex-end"}
           >
-            <RadioMenu
-              color
-              width="fit-content"
-              data={timePeriods}
-              selectedId={period}
-              setSelectedId={setPeriod}
-              hasArrow
-            />
+            <TimePeriodMenu period={period} setPeriod={setPeriod} />
 
             <NewCategoryDrawer />
           </Flex>
         </HStack>
 
-        <CategoryKPIs period={timePeriods[+period].name} data={catData} />
+        <CategoryKPIs data={catData} />
       </Box>
 
       {!catData || catCount === 0 ? (
@@ -84,7 +79,7 @@ const CategoriesPage = () => {
           >
             {/* Wrap Tabs and ExportDrawer in an HStack or Flex for alignment */}
             <Flex justify="space-between" mt={2}>
-              <ExportDrawer period={timePeriods[+period].name} />
+              <ExportDrawer />
               <Tabs.List width={"full"} border={0}>
                 {movementTypes.map((ct) => (
                   <Tabs.Trigger key={ct.id + "-movTypesTab"} value={ct.name}>
@@ -103,7 +98,6 @@ const CategoriesPage = () => {
                 <CategoriesList
                   key={ct.name + "-grid"}
                   categories={catData.filter((c) => c.CategoryType === ct.id)}
-                  period={timePeriods[+period].name}
                   categoryTypeId={ct.id}
                 />
               </Tabs.Content>

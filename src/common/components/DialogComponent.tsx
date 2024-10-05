@@ -21,7 +21,9 @@ import {
 import { useIconPack } from "../hooks/useIconPack";
 
 interface Props {
-  size: ConditionalValue<"sm" | "md" | "lg" | "xl" | "xs" | "full" | undefined>;
+  size: ConditionalValue<
+    "sm" | "md" | "lg" | "xl" | "xs" | "cover" | "full" | undefined
+  >;
   icon?: string;
   iconColor?: string;
   title: string;
@@ -52,7 +54,7 @@ const DialogComponent = ({
           <LuSearch />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent borderRadius={"xl"} offset={"center"}>
         <DialogHeader>
           <Flex direction={"row"} justifyContent={"space-between"}>
             <DialogTitle>

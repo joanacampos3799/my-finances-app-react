@@ -9,8 +9,11 @@ import FixedTransactionsPage from "../../fixed-transactions/pages/FixedTransacti
 import ConditionalRoute from "./ConditionalRoute";
 import RootLayout from "../../welcome/layouts/RootLayout";
 import DashboardLayout from "../../welcome/layouts/DashboardLayout";
-import BanksAccountsPage from "../../manage-banks-accounts/pages/BanksAccountsPage";
+import AccountsPage from "../../accounts/AccountsPage";
 import TransactionsPage from "../../transactions/page/TransactionsPage";
+import DebtsPage from "../../debts/page/DebtsPage";
+import InstitutionsPage from "../../institutions/page/InstitutionsPage";
+import AccountDetailsPage from "../../account/page/AccountDetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -26,15 +29,12 @@ const router = createBrowserRouter([
         children: [
           { path: "/s/dashboard", element: <DashboardPage /> },
           { path: "/s/categories", element: <CategoriesPage /> },
-          { path: "/s/banks-accounts", element: <BanksAccountsPage /> },
-          {
-            path: "/s/fixed-transactions",
-            element: <FixedTransactionsPage />,
-          },
-          {
-            path: "/s/transactions",
-            element: <TransactionsPage />,
-          },
+          { path: "/s/accounts", element: <AccountsPage /> },
+          { path: "/s/accounts/:id", element: <AccountDetailsPage /> },
+          { path: "/s/institutions", element: <InstitutionsPage /> },
+          { path: "/s/debts", element: <DebtsPage /> },
+          { path: "/s/fixed-transactions", element: <FixedTransactionsPage /> },
+          { path: "/s/transactions", element: <TransactionsPage /> },
         ],
       },
     ],

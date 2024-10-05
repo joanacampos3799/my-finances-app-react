@@ -12,7 +12,6 @@ interface Props {
 const NavBarButton = ({ active, title, link, isOpen, icon }: Props) => {
   return (
     <Flex
-      mt={25}
       flexDir="column"
       w="100%"
       paddingX={"10px"}

@@ -17,16 +17,17 @@ import { useState } from "react";
 import { useUpdateCategory } from "../hooks/useUpdateCategory";
 import useInsights from "../../common/hooks/useInsights";
 import { Tag } from "../../components/ui/tag";
+import usePeriodStore from "../../common/hooks/usePeriodStore";
 
 interface Props {
   category: Category;
   total: number;
   totalExpense: number;
   totalIncome: number;
-  period: string;
 }
 
-const CategoryDetails = ({ category, total, period }: Props) => {
+const CategoryDetails = ({ category, total }: Props) => {
+  const { period } = usePeriodStore();
   const [notes, setNotes] = useState(category.Notes ?? undefined);
   const { getTransactionsAverageAmount, budgetInsight, spendingTrendInsight } =
     useInsights();

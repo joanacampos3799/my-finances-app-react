@@ -1,4 +1,5 @@
 import { UUID } from "crypto";
+import Category from "../../categories/model/Category";
 
 export default interface Transaction {
   Id?: number | undefined;
@@ -7,9 +8,10 @@ export default interface Transaction {
   Date: string;
   accountId: number;
   Amount: number;
-  categories: number[];
+  categories: Category[];
   userId: UUID;
   transactionType: number;
   fixedTransactionId?: number;
+  isFee: boolean;
   deleted?: boolean;
 }

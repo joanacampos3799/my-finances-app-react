@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import useCategories from "../../categories/hooks/useCategories";
 import { useIconPack } from "../../common/hooks/useIconPack";
-import useAccounts from "../../manage-banks-accounts/hooks/useAccounts";
+import useAccounts from "../../accounts/hooks/useAccounts";
 import Transaction from "../model/Transaction";
 import { useState } from "react";
 import { TbArrowBarDown, TbArrowBarUp } from "react-icons/tb";
@@ -138,22 +138,21 @@ const TransactionTable = ({
                   <Show when={!fromCategory}>
                     <Table.Cell>
                       {t.categories.map((val) => {
-                        const cat = categories.find((c) => c.Id === val)!!;
                         return (
                           <Tag
-                            key={cat.Id + "cat"}
+                            key={val.Id + "-cat"}
                             rounded={"md"}
                             startElement={
                               <Icon
                                 as={
                                   iconPack?.find(
-                                    (icon) => icon.name === cat.Icon
+                                    (icon) => icon.name === val.Icon
                                   )?.icon!!
                                 }
                               />
                             }
                           >
-                            {cat.Name}
+                            {val.Name}
                           </Tag>
                         );
                       })}

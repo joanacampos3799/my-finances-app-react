@@ -16,7 +16,6 @@ const ExportCategoriesButton = ({ startDate, endDate, type }: Props) => {
     setLoading(isPending);
   }, [isPending, setLoading]);
   const handleExport = () => {
-    console.log(startDate);
     exportCategories({
       startDate: format(startDate, "yyyy-MM-dd"), // Use selected or fallback
       endDate: format(endDate, "yyyy-MM-dd"),

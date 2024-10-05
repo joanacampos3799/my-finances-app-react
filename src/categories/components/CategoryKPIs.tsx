@@ -3,12 +3,13 @@ import DonutChart from "../../common/components/DonutChart";
 import { Flex } from "@chakra-ui/react";
 import { movementTypes } from "../../common/constants";
 import useInsights from "../../common/hooks/useInsights";
+import usePeriodStore from "../../common/hooks/usePeriodStore";
 
 interface Props {
-  period: string;
   data: Category[];
 }
-const CategoryKPIs = ({ data, period }: Props) => {
+const CategoryKPIs = ({ data }: Props) => {
+  const { period } = usePeriodStore();
   const { getTransactionsTotalAmount } = useInsights();
 
   const getChartData = (filtered: Category[], type: number) => {
@@ -20,7 +21,7 @@ const CategoryKPIs = ({ data, period }: Props) => {
   };
 
   return (
-    <Flex direction={"row"} gap={4} justifyContent={"center"} pt={1}>
+    <Flex px="10px" direction={"row"} gap={2} justifyContent={"center"} pt={1}>
       {movementTypes.map((catType) => (
         <DonutChart
           key={catType.id + "-kpi"}
