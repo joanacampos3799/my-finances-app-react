@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/clerk-react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import WelcomePage from "../../welcome/pages/Welcome";
+import HeroPage from "../../hero/pages/Hero";
 
 const ConditionalRoute = () => {
   const { isSignedIn } = useAuth();
@@ -9,11 +9,7 @@ const ConditionalRoute = () => {
       <Route
         path=""
         element={
-          isSignedIn ? (
-            <Navigate replace to={"/s/dashboard"} />
-          ) : (
-            <WelcomePage />
-          )
+          isSignedIn ? <Navigate replace to={"/s/dashboard"} /> : <HeroPage />
         }
       />
     </Routes>

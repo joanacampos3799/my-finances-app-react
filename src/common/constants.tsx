@@ -14,6 +14,7 @@ export const queryKeys = {
   transactions: "transactions",
   token: "token",
   user: "user",
+  question: "question",
 };
 
 export const mutationKeys = {
@@ -33,6 +34,7 @@ export const mutationKeys = {
   addTransaction: "new-transaction",
   updateTransaction: "update-transaction",
   deleteTransaction: "delete-transaction",
+  addQuestion: "new-question",
 };
 
 export const movementTypes: EnumType[] = [

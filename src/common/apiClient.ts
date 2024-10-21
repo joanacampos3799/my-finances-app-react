@@ -60,6 +60,10 @@ class APIClient<T> {
       .then((res) => res.data);
   };
 
+  postQuestion = (data: T) => {
+    return axiosInstance.post<T>(this.endpoint, data).then((res) => res.data);
+  };
+
   update = (id: number, data: T, userId: UUID, userToken: string) => {
     return axiosInstance
       .put<T>(this.endpoint + "/" + id, data, {

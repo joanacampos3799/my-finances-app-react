@@ -32,20 +32,16 @@ import {
   getDay,
   getWeekOfMonth,
   parse,
-  parseISO,
-  startOfDay,
   startOfMonth,
-  startOfWeek,
 } from "date-fns";
 import BarChartComponent from "../../common/components/BarChartComponent";
-import useInsights from "../../common/hooks/useInsights";
 
 const AccountDetailsPage = () => {
   const { id } = useParams();
 
   const { account, isLoading, error } = useAccount(+id!);
   const { period } = usePeriodStore();
-  const { parseDate, getStartEndDates } = useDateFilter();
+  const { getStartEndDates } = useDateFilter();
   const dates = getStartEndDates(period);
   const { calculateDailyBalances } = useAccountInsights();
 
@@ -65,20 +61,32 @@ const AccountDetailsPage = () => {
   const groupTransactionsByPeriod = (
     transactions: Transaction[],
     period: string
-  ): { [key: string]: { [category: string]: number } } => {
+  ) => {
     if (period === "Monthly") {
-      return groupTransactionsByWeek(transactions);
-    } else if (period == "Weekly") return groupTransactionsByDay(transactions);
+      return groupTransactionsByWeek(
+        transactions,
+        dates.startDate,
+        dates.endDate
+      );
+    } else if (period == "Weekly")
+      return groupTransactionsByDay(
+        transactions,
+        dates.startDate,
+        dates.endDate
+      );
 
-    return groupTransactionsByMonth(transactions);
+    return groupTransactionsByMonth(
+      transactions,
+      dates.startDate,
+      dates.endDate
+    );
   };
 
   const groupedData = groupTransactionsByPeriod(account.Transactions, period);
 
   const spendingCategories = Object.keys(groupedData).map((key) => ({
     category: key,
-
-    ...groupedData[key],
+    ...(groupedData[key] || {}),
   }));
 
   const uniqueCategories = Array.from(
@@ -111,7 +119,7 @@ const AccountDetailsPage = () => {
               currency="Eur"
             />
           </Heading>
-          <Flex gap={8} w="100%" direction={"row"}>
+          <Flex gap={8} direction={"row"} p="10px">
             <HStack>
               <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
                 {" "}
@@ -132,10 +140,8 @@ const AccountDetailsPage = () => {
                   : "No Linkned Institution"}
               </Text>
             </HStack>
-          </Flex>
-          <Flex mt={2} direction={"row"} p={"10px"}>
-            <Flex gap={2} w="100%">
-              <Heading color={"teal.700"} size={"md"}>
+            <HStack>
+              <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
                 {" "}
                 Initial Balance
               </Heading>
@@ -145,7 +151,7 @@ const AccountDetailsPage = () => {
                 style="currency"
                 currency="Eur"
               />
-            </Flex>
+            </HStack>
           </Flex>
 
           <Flex direction="row" gap={4}>
@@ -153,35 +159,34 @@ const AccountDetailsPage = () => {
               data={balanceHistoryData}
               caption={`${account.Name} Balance History`}
             />
-            <Flex direction={"column"} gap={4}>
-              <StackedBarChart
-                height={200}
-                width={500}
-                title={
-                  period === "Monthly" ? "Weekly Expenses" : "Monthly Expenses"
-                }
-                chartData={spendingCategories}
-                xAxisDataKey={"category"}
-                data={data}
-              />
 
-              <Flex
-                direction={"column"}
-                justifyContent={"center"}
-                alignItems={"center"}
-                bgColor={"white"}
-                borderRadius={"md"}
-                p={"10px"}
-              >
-                <Heading color={"teal.700"}>Revenue</Heading>
-                <BarChartComponent
-                  height={250}
-                  width={500}
-                  xAxisDataKey="category" // Key for days, weeks, or months
-                  chartData={chartProps.chartData}
-                  data={chartProps.data} // Income vs Expenses
-                />
-              </Flex>
+            <StackedBarChart
+              height={300}
+              width={350}
+              title={
+                period === "Monthly" ? "Weekly Expenses" : "Monthly Expenses"
+              }
+              chartData={spendingCategories}
+              xAxisDataKey={"category"}
+              data={data}
+            />
+
+            <Flex
+              direction={"column"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              bgColor={"white"}
+              borderRadius={"md"}
+              p={"10px"}
+            >
+              <Heading color={"teal.700"}>Revenue</Heading>
+              <BarChartComponent
+                height={300}
+                width={350}
+                xAxisDataKey="category" // Key for days, weeks, or months
+                chartData={chartProps.chartData}
+                data={chartProps.data} // Income vs Expenses
+              />
             </Flex>
           </Flex>
 
@@ -217,7 +222,11 @@ const AccountDetailsPage = () => {
   );
 };
 
-const groupTransactionsByWeek = (transactions: Transaction[]) => {
+const groupTransactionsByWeek = (
+  transactions: Transaction[],
+  startDate: Date,
+  endDate: Date
+) => {
   const groupedData: { [key: string]: { [category: string]: number } } = {};
 
   transactions.forEach((transaction) => {
@@ -237,16 +246,37 @@ const groupTransactionsByWeek = (transactions: Transaction[]) => {
     });
   });
 
-  return groupedData;
+  const weeksInRange = eachWeekOfInterval(
+    { start: startDate, end: endDate },
+    { weekStartsOn: getDay(startOfMonth(startDate)) as Day }
+  );
+
+  const groupedWeeks: { [key: string]: { [category: string]: number } } = {};
+
+  weeksInRange.map((week) => {
+    const weekKey = "Week " + getWeekOfMonth(week);
+
+    if (!groupedData[weekKey]) {
+      groupedWeeks[weekKey] = {};
+    } else {
+      groupedWeeks[weekKey] = groupedData[weekKey];
+    }
+  });
+
+  return groupedWeeks;
 };
 
-const groupTransactionsByDay = (transactions: Transaction[]) => {
+const groupTransactionsByDay = (
+  transactions: Transaction[],
+  startDate: Date,
+  endDate: Date
+) => {
   const groupedData: { [key: string]: { [category: string]: number } } = {};
 
   transactions.forEach((transaction) => {
     const transactionDate = parse(transaction.Date, "dd/MM/yyyy", new Date());
 
-    const dayKey = getDate(transactionDate);
+    const dayKey = getDate(transactionDate).toString();
 
     if (!groupedData[dayKey]) {
       groupedData[dayKey] = {};
@@ -260,13 +290,29 @@ const groupTransactionsByDay = (transactions: Transaction[]) => {
     });
   });
 
-  return groupedData;
+  const groupedDays: { [key: string]: { [category: string]: number } } = {};
+
+  const daysInRange = eachDayOfInterval({ start: startDate, end: endDate });
+  daysInRange.map((day) => {
+    const dayKey = getDate(day);
+    if (!groupedData[dayKey]) {
+      groupedDays[dayKey] = {};
+    } else {
+      groupedDays[dayKey] = groupedData[dayKey];
+    }
+  });
+
+  return groupedDays;
 };
 
-// Utility to group by months
-const groupTransactionsByMonth = (transactions: Transaction[]) => {
-  const groupedData: { [key: string]: { [category: string]: number } } = {};
+export const groupTransactionsByMonth = (
+  transactions: Transaction[],
+  startDate: Date, // Start of the desired period
+  endDate: Date // End of the desired period
+) => {
+  const groupedData: { [month: string]: { [category: string]: number } } = {};
 
+  // First, group transactions by month and category
   transactions.forEach((transaction) => {
     const transactionDate = parse(transaction.Date, "dd/MM/yyyy", new Date());
     const monthKey = format(startOfMonth(transactionDate), "MMM"); // Use the month as the key
@@ -283,7 +329,22 @@ const groupTransactionsByMonth = (transactions: Transaction[]) => {
     });
   });
 
-  return groupedData;
+  // Generate complete list of months in the period
+  const groupedMonths: { [key: string]: { [category: string]: number } } = {};
+
+  const monthsInRange = eachMonthOfInterval({ start: startDate, end: endDate });
+  monthsInRange.map((month) => {
+    const monthKey = format(month, "MMM");
+
+    if (!groupedData[monthKey]) {
+      groupedMonths[monthKey] = {};
+    } else {
+      groupedMonths[monthKey] = groupedData[monthKey];
+    }
+  });
+
+  // Return chart-ready data with totals for each period
+  return groupedMonths;
 };
 
 const prepareIncomeVsExpensesData = (

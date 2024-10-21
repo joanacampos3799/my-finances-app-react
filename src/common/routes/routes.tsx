@@ -7,13 +7,17 @@ import SignUpPage from "../../auth/pages/SignUp";
 import CategoriesPage from "../../categories/pages/CategoriesPage";
 import FixedTransactionsPage from "../../fixed-transactions/pages/FixedTransactionsPage";
 import ConditionalRoute from "./ConditionalRoute";
-import RootLayout from "../../welcome/layouts/RootLayout";
-import DashboardLayout from "../../welcome/layouts/DashboardLayout";
+import RootLayout from "../../hero/layouts/RootLayout";
+import DashboardLayout from "../../hero/layouts/DashboardLayout";
 import AccountsPage from "../../accounts/AccountsPage";
 import TransactionsPage from "../../transactions/page/TransactionsPage";
 import DebtsPage from "../../debts/page/DebtsPage";
 import InstitutionsPage from "../../institutions/page/InstitutionsPage";
 import AccountDetailsPage from "../../account/page/AccountDetailsPage";
+import AboutUsPage from "../../info/pages/AboutUsPage";
+import PricingPage from "../../info/pages/PricingPage";
+import PrivacyPage from "../../info/pages/PrivacyPage";
+import TermsPage from "../../info/pages/TermsPage";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +27,10 @@ const router = createBrowserRouter([
       { index: true, element: <ConditionalRoute /> },
       { path: "/sign-in/*", element: <SignInPage /> },
       { path: "/sign-up/*", element: <SignUpPage /> },
+      { path: "/about-us", element: <AboutUsPage /> },
+      { path: "/pricing", element: <PricingPage /> },
+      { path: "/privacy", element: <PrivacyPage /> },
+      { path: "/terms", element: <TermsPage /> },
       {
         element: <DashboardLayout />,
         path: "s",

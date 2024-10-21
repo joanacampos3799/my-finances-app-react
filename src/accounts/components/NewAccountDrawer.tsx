@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { accountTypes } from "../../common/constants";
-import { Input, Stack } from "@chakra-ui/react";
+import { Input, Show, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field";
 import useAddAccount from "../hooks/useAddAccount";
 import useInstitutions from "../../institutions/hooks/useInstitutions";
@@ -29,6 +29,7 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
   const { values, handleChange, resetForm } = useForm<AccountFormObject>({
     Name: account ? account.Name : "",
     ib: account ? account.InitialBalance : 0,
+    limit: account ? account.InitialBalance : 0,
     selectedInstitution: institutionId
       ? "" + institutionId
       : account && account.Institution
@@ -41,6 +42,13 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
   const updateAccount = useUpdateAccount(() => resetForm());
   const institutionsSelect =
     new HelperEntity<InstitutionList>().getMappedRadioEntity(institutions);
+  const showSpendingLimit =
+    +values.selectedAccountTypeId === 0 ||
+    +values.selectedAccountTypeId === 1 ||
+    +values.selectedAccountTypeId === 3 ||
+    +values.selectedAccountTypeId === 6 ||
+    +values.selectedAccountTypeId === 7 ||
+    +values.selectedAccountTypeId === 8;
   const [open, setOpen] = useState(false);
   return (
     <DrawerComponent
@@ -65,6 +73,7 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               userId: userId!!,
               InitialBalance: values.ib,
               Id: account.Id,
+              SpendingLimit: values.limit,
               Transactions: account.Transactions,
             });
           } else {
@@ -74,6 +83,7 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               Type: +values.selectedAccountTypeId,
               userId: userId!!,
               InitialBalance: values.ib,
+              SpendingLimit: values.limit,
               Transactions: [],
             });
           }
@@ -116,6 +126,16 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               hasArrow
             />
           </Field>
+
+          <Show when={showSpendingLimit}>
+            <Field label="Spending Limit">
+              <NumberInput
+                number={values.limit}
+                setNumber={(e) => handleChange("limit", e)}
+                isCurrency
+              />
+            </Field>
+          </Show>
         </Stack>
       </form>
     </DrawerComponent>

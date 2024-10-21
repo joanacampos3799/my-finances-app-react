@@ -26,11 +26,7 @@ const ExportDrawer = () => {
 
   const [startDate, setStartDate] = useState<Date>(start);
   const [endDate, setEndDate] = useState<Date>(end);
-  useEffect(() => {
-    const { startDate: start, endDate: end } = getStartEndDates(period);
-    setStartDate(start);
-    setEndDate(end);
-  }, [period, getStartEndDates]);
+
   const [type, setType] = useState<string>("-1");
 
   return (

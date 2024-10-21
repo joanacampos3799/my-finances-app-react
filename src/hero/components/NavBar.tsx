@@ -16,7 +16,6 @@ import {
 import { useState } from "react";
 import { BiCategory, BiReceipt } from "react-icons/bi";
 import { LinkButton } from "../../components/ui/link-button";
-import { RiHandCoinLine } from "react-icons/ri";
 
 const NavBar = () => {
   const location = useLocation();
@@ -129,14 +128,14 @@ const NavBar = () => {
             title="Sign In"
             icon={LuLogIn}
             isOpen={sideBarOpen}
-            active={activePage === "/s/settings"}
+            active={activePage === "/sign-in"}
           />
           <NavBarButton
             link="/sign-up"
             title="Get Started"
             icon={LuClipboardEdit}
             isOpen={sideBarOpen}
-            active={activePage === "/s/settings"}
+            active={activePage === "/sign-up"}
           />
         </SignedOut>
       </Flex>

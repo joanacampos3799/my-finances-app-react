@@ -1,4 +1,4 @@
-import { Center, Flex } from "@chakra-ui/react";
+import { Flex, Heading } from "@chakra-ui/react";
 import { LineChart } from "@mui/x-charts";
 import { format, parse } from "date-fns";
 
@@ -17,9 +17,10 @@ const LineChartComponent = ({ data, caption }: Props) => {
       borderRadius={"md"}
       p={"10px"}
     >
+      <Heading color={"teal.700"}>{caption}</Heading>
       <LineChart
-        width={500}
-        height={400}
+        width={350}
+        height={300}
         series={[
           {
             data: data.map((d) => d.y),
@@ -36,9 +37,6 @@ const LineChartComponent = ({ data, caption }: Props) => {
         ]}
         yAxis={[{ min: 0 }]}
       />
-      <Center fontSize="sm" color="gray.500" mt={2} textAlign="center">
-        {caption}
-      </Center>
     </Flex>
   );
 };

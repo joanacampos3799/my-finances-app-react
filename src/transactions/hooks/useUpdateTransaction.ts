@@ -4,8 +4,9 @@ import Transaction from "../model/Transaction";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { mutationKeys, queryKeys } from "../../common/constants";
 import { toaster } from "../../components/ui/toaster";
+import TransactionRequest from "../model/TransactionRequest";
 
-const apiClient = new APIClient<Transaction>("/transactions");
+const apiClient = new APIClient<TransactionRequest>("/transactions");
 
 export function useUpdateTransaction() {
   const queryClient = useQueryClient();
@@ -14,9 +15,9 @@ export function useUpdateTransaction() {
 
   const { mutate: updateTransaction } = useMutation({
     mutationKey: [queryKeys.transactions, mutationKeys.updateTransaction],
-    mutationFn: (transaction: Transaction) =>
+    mutationFn: (transaction: TransactionRequest) =>
       apiClient.update(transaction.Id!!, transaction, userId!!, userToken!!),
-    onSuccess: (data: Transaction, variables: Transaction) => {
+    onSuccess: (data: TransactionRequest, variables: TransactionRequest) => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.transactions] });
       toaster.create({
         title: `You have updated the ${variables.Name} transaction`,

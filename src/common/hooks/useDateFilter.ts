@@ -1,3 +1,5 @@
+import { endOfWeek, startOfWeek } from "date-fns";
+
 const useDateFilter = () => {
   const parseDate = (date: string) => {
     const splitDate = date.split("/");
@@ -8,6 +10,11 @@ const useDateFilter = () => {
     const currentDate = new Date();
 
     switch (period.toLowerCase()) {
+      case "weekly":
+        return {
+          startDate: startOfWeek(currentDate),
+          endDate: endOfWeek(currentDate),
+        };
       case "monthly":
         return {
           startDate: new Date(

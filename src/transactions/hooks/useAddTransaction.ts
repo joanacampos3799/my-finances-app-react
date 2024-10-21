@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import APIClient from "../../common/apiClient";
-import Transaction from "../model/Transaction";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { mutationKeys, queryKeys } from "../../common/constants";
 import { toaster } from "../../components/ui/toaster";
+import TransactionRequest from "../model/TransactionRequest";
 
-const apiClient = new APIClient<Transaction>("/transactions/new");
+const apiClient = new APIClient<TransactionRequest>("/transactions/new");
 
 const useAddTransaction = (onAdd: () => void) => {
   const queryClient = useQueryClient();
@@ -13,11 +13,11 @@ const useAddTransaction = (onAdd: () => void) => {
 
   const { mutate: addTransaction } = useMutation({
     mutationKey: [queryKeys.transactions, mutationKeys.addTransaction],
-    mutationFn: (transaction: Transaction) =>
+    mutationFn: (transaction: TransactionRequest) =>
       apiClient.post(transaction, userId!!, userToken!!),
     onMutate: () => onAdd(),
 
-    onSuccess: (newTransaction: Transaction) => {
+    onSuccess: (newTransaction: TransactionRequest) => {
       toaster.create({
         title: `Transaction ${newTransaction.Name} added!`,
         type: "success",

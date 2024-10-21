@@ -102,7 +102,7 @@ const NewTransactionDrawer = ({
             accountId: +values.selectedAccount,
             categories: values.selectedCategories
               .filter((cat) => cat.checked)
-              .map((cat) => cat.data),
+              .map((cat) => cat.data.Id!!),
             isFee: false,
           });
         }}
