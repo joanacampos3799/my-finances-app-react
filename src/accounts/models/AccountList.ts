@@ -12,6 +12,9 @@ export default interface AccountList {
   Debts: Debt[];
   Type: number;
   Institution?: InstitutionList;
+  PaymentDueDate?: DateObj;
+  Interest?: number;
   userId: UUID;
   deleted?: boolean;
+  JointUserName?: string;
 }

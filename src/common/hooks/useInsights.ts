@@ -1,4 +1,4 @@
-import { isAfter, parseISO } from "date-fns";
+import { isAfter } from "date-fns";
 import Transaction from "../../transactions/model/Transaction";
 import useDateFilter from "./useDateFilter";
 import AccountList from "../../accounts/models/AccountList";
@@ -79,12 +79,14 @@ const useInsights = () => {
       return "N/A"; // No transactions available
     }
 
-    return transactions.reduce((mostRecent, current) => {
-      const currentDate = parseISO(current.Date);
-      const mostRecentDate = parseISO(mostRecent.Date);
+    return parseDate(
+      transactions.reduce((mostRecent, current) => {
+        const currentDate = parseDate(current.Date);
+        const mostRecentDate = parseDate(mostRecent.Date);
 
-      return isAfter(currentDate, mostRecentDate) ? current : mostRecent;
-    }).Date;
+        return isAfter(currentDate, mostRecentDate) ? current : mostRecent;
+      }).Date
+    ).toDateString();
   };
   const getTransactionsAverageAmount = (transactions: Transaction[]) => {
     if (transactions.length === 0) {

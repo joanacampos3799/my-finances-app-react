@@ -14,7 +14,7 @@ import { GiReceiveMoney } from "react-icons/gi";
 
 const Footer = () => {
   return (
-    <Flex bg="gray.400" color="gray.200" py={10}>
+    <Flex bg="gray.400" color="gray.200" py={10} mt={5}>
       <Container maxW="6xl">
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={8}>
           {/* About Us Section */}

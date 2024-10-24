@@ -8,6 +8,9 @@ export default interface TransactionFormObject {
   selectedAccount: string;
   Name: string;
   selectedFixedId: string;
+  isFee: boolean;
+  isCreditCardPayment: boolean;
+  selectedCreditCard?: string;
   selectedCategories: {
     data: Category;
     checked: boolean;

@@ -12,8 +12,11 @@ interface Props {
 }
 const TabContent = ({ transactions }: Props) => {
   const months = transactions.map((transaction) => {
-    const splitDate = transaction.Date.split("/");
-    const date = new Date(+splitDate[2], +splitDate[1] - 1, +splitDate[0]);
+    const date = new Date(
+      transaction.Date.year,
+      transaction.Date.month - 1,
+      transaction.Date.day
+    );
     return {
       id: date.getMonth(),
       value: format(date, "LLLL"),
@@ -24,9 +27,9 @@ const TabContent = ({ transactions }: Props) => {
     return {
       name: month.value,
       transactions: transactions.filter((t) => {
-        const split = t.Date.split("/");
         return (
-          new Date(+split[2], +split[1] - 1, +split[0]).getMonth() === month.id
+          new Date(t.Date.year, t.Date.month - 1, t.Date.day).getMonth() ===
+          month.id
         );
       }),
     };

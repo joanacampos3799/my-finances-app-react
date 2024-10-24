@@ -12,6 +12,7 @@ import {
   FormatNumber,
   HStack,
   Input,
+  Show,
   Stack,
   Textarea,
 } from "@chakra-ui/react";
@@ -32,16 +33,19 @@ import DatePicker from "../../common/components/DatePicker";
 import { format } from "date-fns";
 import TransactionFormObject from "../model/TransactionFormObject";
 import Transaction from "../model/Transaction";
+import { Checkbox } from "../../components/ui/checkbox";
 
 interface Props {
   Transaction?: Transaction;
   categoriesIds?: number[];
   accountId?: number;
+  creditAccountId?: number;
 }
 const NewTransactionDrawer = ({
   Transaction,
   categoriesIds,
   accountId,
+  creditAccountId,
 }: Props) => {
   const [isFixedTransaction, setIsFixedTransaction] = useState(false);
   const { userId } = useLoginData();
@@ -62,6 +66,9 @@ const NewTransactionDrawer = ({
     Name: "",
     selectedFixedId: "",
     selectedCategories: initialState,
+    isFee: false,
+    isCreditCardPayment: creditAccountId !== undefined,
+    selectedCreditCard: creditAccountId ? "" + creditAccountId : undefined,
   });
   const addTransaction = useAddTransaction(() => resetForm());
 
@@ -73,13 +80,17 @@ const NewTransactionDrawer = ({
   const accountsSelect = new HelperEntity<AccountList>().getMappedRadioEntity(
     accounts
   );
+
+  const creditSelect = new HelperEntity<AccountList>().getMappedRadioEntity(
+    accounts.filter((acc) => acc.Type === 1)
+  );
   const [open, setOpen] = useState(false);
   return (
     <DrawerComponent
       placement={"end"}
       open={open}
       setOpen={setOpen}
-      name="Transaction"
+      name={creditAccountId ? "Payment" : "Transaction"}
       formName="new-transaction-form"
       refElement={ref.current}
     >
@@ -103,7 +114,11 @@ const NewTransactionDrawer = ({
             categories: values.selectedCategories
               .filter((cat) => cat.checked)
               .map((cat) => cat.data.Id!!),
-            isFee: false,
+            isFee: values.isFee,
+            isCreditCardPayment: values.isCreditCardPayment,
+            creditCardId: values.selectedCreditCard
+              ? +values.selectedCreditCard
+              : undefined,
           });
         }}
       >
@@ -226,6 +241,39 @@ const NewTransactionDrawer = ({
               setSelectedId={(value) => handleChange("selectedAccount", value)}
             />
           </Field>
+
+          <Field label="Is Fee">
+            <Checkbox
+              checked={values.isFee}
+              onCheckedChange={(e) => handleChange("isFee", e.checked)}
+            />
+          </Field>
+          <Field label="">
+            <Switch
+              size="lg"
+              colorPalette={"green"}
+              thumbLabel={{ on: <LuCheck />, off: <LuX /> }}
+              checked={values.isCreditCardPayment}
+              onCheckedChange={(e) =>
+                handleChange("isCreditCardPayment", e.checked)
+              }
+            >
+              Is Credit Card Payment
+            </Switch>
+          </Field>
+          <Show when={values.isCreditCardPayment}>
+            <Field label="Credit Card">
+              <RadioMenu
+                hasArrow
+                placeholder="credit card"
+                data={creditSelect}
+                selectedId={values.selectedCreditCard!!}
+                setSelectedId={(value) =>
+                  handleChange("selectedCreditCard", value)
+                }
+              />
+            </Field>
+          </Show>
         </Stack>
       </form>
     </DrawerComponent>

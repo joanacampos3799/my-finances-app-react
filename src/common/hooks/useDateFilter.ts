@@ -1,9 +1,8 @@
 import { endOfWeek, startOfWeek } from "date-fns";
 
 const useDateFilter = () => {
-  const parseDate = (date: string) => {
-    const splitDate = date.split("/");
-    return new Date(+splitDate[2], +splitDate[1] - 1, +splitDate[0]);
+  const parseDate = (date: DateObj) => {
+    return new Date(date.year, date.month - 1, date.day);
   };
 
   const getStartEndDates = (period: string, previous?: boolean) => {

@@ -6,8 +6,11 @@ export default interface AccountRequest {
   userId: UUID;
   Name: string;
   InitialBalance: number;
-  SpendingLimit: number;
+  SpendingLimit?: number;
   Transactions: Transaction[];
   Type: number;
   institutionId: number;
+  jointUserId?: string;
+  paymentDueDate?: string;
+  interest?: number;
 }

@@ -34,7 +34,9 @@ const TransactionsPage = () => {
   }
   let years: string[] = [];
   if (transData && transCount > 0)
-    years = transData.map((s) => s.Date.split("/")[2]).sort((a, b) => +b - +a);
+    years = transData
+      .map((s) => s.Date.year.toString())
+      .sort((a, b) => +b - +a);
   return (
     <>
       {" "}
@@ -59,7 +61,7 @@ const TransactionsPage = () => {
               <Tabs.Content key={year} value={year}>
                 <TabContent
                   transactions={transData.filter(
-                    (t) => t.Date.split("/")[2] === year
+                    (t) => t.Date.year.toString() === year
                   )}
                 />
               </Tabs.Content>

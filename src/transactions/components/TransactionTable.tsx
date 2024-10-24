@@ -22,6 +22,7 @@ import {
   PaginationRoot,
 } from "../../components/ui/pagination";
 import TransactionEmptyState from "./TransactionEmptyState";
+import useDateFilter from "../../common/hooks/useDateFilter";
 
 interface Props {
   data: Transaction[];
@@ -36,18 +37,15 @@ const TransactionTable = ({
   showFooter,
 }: Props) => {
   const { data: accounts } = useAccounts();
-  const { data: categories } = useCategories();
   const { isSorting, getSortingState, sortNumber, sortString } = useSorting();
+  const { parseDate } = useDateFilter();
   const iconPack = useIconPack();
   const [sortedTransactions, setSortedTransactions] =
     useState<Transaction[]>(data);
-
   return (
-    <>
-      {accounts.length > 0 &&
-      categories.length > 0 &&
-      sortedTransactions.length > 0 ? (
-        <Flex direction={"column"} gap={2} py={2} colorPalette={"teal"}>
+    <Flex direction={"column"} gap={2} py={2} colorPalette={"teal"}>
+      {accounts.length > 0 && sortedTransactions.length > 0 ? (
+        <>
           <Table.Root colorPalette={"teal"} stickyHeader>
             <Table.Header>
               <Table.Row>
@@ -128,7 +126,7 @@ const TransactionTable = ({
                       currency="EUR"
                     />
                   </Table.Cell>
-                  <Table.Cell>{t.Date}</Table.Cell>
+                  <Table.Cell>{parseDate(t.Date).toDateString()}</Table.Cell>
                   <Show when={!fromAccount}>
                     <Table.Cell>
                       {accounts.find((a) => a.Id === t.accountId) &&
@@ -194,11 +192,11 @@ const TransactionTable = ({
               <PaginationNextTrigger />
             </HStack>
           </PaginationRoot>
-        </Flex>
+        </>
       ) : (
         <TransactionEmptyState />
       )}
-    </>
+    </Flex>
   );
 };
 

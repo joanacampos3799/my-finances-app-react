@@ -1,11 +1,12 @@
 import { Badge, FormatNumber, HStack, Show, Table } from "@chakra-ui/react";
 import { Button } from "../../components/ui/button";
-import { LuTrash2 } from "react-icons/lu";
+import { LuSearch, LuTrash2 } from "react-icons/lu";
 import AccountList from "../models/AccountList";
-import AccountDetails from "./AccountDetails";
+
 import NewAccountDrawer from "./NewAccountDrawer";
 import useInsights from "../../common/hooks/useInsights";
 import { accountTypes } from "../../common/constants";
+import { LinkButton } from "../../components/ui/link-button";
 interface Props {
   account: AccountList;
   fromInstitution?: boolean;
@@ -40,7 +41,16 @@ const AccountRow = ({ account, onDelete, fromInstitution }: Props) => {
       </Table.Cell>
       <Table.Cell textAlign={"end"}>
         <HStack justifyContent={"flex-end"}>
-          <AccountDetails account={account} />
+          <LinkButton
+            href={"/s/accounts/" + account.Id}
+            h="40px"
+            w="40px"
+            variant={"outline"}
+            colorPalette={"teal.500"}
+            borderRadius={"md"}
+          >
+            <LuSearch />
+          </LinkButton>
           <NewAccountDrawer account={account} />
           <Button
             h="40px"

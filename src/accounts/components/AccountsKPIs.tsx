@@ -10,9 +10,7 @@ import {
 import DonutChart from "../../common/components/DonutChart";
 import useInsights from "../../common/hooks/useInsights";
 import AccountList from "../models/AccountList";
-import { accountTypes } from "../../common/constants";
 import GaugeChart from "../../common/components/GaugeChart";
-import { getDaysInMonth } from "date-fns";
 import { LuWalletCards } from "react-icons/lu";
 import { TbCoins, TbReceipt2 } from "react-icons/tb";
 import useAccountInsights from "../../common/hooks/useAccountInsights";

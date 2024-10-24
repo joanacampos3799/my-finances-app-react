@@ -5,7 +5,7 @@ export default interface Transaction {
   Id: number;
   Name: string;
   Description?: string;
-  Date: string;
+  Date: DateObj;
   accountId: number;
   Amount: number;
   categories: Category[];
@@ -13,5 +13,7 @@ export default interface Transaction {
   transactionType: number;
   fixedTransactionId?: number;
   isFee: boolean;
+  isCreditCardPayment: boolean;
+  creditCardId?: number;
   deleted?: boolean;
 }

@@ -12,12 +12,15 @@ import { LuBell, LuSearch } from "react-icons/lu";
 import { Tooltip } from "../../components/ui/tooltip";
 import TimePeriodMenu from "../../common/components/TimePeriodMenu";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
+import useAccountStore from "../hooks/useAccountStore";
+import NewAccountDrawer from "../../accounts/components/NewAccountDrawer";
 
 interface Props {
   name: string;
 }
 const AccountHeader = ({ name }: Props) => {
   const { period, setPeriod } = usePeriodStore();
+  const { account } = useAccountStore();
   return (
     <Box borderRadius={"md"} px={4} pt={4}>
       <Flex align="center" justify="space-between">
@@ -28,34 +31,13 @@ const AccountHeader = ({ name }: Props) => {
           </Text>
         </Flex>
 
-        {/* Search Bar */}
-        <Flex flex="1" mx={4} justify="center">
-          <Input
-            placeholder="Search transactions..."
-            size="md"
-            borderRadius="md"
-            variant="outline"
-            mr={2}
-          />
-          <Button aria-label="Search" variant="outline">
-            <LuSearch />
-          </Button>
-        </Flex>
-
-        {/* Notifications and Profile Menu */}
-        <Flex align="center">
-          <Tooltip showArrow content="Notifications">
-            <Button aria-label="Notifications" variant="outline" mr={4}>
-              <LuBell />
-            </Button>
-          </Tooltip>
-        </Flex>
         <Flex
           direction={"row"}
           gap={2}
           alignItems={"flex-start"}
           justifyItems={"flex-end"}
         >
+          <NewAccountDrawer account={account} />
           <TimePeriodMenu period={period} setPeriod={setPeriod} />
         </Flex>
       </Flex>

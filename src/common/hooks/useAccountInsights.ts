@@ -1,11 +1,4 @@
-import {
-  eachDayOfInterval,
-  format,
-  formatDate,
-  getDate,
-  getDaysInMonth,
-  interval,
-} from "date-fns";
+import { eachDayOfInterval, format, formatDate, interval } from "date-fns";
 import AccountList from "../../accounts/models/AccountList";
 import { accountTypes } from "../constants";
 import useDateFilter from "./useDateFilter";
@@ -219,7 +212,8 @@ const useAccountInsights = () => {
     const transactionMap: { [key: string]: Transaction[] } = {};
 
     transactions.forEach((transaction) => {
-      const dateKey = transaction.Date; // Get the date in YYYY-MM-DD format
+      const dateKey = format(parseDate(transaction.Date), "dd/MM/yyyy");
+
       if (!transactionMap[dateKey]) {
         transactionMap[dateKey] = [];
       }
@@ -229,13 +223,12 @@ const useAccountInsights = () => {
       start: dates.startDate,
       end: new Date(),
     });
-
     days.forEach((day) => {
       const dateKey = format(day, "dd/MM/yyyy"); // Format the current day
       // Apply any transactions that occurred on this day
       if (transactionMap[dateKey]) {
         transactionMap[dateKey].forEach((transaction) => {
-          if (transaction.transactionType == 0)
+          if (transaction.transactionType === 0)
             currentBalance -= transaction.Amount;
           else currentBalance += transaction.Amount;
         });

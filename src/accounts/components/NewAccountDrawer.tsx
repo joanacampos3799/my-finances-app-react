@@ -14,18 +14,23 @@ import AccountFormObject from "../models/AccountFormObject";
 import NumberInput from "../../common/components/NumberInput";
 import AccountList from "../models/AccountList";
 import { useUpdateAccount } from "../hooks/useUpdateAccount";
+import Account from "../../account/Model/Account";
+import useDateFilter from "../../common/hooks/useDateFilter";
+import DatePicker from "../../common/components/DatePicker";
+import { format } from "date-fns";
 
 interface Props {
-  account?: AccountList;
+  account?: AccountList | Account;
   institutionId?: number;
 }
 const NewAccountDrawer = ({ account, institutionId }: Props) => {
   const { userId } = useLoginData();
   const { data } = useInstitutions();
+  const { parseDate } = useDateFilter();
   const [institutions, setInstitutions] = useState<InstitutionList[]>([]);
   useEffect(() => {
-    setInstitutions(data);
-  }, [data, setInstitutions]);
+    if (data && data.length > 0) setInstitutions(data);
+  }, [data]);
   const { values, handleChange, resetForm } = useForm<AccountFormObject>({
     Name: account ? account.Name : "",
     ib: account ? account.InitialBalance : 0,
@@ -36,6 +41,12 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
         ? "" + account.Institution.Id
         : "0",
     selectedAccountTypeId: account ? "" + account.Type : "-1",
+    interest: account ? account.Interest : 0,
+    paymentDate:
+      account && account.PaymentDueDate
+        ? parseDate(account.PaymentDueDate)
+        : new Date(),
+    jointUsername: account?.JointUserName ?? undefined,
   });
   const nameRef = useRef<HTMLInputElement>(null);
   const addAccount = useAddAccount(() => resetForm());
@@ -75,6 +86,11 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               Id: account.Id,
               SpendingLimit: values.limit,
               Transactions: account.Transactions,
+              jointUserId: values.jointUsername,
+              paymentDueDate: values.paymentDate
+                ? format(values.paymentDate, "dd/MM/yyyy")
+                : undefined,
+              interest: values.interest,
             });
           } else {
             addAccount({
@@ -85,6 +101,11 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               InitialBalance: values.ib,
               SpendingLimit: values.limit,
               Transactions: [],
+              jointUserId: values.jointUsername,
+              paymentDueDate: values.paymentDate
+                ? format(values.paymentDate, "dd/MM/yyyy")
+                : undefined,
+              interest: values.interest,
             });
           }
         }}
@@ -136,6 +157,21 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               />
             </Field>
           </Show>
+          <Field label="Interest">
+            <NumberInput
+              number={values.interest}
+              setNumber={(e) => handleChange("interest", e)}
+              isCurrency={false}
+            />
+          </Field>
+          <Field label="Payment Due Date">
+            <DatePicker
+              selectedDate={values.paymentDate}
+              setSelectedDate={(d) => handleChange("paymentDate", d)}
+            />
+          </Field>
+
+          <Field label="Joint User Account"></Field>
         </Stack>
       </form>
     </DrawerComponent>

@@ -3,7 +3,10 @@ import { useState } from "react";
 const useForm = <T>(initialValues: T) => {
   const [values, setValues] = useState<T>(initialValues);
 
-  function handleChange(name: string, value: number | string | object) {
+  function handleChange(
+    name: string,
+    value: number | string | object | boolean
+  ) {
     setValues({
       ...values,
       [name]: value,
