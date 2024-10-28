@@ -7,6 +7,7 @@ export default interface Transaction {
   Description?: string;
   Date: DateObj;
   accountId: number;
+  accountName: string;
   Amount: number;
   categories: Category[];
   userId: UUID;

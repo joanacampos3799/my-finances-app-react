@@ -10,6 +10,7 @@ import NewCategoryDrawer from "./NewCategoryDrawer";
 import CategoryDetails from "./CategoryDetails";
 import useInsights from "../../common/hooks/useInsights";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
+import { FaPen } from "react-icons/fa6";
 
 interface CategoryRowProps {
   category: Category;
@@ -36,15 +37,15 @@ const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
   const budgetValue = category.Budget
     ? category.Budget * timePeriods.find((t) => t.name === period)!!.period
     : 0;
-
+  const CatIcon =
+    iconPack?.find((i) => i.name === category.Icon)?.icon ?? FaPen;
   return (
     <Table.Row key={category.Id + "-row"}>
       <Table.Cell w="150px">
         <HStack>
-          <Icon
-            as={iconPack?.find((i) => i.name === category.Icon)?.icon}
-            color={category.Color}
-          />
+          <Icon color={category.Color}>
+            <CatIcon />
+          </Icon>
           {category.Name}
         </HStack>
       </Table.Cell>

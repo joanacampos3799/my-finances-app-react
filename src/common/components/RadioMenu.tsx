@@ -23,8 +23,8 @@ interface Props<T extends obj> {
   minW?: string;
   color?: boolean;
   hasArrow: boolean;
-  variant?: ConditionalValue<
-    "outline" | "solid" | "subtle" | "surface" | "ghost" | "plain" | undefined
+  variant: ConditionalValue<
+    "outline" | "solid" | "subtle" | "surface" | "ghost" | "plain"
   >;
 }
 const RadioMenu = <T extends obj>({
@@ -44,7 +44,8 @@ const RadioMenu = <T extends obj>({
         <Button
           padding={!hasArrow ? -1 : 4}
           fontWeight={"normal"}
-          variant={variant ?? "outline"}
+          variant={variant}
+          borderColor={variant === "outline" ? "teal.500" : undefined}
           justifyContent={"space-between"}
           width={width ?? "full"}
           colorPalette={color ? "teal" : undefined}

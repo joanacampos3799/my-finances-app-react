@@ -7,7 +7,9 @@ const Header = () => {
   return (
     <Flex justifyContent={"space-between"} p="15px" h="10vh">
       <HStack>
-        <Icon as={GiReceiveMoney} color={"teal.500"} boxSize={8} />
+        <Icon color={"teal.500"} boxSize={8}>
+          <GiReceiveMoney />
+        </Icon>
         <Heading color={"teal.500"}>MoneyTrack.</Heading>
       </HStack>
       <HStack gap={2}>

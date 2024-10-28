@@ -1,15 +1,14 @@
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
-import { Flex, Heading, HStack, Icon, Spinner } from "@chakra-ui/react";
-import { GiReceiveMoney } from "react-icons/gi";
-import { LinkButton } from "../../components/ui/link-button";
+import { Flex } from "@chakra-ui/react";
 import { useAuth } from "@clerk/clerk-react";
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
+import { LoadingOverlay } from "../../components/ui/loading-overlay";
 const SharedLayout = () => {
   const { isSignedIn, isLoaded } = useAuth();
 
-  if (!isLoaded) return <Spinner />;
+  if (!isLoaded) return <LoadingOverlay />;
   return (
     <>
       {isSignedIn ? (

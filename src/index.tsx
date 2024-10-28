@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthContextProvider } from "./auth/contexts/AuthContext";
 import customTheme from "./theme";
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ChakraProvider value={customTheme}>

@@ -136,6 +136,7 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               selectedId={values.selectedInstitution}
               setSelectedId={(v) => handleChange("selectedInstitution", v)}
               placeholder="a institution"
+              variant={"outline"}
             />
           </Field>
           <Field label="Account Type">
@@ -145,6 +146,7 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               selectedId={values.selectedAccountTypeId}
               setSelectedId={(v) => handleChange("selectedAccountTypeId", v)}
               hasArrow
+              variant={"outline"}
             />
           </Field>
 

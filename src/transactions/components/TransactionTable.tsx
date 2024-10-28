@@ -6,13 +6,9 @@ import {
   Show,
   Table,
 } from "@chakra-ui/react";
-import useCategories from "../../categories/hooks/useCategories";
-import { useIconPack } from "../../common/hooks/useIconPack";
-import useAccounts from "../../accounts/hooks/useAccounts";
 import Transaction from "../model/Transaction";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TbArrowBarDown, TbArrowBarUp } from "react-icons/tb";
-import { Tag } from "../../components/ui/tag";
 import useSorting from "../../common/hooks/useSorting";
 import TableHeader from "../../common/components/TableHeader";
 import {
@@ -23,6 +19,7 @@ import {
 } from "../../components/ui/pagination";
 import TransactionEmptyState from "./TransactionEmptyState";
 import useDateFilter from "../../common/hooks/useDateFilter";
+import CategoryTag from "./CategoryTag";
 
 interface Props {
   data: Transaction[];
@@ -36,15 +33,18 @@ const TransactionTable = ({
   fromCategory,
   showFooter,
 }: Props) => {
-  const { data: accounts } = useAccounts();
   const { isSorting, getSortingState, sortNumber, sortString } = useSorting();
   const { parseDate } = useDateFilter();
-  const iconPack = useIconPack();
-  const [sortedTransactions, setSortedTransactions] =
-    useState<Transaction[]>(data);
+  const [sortedTransactions, setSortedTransactions] = useState<
+    Transaction[] | undefined
+  >();
+  useEffect(() => {
+    if (data.length > 0) setSortedTransactions(data);
+  }, [data]);
+
   return (
     <Flex direction={"column"} gap={2} py={2} colorPalette={"teal"}>
-      {accounts.length > 0 && sortedTransactions.length > 0 ? (
+      {sortedTransactions && sortedTransactions.length > 0 ? (
         <>
           <Table.Root colorPalette={"teal"} stickyHeader>
             <Table.Header>
@@ -128,32 +128,13 @@ const TransactionTable = ({
                   </Table.Cell>
                   <Table.Cell>{parseDate(t.Date).toDateString()}</Table.Cell>
                   <Show when={!fromAccount}>
-                    <Table.Cell>
-                      {accounts.find((a) => a.Id === t.accountId) &&
-                        accounts.find((a) => a.Id === t.accountId)?.Name}
-                    </Table.Cell>
+                    <Table.Cell>{t.accountName}</Table.Cell>
                   </Show>
                   <Show when={!fromCategory}>
                     <Table.Cell>
-                      {t.categories.map((val) => {
-                        return (
-                          <Tag
-                            key={val.Id + "-cat"}
-                            rounded={"md"}
-                            startElement={
-                              <Icon
-                                as={
-                                  iconPack?.find(
-                                    (icon) => icon.name === val.Icon
-                                  )?.icon!!
-                                }
-                              />
-                            }
-                          >
-                            {val.Name}
-                          </Tag>
-                        );
-                      })}
+                      {t.categories.map((val) => (
+                        <CategoryTag category={val} key={val.Id + "-cat_tag"} />
+                      ))}
                     </Table.Cell>
                   </Show>
                 </Table.Row>

@@ -14,8 +14,9 @@ import CollapsibleTitle from "../../common/components/CollapsibleTitle";
 import ExportDrawer from "../components/ExportDrawer";
 import TimePeriodMenu from "../../common/components/TimePeriodMenu";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
+import React from "react";
 
-const CategoriesPage = () => {
+const CategoriesPage = React.memo(() => {
   const categories = useCategories();
   const { period, setPeriod } = usePeriodStore();
 
@@ -83,7 +84,7 @@ const CategoriesPage = () => {
               <Tabs.List width={"full"} border={0}>
                 {movementTypes.map((ct) => (
                   <Tabs.Trigger key={ct.id + "-movTypesTab"} value={ct.name}>
-                    <Icon color={"teal.500"} as={ct.icon!!} />
+                    <Icon color={"teal.500"}>{ct.MovementIcon}</Icon>
                     {ct.name}
                   </Tabs.Trigger>
                 ))}
@@ -107,6 +108,6 @@ const CategoriesPage = () => {
       )}
     </Box>
   );
-};
+});
 
 export default CategoriesPage;

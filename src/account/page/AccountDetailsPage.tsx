@@ -6,7 +6,6 @@ import {
   FormatNumber,
   Heading,
   Show,
-  Spinner,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -21,20 +20,21 @@ import AccountKPIs from "../components/AccountKPIs";
 import { accountTypes } from "../../common/constants";
 import CreditKPIs from "../components/CreditKPIs";
 import PaymentsTable from "../components/PaymentsTable";
+import { LoadingOverlay } from "../../components/ui/loading-overlay";
 
 const AccountDetailsPage = () => {
   const { id } = useParams();
 
   const { account: acc, isLoading, error } = useAccount(+id!);
   const { account, setAccount } = useAccountStore();
-
+  console.log(acc);
   useEffect(() => {
     if (acc !== undefined) setAccount(acc);
   }, [acc, setAccount]);
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <LoadingOverlay />;
 
   if (error || !account) return <Text>No data</Text>;
-  console.log(account.Transactions);
+
   return (
     <Box>
       <AccountHeader name={account.Name} />
@@ -54,7 +54,7 @@ const AccountDetailsPage = () => {
             <AccountKPIs />
           )}
 
-          <Flex direction={{ base: "column", md: "row" }} w="100%" gap={4}>
+          <Flex direction={{ base: "column", lg: "row" }} w="100%" gap={4}>
             <Show when={accountTypes[account.Type].name === "Credit"}>
               <Flex
                 direction={"column"}

@@ -1,19 +1,21 @@
-import { Center, Flex, FormatNumber } from "@chakra-ui/react";
+import { Center, Flex, FormatNumber, Heading } from "@chakra-ui/react";
 import { PieChart } from "@mui/x-charts/PieChart";
-import { useEffect, useRef, useState } from "react";
 export interface PieObject {
   label: string;
+
   value: number;
   color?: string;
 }
 interface Props {
   data: PieObject[];
   caption: string;
+  heading?: string;
 }
-const DonutChart = ({ data, caption }: Props) => {
+const DonutChart = ({ data, caption, heading }: Props) => {
   const total = data.map((d) => d.value).reduce((acc, val) => acc + val, 0);
   const valueFormatter = (item: { value: number }) =>
     `${item.value.toFixed(2)}€`;
+
   return (
     <>
       {data.length > 0 && total > 0 && (
@@ -23,8 +25,9 @@ const DonutChart = ({ data, caption }: Props) => {
           alignItems={"center"}
           bgColor={"white"}
           borderRadius={"md"}
-          p={"10px"}
+          flex={1}
         >
+          {heading && <Heading color={"teal.700"}>{heading}</Heading>}
           <PieChart
             series={[
               {
@@ -50,8 +53,8 @@ const DonutChart = ({ data, caption }: Props) => {
             height={250}
           >
             <svg
-              width="350"
-              height="250"
+              width={350}
+              height={250}
               style={{
                 position: "absolute",
                 top: 0,
@@ -60,8 +63,8 @@ const DonutChart = ({ data, caption }: Props) => {
               }}
             >
               <text
-                x="180" // X position (centered)
-                y="130" // Y position (centered)
+                x={180} // X position (centered)
+                y={130} // Y position (centered)
                 textAnchor="middle"
                 dominantBaseline="middle"
                 fontSize="24"

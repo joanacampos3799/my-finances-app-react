@@ -1,4 +1,4 @@
-import { Icon, Flex, Heading } from "@chakra-ui/react";
+import { Icon, Flex, Heading, Button } from "@chakra-ui/react";
 import { SignedIn, UserButton, SignedOut } from "@clerk/clerk-react";
 import { GiReceiveMoney } from "react-icons/gi";
 import { useLocation } from "react-router-dom";
@@ -23,7 +23,7 @@ const NavBar = () => {
   const activePage = location.pathname;
   return (
     <Flex
-      borderEndRadius={"lg"}
+      borderTopEndRadius={"lg"}
       pos={"sticky"}
       left={"5"}
       h={"100vh"}
@@ -33,15 +33,26 @@ const NavBar = () => {
       justifyContent="space-between"
     >
       <Flex p="5px" flexDir="column" w="100%" alignItems={"flex-start"}>
-        <LinkButton
-          variant={"plain"}
+        <Button
+          variant={"solid"}
+          colorPalette={"teal"}
           onClick={() => setSideBarOpen(!sideBarOpen)}
         >
-          <Icon as={GiReceiveMoney} color={"white"} boxSize={8} />
-          <Heading color={"white"} display={sideBarOpen ? "flex" : "none"}>
-            MoneyTrack.
-          </Heading>
-        </LinkButton>
+          <Flex
+            direction={"row"}
+            alignItems={"flex-start"}
+            w="fit-content"
+            fontSize="4xl"
+          >
+            <Icon boxSize={6}>
+              <GiReceiveMoney />
+            </Icon>
+
+            <Heading ml={2} display={sideBarOpen ? "flex" : "none"}>
+              MoneyTrack.
+            </Heading>
+          </Flex>
+        </Button>
       </Flex>
       <SignedIn>
         <Flex flexDir={"column"} gap={3} as="nav">

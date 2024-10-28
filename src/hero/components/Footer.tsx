@@ -20,7 +20,9 @@ const Footer = () => {
           {/* About Us Section */}
           <Stack gap={4}>
             <HStack mb={2}>
-              <Icon as={GiReceiveMoney} boxSize={6} />
+              <Icon boxSize={6}>
+                <GiReceiveMoney />
+              </Icon>
               <Heading as={"h5"} fontSize={"lg"}>
                 MoneyTrack.
               </Heading>

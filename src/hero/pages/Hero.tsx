@@ -69,6 +69,7 @@ export default function HeroPage() {
               <Button
                 onClick={handleCLick}
                 colorPalette={"teal"}
+                borderColor={"teal.500"}
                 variant={"outline"}
               >
                 Learn More

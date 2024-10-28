@@ -1,15 +1,4 @@
-import React from "react";
-import {
-  Box,
-  Flex,
-  Text,
-  Input,
-  Button,
-  IconButton,
-  Avatar,
-} from "@chakra-ui/react";
-import { LuBell, LuSearch } from "react-icons/lu";
-import { Tooltip } from "../../components/ui/tooltip";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import TimePeriodMenu from "../../common/components/TimePeriodMenu";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
 import useAccountStore from "../hooks/useAccountStore";

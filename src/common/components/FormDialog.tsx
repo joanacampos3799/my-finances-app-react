@@ -26,7 +26,6 @@ const FormDialog = ({
   return (
     <DialogRoot
       motionPreset="slide-in-bottom"
-      centered
       open={open}
       onOpenChange={(e) => setOpen(e.open)}
       initialFocusEl={() => initialEl}
@@ -53,6 +52,7 @@ const FormDialog = ({
           <Button
             variant={"outline"}
             colorPalette={"teal"}
+            borderColor={"teal.500"}
             onClick={() => setOpen(false)}
           >
             Cancel

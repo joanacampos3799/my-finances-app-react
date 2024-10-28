@@ -31,7 +31,13 @@ const PricingPage = () => {
             <Text>- Manage accounts manually</Text>
             <Text>- Add fixed transactions</Text>
           </Stack>
-          <Button mt={6} colorScheme="blue" variant="outline" size="lg">
+          <Button
+            mt={6}
+            colorPalette="teal"
+            variant="outline"
+            borderColor={"teal.500"}
+            size="lg"
+          >
             Get Started
           </Button>
         </Box>

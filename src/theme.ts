@@ -14,7 +14,7 @@ const customTheme = defineConfig({
           },
           emphasized: {
             value: {
-              _light: "#14b8a6",
+              _light: "{colors.teal.500}",
               _dark: "#5eead4",
             },
           },

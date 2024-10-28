@@ -1,5 +1,4 @@
 import {
-  Badge,
   Flex,
   FormatNumber,
   Heading,
@@ -13,9 +12,11 @@ import BalanceHistory from "./BalanceHistory";
 import useAccountStore from "../hooks/useAccountStore";
 import ExpensesChart from "./ExpensesChart";
 import Revenue from "./Revenue";
+import { Tag } from "../../components/ui/tag";
 
 const AccountKPIs = () => {
   const { account } = useAccountStore();
+  if (!account) return;
   return (
     <>
       <Flex gap={8} direction={"row"} p="10px">
@@ -24,9 +25,9 @@ const AccountKPIs = () => {
             {" "}
             Account Type
           </Heading>
-          <Badge size="md" colorPalette={"teal"}>
+          <Tag size="md" colorPalette={"teal"}>
             {accountTypes[account.Type].name}
-          </Badge>
+          </Tag>
         </HStack>
         <HStack>
           <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>

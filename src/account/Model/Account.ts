@@ -32,7 +32,7 @@ export const fallbackAccount: Account = {
   Id: 0,
   Balance: 0,
   InitialBalance: 0,
-  Transactions: [],
+  Transactions: [] as Transaction[],
   Debts: [],
   Type: 0,
 };

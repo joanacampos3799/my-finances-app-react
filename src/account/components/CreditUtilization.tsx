@@ -28,20 +28,11 @@ const CreditUtilization = () => {
   ];
   const perc = getPercentage(used, account.SpendingLimit!!);
   return (
-    <Flex
-      direction={"column"}
-      justifyContent={"center"}
-      alignItems={"center"}
-      bgColor={"white"}
-      borderRadius={"md"}
-      p={"10px"}
-    >
-      <Heading color={"teal.700"}>Credit Utilization</Heading>
-      <DonutChart
-        data={data}
-        caption={`Your Credit Utilization is at ${perc}%`}
-      />
-    </Flex>
+    <DonutChart
+      data={data}
+      caption={`Your Credit Utilization is at ${perc}%`}
+      heading="Credit Utilization"
+    />
   );
 };
 

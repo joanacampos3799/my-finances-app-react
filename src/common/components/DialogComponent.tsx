@@ -42,7 +42,7 @@ const DialogComponent = ({
 }: PropsWithChildren<Props>) => {
   const iconPack = useIconPack();
   return (
-    <DialogRoot size={size} centered motionPreset="slide-in-bottom">
+    <DialogRoot size={size} motionPreset="slide-in-bottom">
       <DialogTrigger asChild>
         <Button
           h="40px"

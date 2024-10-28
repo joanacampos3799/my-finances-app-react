@@ -12,8 +12,9 @@ import AccountsKPIs from "./components/AccountsKPIs";
 import AccountsTable from "./components/AccountsTable";
 import usePeriodStore from "../common/hooks/usePeriodStore";
 import TimePeriodMenu from "../common/components/TimePeriodMenu";
+import React from "react";
 
-const AccountsPage = () => {
+const AccountsPage = React.memo(() => {
   const { period, setPeriod } = usePeriodStore();
   const accounts = useAccounts();
 
@@ -76,6 +77,6 @@ const AccountsPage = () => {
       </Box>
     </Box>
   );
-};
+});
 
 export default AccountsPage;

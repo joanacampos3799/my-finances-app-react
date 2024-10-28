@@ -1,7 +1,6 @@
 import { Flex, Heading } from "@chakra-ui/react";
 import { BarChart } from "@mui/x-charts";
 import { DatasetType } from "@mui/x-charts/internals";
-import { title } from "process";
 
 interface Props {
   xAxisDataKey: string;
@@ -26,6 +25,7 @@ const StackedBarChart = ({
     highlightedScope,
     stack: "total",
   }));
+
   return (
     <Flex
       direction={"column"}
@@ -33,7 +33,7 @@ const StackedBarChart = ({
       alignItems={"center"}
       bgColor={"white"}
       borderRadius={"md"}
-      p={"10px"}
+      flex={1}
     >
       <Heading color={"teal.700"}>{title}</Heading>
       <BarChart

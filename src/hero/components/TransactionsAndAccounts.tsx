@@ -1,5 +1,4 @@
 import { Flex, Heading, Image, List, Text } from "@chakra-ui/react";
-
 import { LuCheck } from "react-icons/lu";
 
 const TransactionsAndAccounts = () => {

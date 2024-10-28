@@ -74,8 +74,9 @@ const AccountsKPIs = ({ accounts }: Props) => {
                 justifyContent={"center"}
                 color={"teal.700"}
                 boxSize={6}
-                as={TbCoins}
-              />
+              >
+                <TbCoins />
+              </Icon>
             </Box>
           </Flex>
 
@@ -118,8 +119,9 @@ const AccountsKPIs = ({ accounts }: Props) => {
                 justifyContent={"center"}
                 color={"teal.700"}
                 boxSize={6}
-                as={LuWalletCards}
-              />
+              >
+                <LuWalletCards />
+              </Icon>
             </Box>
           </Flex>
           <Flex direction={"column"}>
@@ -163,8 +165,9 @@ const AccountsKPIs = ({ accounts }: Props) => {
                 justifyContent={"center"}
                 color={"teal.700"}
                 boxSize={6}
-                as={TbReceipt2}
-              />
+              >
+                <TbReceipt2 />
+              </Icon>
             </Box>
           </Flex>
 

@@ -14,6 +14,7 @@ const TimePeriodMenu = ({ period, setPeriod }: Props) => {
       data={timePeriods}
       selectedId={"" + timePeriods.find((p) => p.name === period)?.id}
       setSelectedId={(p) => setPeriod(timePeriods[+p].name)}
+      variant={"outline"}
       hasArrow
     />
   );

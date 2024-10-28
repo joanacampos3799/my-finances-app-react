@@ -4,6 +4,7 @@ import {
   LuArrowUpFromLine,
 } from "react-icons/lu";
 import EnumType from "./EnumType";
+import { ReactElement } from "react";
 
 export const queryKeys = {
   categories: "categories",
@@ -36,22 +37,24 @@ export const mutationKeys = {
   deleteTransaction: "delete-transaction",
   addQuestion: "new-question",
 };
-
-export const movementTypes: EnumType[] = [
+interface MovType extends EnumType {
+  MovementIcon: ReactElement;
+}
+export const movementTypes: MovType[] = [
   {
     id: 0,
     name: "Expenses",
-    icon: LuArrowUpFromLine,
+    MovementIcon: <LuArrowUpFromLine />,
   },
   {
     id: 1,
     name: "Income",
-    icon: LuArrowDownToLine,
+    MovementIcon: <LuArrowDownToLine />,
   },
   {
     id: 2,
     name: "Mixed",
-    icon: LuArrowDownUp,
+    MovementIcon: <LuArrowDownUp />,
   },
 ];
 

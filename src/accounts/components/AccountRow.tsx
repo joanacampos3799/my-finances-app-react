@@ -46,7 +46,8 @@ const AccountRow = ({ account, onDelete, fromInstitution }: Props) => {
             h="40px"
             w="40px"
             variant={"outline"}
-            colorPalette={"teal.500"}
+            colorPalette={"teal"}
+            borderColor={"teal.500"}
             borderRadius={"md"}
           >
             <LuSearch />

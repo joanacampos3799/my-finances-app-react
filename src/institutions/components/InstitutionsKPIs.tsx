@@ -104,8 +104,9 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
                 justifyContent={"center"}
                 color={"teal.700"}
                 boxSize={6}
-                as={TbCoins}
-              />
+              >
+                <TbCoins />
+              </Icon>
             </Box>
           </Flex>
 
@@ -140,8 +141,9 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
                 justifyContent={"center"}
                 color={"teal.700"}
                 boxSize={6}
-                as={LuWalletCards}
-              />
+              >
+                <LuWalletCards />
+              </Icon>
             </Box>
           </Flex>
 
@@ -181,8 +183,9 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
                 justifyContent={"center"}
                 color={"teal.700"}
                 boxSize={6}
-                as={TbReceipt}
-              />
+              >
+                <TbReceipt />
+              </Icon>
             </Box>
           </Flex>
 
@@ -222,8 +225,9 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
                 justifyContent={"center"}
                 color={"teal.700"}
                 boxSize={6}
-                as={LuLandmark}
-              />
+              >
+                <LuLandmark />
+              </Icon>
             </Box>
           </Flex>
           <Flex direction={"column"}>

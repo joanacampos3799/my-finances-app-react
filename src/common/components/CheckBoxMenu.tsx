@@ -28,6 +28,7 @@ const CheckBoxMenu = <T extends TObj>({ name, items, setItems }: Props<T>) => {
         <Button
           fontWeight={"normal"}
           variant={"outline"}
+          borderColor={"teal.500"}
           justifyContent={"space-between"}
           width={"full"}
         >
