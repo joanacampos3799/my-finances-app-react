@@ -21,6 +21,7 @@ import { accountTypes } from "../../common/constants";
 import CreditKPIs from "../components/CreditKPIs";
 import PaymentsTable from "../components/PaymentsTable";
 import { LoadingOverlay } from "../../components/ui/loading-overlay";
+import MainGoal from "../components/MainGoal";
 
 const AccountDetailsPage = () => {
   const { id } = useParams();
@@ -41,18 +42,29 @@ const AccountDetailsPage = () => {
       <Box padding={"15px"}>
         <BreadCrumb name={account.Name} />
         <Flex direction={"column"} gap={4} mt={4}>
-          <Heading color={"teal.700"} size={"4xl"}>
-            <FormatNumber
-              value={account.Balance}
-              style="currency"
-              currency="Eur"
-            />
-          </Heading>
-          {accountTypes[account.Type].name === "Credit" ? (
-            <CreditKPIs />
-          ) : (
-            <AccountKPIs />
-          )}
+          <Flex direction={"column"} gap={4} mt={4}>
+            <Flex direction={{ base: "column", md: "row" }}>
+              <Heading
+                color={"teal.700"}
+                size={"4xl"}
+                w={"75%"}
+                position={"relative"}
+                alignContent={"center"}
+              >
+                <FormatNumber
+                  value={account.Balance}
+                  style="currency"
+                  currency="Eur"
+                />
+              </Heading>
+              {account.Goals && <MainGoal goals={account.Goals} />}
+            </Flex>
+            {accountTypes[account.Type].name === "Credit" ? (
+              <CreditKPIs />
+            ) : (
+              <AccountKPIs />
+            )}
+          </Flex>
 
           <Flex direction={{ base: "column", lg: "row" }} w="100%" gap={4}>
             <Show when={accountTypes[account.Type].name === "Credit"}>

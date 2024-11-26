@@ -17,6 +17,7 @@ export default interface Account {
   Payments?: Payment[];
   Interest?: number;
   JointUserName?: string;
+  Goals?: Goal[];
   userId: UUID;
 }
 
@@ -24,6 +25,22 @@ export interface Payment {
   Id: number;
   Amount: number;
   Date: DateObj;
+}
+
+export interface Goal {
+  Id?: number;
+  Goal: number;
+  SavedAmount: number;
+  Name: string;
+  TargetDate: DateObj;
+  AccountId: number;
+}
+
+export interface GoalFormObject {
+  Goal: number;
+
+  Name: string;
+  TargetDate: Date;
 }
 
 export const fallbackAccount: Account = {

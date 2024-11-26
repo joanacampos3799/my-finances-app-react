@@ -42,7 +42,7 @@ const FormDialog = ({
         )}
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader color={"teal.800"} fontSize="lg" fontWeight="bold">
+        <DialogHeader color={"teal.700"} fontSize="lg" fontWeight="bold">
           {update ? "Update" : "Add a new"} {label}
         </DialogHeader>
 

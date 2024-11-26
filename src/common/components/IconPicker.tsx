@@ -53,20 +53,18 @@ const IconPicker = ({ color, iconSize, iconParam, setIconParam }: Props) => {
   const itemCount = iconsFiltered.length;
   if (itemCount < 100) size = itemCount;
   iconsFiltered = iconsFiltered.slice((page - 1) * size, page * size);
+  let ButtonIcon;
+  if (iconParam)
+    ButtonIcon = iconPack.find((icon) => icon.name === iconParam)?.icon!!;
+  else ButtonIcon = FaPen;
   return (
     <HStack>
       <PopoverRoot open={open} initialFocusEl={() => ref.current}>
         <PopoverTrigger asChild onClick={() => setOpen(true)}>
           <Button variant={"plain"} size={"xs"}>
-            {iconParam ? (
-              <Icon
-                color={color ?? "black"}
-                as={iconPack.find((icon) => icon.name === iconParam)?.icon}
-                boxSize={iconSize}
-              />
-            ) : (
-              <Icon as={FaPen} boxSize={iconSize} />
-            )}
+            <Icon color={color ?? "black"} boxSize={iconSize}>
+              <ButtonIcon />
+            </Icon>
           </Button>
         </PopoverTrigger>
         <PopoverContent portalled={false}>

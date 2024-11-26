@@ -49,7 +49,7 @@ const CategoryDetails = ({ category, total }: Props) => {
         <Flex direction={"row"} gap={10}>
           <Show when={category.Budget}>
             <HStack>
-              <Heading color={"teal.800"} size={"sm"}>
+              <Heading color={"teal.700"} size={"sm"}>
                 {" "}
                 Budget Amount{" "}
               </Heading>
@@ -62,21 +62,21 @@ const CategoryDetails = ({ category, total }: Props) => {
           </Show>
           <HStack>
             <Show when={category.CategoryType !== 1}>
-              <Heading color={"teal.800"} size={"sm"}>
+              <Heading color={"teal.700"} size={"sm"}>
                 {" "}
                 Total Spending
               </Heading>
               <FormatNumber value={total} style="currency" currency="Eur" />
             </Show>
             <Show when={category.CategoryType !== 0}>
-              <Heading color={"teal.800"} size={"sm"}>
+              <Heading color={"teal.700"} size={"sm"}>
                 {" "}
                 Total Income
               </Heading>
               <FormatNumber value={total} style="currency" currency="Eur" />
             </Show>
             <Show when={category.CategoryType === 2}>
-              <Heading color={"teal.800"} size={"sm"}>
+              <Heading color={"teal.700"} size={"sm"}>
                 {" "}
                 Net Balance
               </Heading>
@@ -85,7 +85,7 @@ const CategoryDetails = ({ category, total }: Props) => {
           </HStack>
           <Show when={category.Budget}>
             <HStack>
-              <Heading color={"teal.800"} size={"sm"}>
+              <Heading color={"teal.700"} size={"sm"}>
                 {" "}
                 Budget Status
               </Heading>
@@ -100,13 +100,13 @@ const CategoryDetails = ({ category, total }: Props) => {
         </Flex>
         <Flex direction={"row"} gap={10}>
           <HStack>
-            <Heading color={"teal.800"} size="sm">
+            <Heading color={"teal.700"} size="sm">
               Total Transactions
             </Heading>
             {category.Transactions.length}
           </HStack>
           <HStack>
-            <Heading color={"teal.800"} size="sm">
+            <Heading color={"teal.700"} size="sm">
               Average Transaction Amount
             </Heading>
 

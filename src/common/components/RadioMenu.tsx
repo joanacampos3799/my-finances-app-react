@@ -45,7 +45,7 @@ const RadioMenu = <T extends obj>({
           padding={!hasArrow ? -1 : 4}
           fontWeight={"normal"}
           variant={variant}
-          borderColor={variant === "outline" ? "teal.500" : undefined}
+          borderColor={variant === "outline" && color ? "teal.500" : undefined}
           justifyContent={"space-between"}
           width={width ?? "full"}
           colorPalette={color ? "teal" : undefined}

@@ -40,7 +40,7 @@ const ExportDrawer = () => {
       <DrawerContent roundedTop={"2xl"}>
         <DrawerHeader width={"full"}>
           <Flex direction={"row"} justifyContent={"space-between"}>
-            <DrawerTitle color={"teal.800"}>Generate Report</DrawerTitle>
+            <DrawerTitle color={"teal.700"}>Generate Report</DrawerTitle>
             <DrawerCloseTrigger boxSize={4} m={0} display={"inline-flex"} />
           </Flex>
         </DrawerHeader>
@@ -58,6 +58,7 @@ const ExportDrawer = () => {
               selectedId={type}
               setSelectedId={setType}
               hasArrow
+              variant={"outline"}
             />
           </Flex>
         </DrawerBody>

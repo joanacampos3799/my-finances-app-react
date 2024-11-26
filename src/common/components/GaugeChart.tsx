@@ -11,6 +11,7 @@ interface Props {
 }
 const DonutChart = ({ data, caption }: Props) => {
   const total = data.map((d) => d.value).reduce((acc, val) => acc + val, 0);
+
   const valueFormatter = (item: { value: number }) =>
     `${item.value.toFixed(2)}€`;
   return (
@@ -22,7 +23,7 @@ const DonutChart = ({ data, caption }: Props) => {
           alignItems={"center"}
           bgColor={"white"}
           borderRadius={"md"}
-          p={"10px"}
+          flex={1}
         >
           <PieChart
             series={[

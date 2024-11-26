@@ -58,7 +58,7 @@ const DrawerComponent = ({
       <DrawerContent offset="4" rounded="md">
         <DrawerHeader width={"full"}>
           <Flex direction={"row"} justifyContent={"space-between"}>
-            <DrawerTitle color={"teal.800"}>
+            <DrawerTitle color={"teal.700"}>
               {update ? "Update " : "Add a new "} {name}
             </DrawerTitle>
             <DrawerCloseTrigger boxSize={4} m={0} display={"inline-flex"} />

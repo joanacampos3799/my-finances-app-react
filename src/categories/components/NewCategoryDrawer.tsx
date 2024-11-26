@@ -120,6 +120,7 @@ const NewCategoryDrawer = ({ category }: Props) => {
               selectedId={values.selectedTT}
               setSelectedId={(val) => handleChange("selectedTT", val)}
               placeholder="a category type"
+              variant={"outline"}
             />
           </Field>
           <Show when={values.selectedTT === "0"}>

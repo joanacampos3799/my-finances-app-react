@@ -35,6 +35,7 @@ const Revenue = () => {
       alignItems={"center"}
       bgColor={"white"}
       borderRadius={"md"}
+      flex={1}
       p={"10px"}
     >
       <Heading color={"teal.700"}>Revenue</Heading>

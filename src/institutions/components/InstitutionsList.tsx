@@ -120,6 +120,7 @@ const InstitutionsList = ({ institutions }: Props) => {
           count={institutionCount}
           pageSize={size}
           page={page}
+          colorPalette={"teal"}
           onPageChange={(e) => handlePageChange(e.page)}
         >
           <HStack flexWrap={"wrap"} justifyContent={"center"}>

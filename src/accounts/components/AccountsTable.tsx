@@ -158,6 +158,7 @@ const AccountsTable = ({ accounts, fromInstitution }: Props) => {
             count={accountCount}
             pageSize={size}
             page={page}
+            colorPalette={"teal"}
             onPageChange={(e) => handlePageChange(e.page)}
           >
             <HStack flexWrap={"wrap"} justifyContent={"center"}>

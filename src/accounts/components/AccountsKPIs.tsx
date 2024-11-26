@@ -44,14 +44,14 @@ const AccountsKPIs = ({ accounts }: Props) => {
   const topAccounts = accounts
     .sort((a, b) => b.Balance - a.Balance)
     .slice(0, 3);
-
+  console.log(chartData);
   return (
     <Flex flexDir={"row"} gap={2} p={"10px"} w="100%">
       <DonutChart data={donutData} caption={"Accounts Distribution"} />
 
       <GaugeChart data={chartData} caption={"Assets vs Debts"} />
 
-      <Flex flexDir={"column"} gap={2} w="100%">
+      <Flex flexDir={"column"} gap={2} w="25%">
         <Flex
           h={"full"}
           bgColor={"white"}

@@ -15,6 +15,7 @@ export default interface AccountList {
   PaymentDueDate?: DateObj;
   Interest?: number;
   userId: UUID;
+  active: boolean;
   deleted?: boolean;
   JointUserName?: string;
 }

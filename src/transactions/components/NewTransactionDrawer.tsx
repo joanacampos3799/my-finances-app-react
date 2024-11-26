@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import useCategories from "../../categories/hooks/useCategories";
 import { HelperEntity } from "../../common/helper";
@@ -52,8 +52,22 @@ const NewTransactionDrawer = ({
   const { data: categories } = useCategories();
   const { data: fixedTransactions } = useFixedTransactions();
   const { data: accounts } = useAccounts();
+  const [fixedList, setFixedList] = useState<FixedTransactionList[]>([]);
+  const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const [accountList, setAccountList] = useState<AccountList[]>([]);
+  useEffect(() => {
+    if (accounts && accounts.length > 0) {
+      setAccountList(accounts);
+    }
+    if (categories && categories.length > 0) {
+      setCategoryList(categories);
+    }
+    if (fixedTransactions && fixedTransactions.length > 0) {
+      setFixedList(fixedTransactions);
+    }
+  }, [categories, fixedTransactions, accounts]);
   const initialState = new HelperEntity<Category>().getMappedCheckboxEntity(
-    categories,
+    categoryList,
     categoriesIds
   );
   const ref = useRef(null);
@@ -73,16 +87,16 @@ const NewTransactionDrawer = ({
   const addTransaction = useAddTransaction(() => resetForm());
 
   const fixedSelect =
-    new HelperEntity<FixedTransactionList>().getMappedRadioEntity(
-      fixedTransactions
-    );
+    fixedList.length > 0
+      ? new HelperEntity<FixedTransactionList>().getMappedRadioEntity(fixedList)
+      : [];
 
   const accountsSelect = new HelperEntity<AccountList>().getMappedRadioEntity(
-    accounts
+    accountList
   );
 
   const creditSelect = new HelperEntity<AccountList>().getMappedRadioEntity(
-    accounts.filter((acc) => acc.Type === 1)
+    accountList.filter((acc) => acc.Type === 1) ?? []
   );
   const [open, setOpen] = useState(false);
   return (
@@ -146,6 +160,7 @@ const NewTransactionDrawer = ({
                 placeholder="fixed transaction"
                 selectedId={values.selectedFixedId}
                 setSelectedId={(val) => handleChange("selectedFixedId", val)}
+                variant={"outline"}
               />
             </Field>
             {values.selectedFixedId !== "" &&
@@ -211,6 +226,7 @@ const NewTransactionDrawer = ({
                 placeholder="Transaction Type"
                 selectedId={values.selectedTT}
                 setSelectedId={(val) => handleChange("selectedTT", val)}
+                variant={"outline"}
               />
             </Box>
             <Box>
@@ -239,6 +255,7 @@ const NewTransactionDrawer = ({
               data={accountsSelect}
               selectedId={values.selectedAccount}
               setSelectedId={(value) => handleChange("selectedAccount", value)}
+              variant={"outline"}
             />
           </Field>
 
@@ -271,6 +288,7 @@ const NewTransactionDrawer = ({
                 setSelectedId={(value) =>
                   handleChange("selectedCreditCard", value)
                 }
+                variant={"outline"}
               />
             </Field>
           </Show>

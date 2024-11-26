@@ -1,4 +1,5 @@
 import {
+  Badge,
   Flex,
   FormatNumber,
   Heading,
@@ -12,53 +13,73 @@ import BalanceHistory from "./BalanceHistory";
 import useAccountStore from "../hooks/useAccountStore";
 import ExpensesChart from "./ExpensesChart";
 import Revenue from "./Revenue";
-import { Tag } from "../../components/ui/tag";
+import MainGoal from "./MainGoal";
 
 const AccountKPIs = () => {
   const { account } = useAccountStore();
   if (!account) return;
   return (
     <>
-      <Flex gap={8} direction={"row"} p="10px">
-        <HStack>
-          <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
-            {" "}
-            Account Type
-          </Heading>
-          <Tag size="md" colorPalette={"teal"}>
-            {accountTypes[account.Type].name}
-          </Tag>
-        </HStack>
-        <HStack>
-          <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
-            {" "}
-            Institution
-          </Heading>
-          <Text>
-            {account.Institution
-              ? account.Institution.Name
-              : "No Linkned Institution"}
-          </Text>
-        </HStack>
+      <Flex
+        direction={{ base: "column", lg: "row" }}
+        gap={8}
+        w="100%"
+        justifyContent={"flex-start"}
+      >
+        {/* First Row Group */}
+        <Flex direction={{ base: "column", md: "row" }} gap={8}>
+          <HStack>
+            <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
+              Account Type
+            </Heading>
+            <Badge
+              size="md"
+              colorPalette="teal"
+              borderColor={"teal.300"}
+              borderWidth={1}
+            >
+              {accountTypes[account.Type].name}
+            </Badge>
+          </HStack>
+          <HStack>
+            <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
+              Institution
+            </Heading>
+            <Text>
+              {account.Institution
+                ? account.Institution.Name
+                : "No Linked Institution"}
+            </Text>
+          </HStack>
+        </Flex>
 
-        <HStack>
-          <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
-            {" "}
-            Initial Balance
-          </Heading>
+        {/* Second Row Group */}
+        <Flex direction={{ base: "column", md: "row" }} gap={8}>
+          <HStack>
+            <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
+              {" "}
+              Initial Balance
+            </Heading>
 
-          <FormatNumber
-            value={account.InitialBalance}
-            style="currency"
-            currency="Eur"
-          />
-        </HStack>
-
-        <Show when={account.SpendingLimit}>
-          <SpendingLimit />
-        </Show>
+            <FormatNumber
+              value={account.InitialBalance}
+              style="currency"
+              currency="Eur"
+            />
+          </HStack>
+        </Flex>
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          gap={4}
+          flex={1}
+          w={"100%"}
+        >
+          <Show when={account.SpendingLimit}>
+            <SpendingLimit />
+          </Show>
+        </Flex>
       </Flex>
-      <Flex direction="row" gap={4}>
+      <Flex direction={{ base: "column", lg: "row" }} gap={4}>
         <BalanceHistory />
         <ExpensesChart />
         <Revenue />{" "}

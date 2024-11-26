@@ -53,7 +53,7 @@ const InstitutionDetails = ({ institution }: Props) => {
       <Flex direction={"column"} gap={5} mb={3}>
         <Flex direction={"row"} gap={10}>
           <Flex gap={2} w="100%">
-            <Heading color={"teal.800"} size={"sm"}>
+            <Heading color={"teal.700"} size={"sm"}>
               {" "}
               Current Balance
             </Heading>
@@ -65,7 +65,7 @@ const InstitutionDetails = ({ institution }: Props) => {
           </Flex>
 
           <Flex gap={2} w="100%">
-            <Heading color={"teal.800"} size={"sm"}>
+            <Heading color={"teal.700"} size={"sm"}>
               {" "}
               Initial Balance
             </Heading>
@@ -77,7 +77,7 @@ const InstitutionDetails = ({ institution }: Props) => {
           </Flex>
 
           <Flex gap={2} w="100%">
-            <Heading color={"teal.800"} size={"sm"}>
+            <Heading color={"teal.700"} size={"sm"}>
               {" "}
               Institution Type
             </Heading>
@@ -89,21 +89,21 @@ const InstitutionDetails = ({ institution }: Props) => {
         </Flex>
         <Flex direction={"row"} gap={10}>
           <Flex gap={2} w="100%">
-            <Heading color={"teal.800"} size={"sm"}>
+            <Heading color={"teal.700"} size={"sm"}>
               {" "}
               Total Assets
             </Heading>
             <FormatNumber value={totalAssets} style="currency" currency="Eur" />
           </Flex>
           <Flex gap={2} w="100%">
-            <Heading color={"teal.800"} size={"sm"}>
+            <Heading color={"teal.700"} size={"sm"}>
               {" "}
               Total Debts
             </Heading>
             <FormatNumber value={totalDebts} style="currency" currency="Eur" />
           </Flex>
           <Flex gap={2} w="100%">
-            <Heading color={"teal.800"} size={"sm"}>
+            <Heading color={"teal.700"} size={"sm"}>
               {" "}
               Total Fees
             </Heading>
@@ -116,7 +116,7 @@ const InstitutionDetails = ({ institution }: Props) => {
         </Flex>
         <Flex direction={"row"} gap={10}>
           <Flex gap={2} w="100%">
-            <Heading color={"teal.800"} size={"sm"}>
+            <Heading color={"teal.700"} size={"sm"}>
               {" "}
               Total Earnings
             </Heading>
@@ -124,14 +124,14 @@ const InstitutionDetails = ({ institution }: Props) => {
           </Flex>
 
           <Flex gap={2} w="100%">
-            <Heading color={"teal.800"} size={"sm"}>
+            <Heading color={"teal.700"} size={"sm"}>
               {" "}
               Total Expenses
             </Heading>
             <FormatNumber value={totalSpent} style="currency" currency="Eur" />
           </Flex>
           <Flex gap={2} w="100%">
-            <Heading color={"teal.800"} size={"sm"}>
+            <Heading color={"teal.700"} size={"sm"}>
               {" "}
               Number of Accounts
             </Heading>

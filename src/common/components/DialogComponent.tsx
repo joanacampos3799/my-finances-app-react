@@ -19,6 +19,7 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { useIconPack } from "../hooks/useIconPack";
+import { FaPen } from "react-icons/fa6";
 
 interface Props {
   size: ConditionalValue<
@@ -29,6 +30,7 @@ interface Props {
   title: string;
   updating?: boolean;
   footer?: JSX.Element;
+  isDetails?: boolean;
   handleUpdate?: () => void;
   setUpdating?: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -38,35 +40,44 @@ const DialogComponent = ({
   icon,
   iconColor,
   title,
+  isDetails = true,
   children,
 }: PropsWithChildren<Props>) => {
   const iconPack = useIconPack();
+
+  const IconEl =
+    icon != undefined ? iconPack?.find((i) => i.name === icon)?.icon!! : FaPen;
   return (
     <DialogRoot size={size} motionPreset="slide-in-bottom">
       <DialogTrigger asChild>
-        <Button
-          h="40px"
-          w="40px"
-          variant={"outline"}
-          color={"teal.500"}
-          borderRadius={"md"}
-        >
-          <LuSearch />
-        </Button>
+        {isDetails ? (
+          <Button
+            h="40px"
+            w="40px"
+            variant={"outline"}
+            borderColor={"teal.500"}
+            borderRadius={"md"}
+            colorPalette={"teal"}
+          >
+            <LuSearch />
+          </Button>
+        ) : (
+          <Button size={"xs"} colorPalette={"teal"}>
+            View Goals
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent borderRadius={"xl"} offset={"center"}>
         <DialogHeader>
           <Flex direction={"row"} justifyContent={"space-between"}>
             <DialogTitle>
               <HStack>
-                {icon && (
-                  <Icon
-                    boxSize={4}
-                    color={iconColor ?? "teal.800"}
-                    as={iconPack?.find((i) => i.name === icon)?.icon}
-                  />
+                {icon !== undefined && IconEl !== undefined && (
+                  <Icon boxSize={4} color={iconColor ?? "teal.700"}>
+                    <IconEl />
+                  </Icon>
                 )}
-                <Heading color={"teal.800"}>{title}</Heading>
+                <Heading color={"teal.700"}>{title}</Heading>
               </HStack>
             </DialogTitle>
             <DialogCloseTrigger />

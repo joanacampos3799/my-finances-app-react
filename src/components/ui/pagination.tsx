@@ -91,7 +91,12 @@ export const PaginationItem = forwardRef<
 
   if (getHref) {
     return (
-      <LinkButton href={getHref(props.value)} variant={variant} size={size}>
+      <LinkButton
+        href={getHref(props.value)}
+        variant={variant}
+        size={size}
+        borderColor={variant === "outline" ? "teal.500" : undefined}
+      >
         {props.value}
       </LinkButton>
     );
@@ -99,7 +104,11 @@ export const PaginationItem = forwardRef<
 
   return (
     <ChakraPagination.Item ref={ref} {...props} asChild>
-      <Button variant={variant} size={size}>
+      <Button
+        variant={variant}
+        size={size}
+        borderColor={variant === "outline" ? "teal.500" : undefined}
+      >
         {props.value}
       </Button>
     </ChakraPagination.Item>

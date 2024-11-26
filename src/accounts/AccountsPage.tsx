@@ -1,4 +1,4 @@
-import { Box, Flex, HStack } from "@chakra-ui/react";
+import { Box, Flex, HStack, Tabs } from "@chakra-ui/react";
 import { queryKeys } from "../common/constants";
 import { useMutationState } from "@tanstack/react-query";
 import { HelperEntity } from "../common/helper";
@@ -71,7 +71,25 @@ const AccountsPage = React.memo(() => {
         ) : (
           <Flex direction={"column"} gap={2}>
             <AccountsKPIs accounts={accountData} />
-            <AccountsTable accounts={accountData} />
+            <Tabs.Root
+              defaultValue={"Active"}
+              justify={"end"}
+              colorPalette={"teal"}
+            >
+              <Tabs.List width={"full"} border={0}>
+                <Tabs.Trigger value={"Active"}>Active</Tabs.Trigger>
+                <Tabs.Trigger value={"Inactive"}>Inactive</Tabs.Trigger>
+              </Tabs.List>
+
+              <Tabs.Content value={"Active"}>
+                <AccountsTable accounts={accountData.filter((a) => a.active)} />
+              </Tabs.Content>
+              <Tabs.Content value={"Inactive"}>
+                <AccountsTable
+                  accounts={accountData.filter((a) => !a.active)}
+                />
+              </Tabs.Content>
+            </Tabs.Root>
           </Flex>
         )}
       </Box>

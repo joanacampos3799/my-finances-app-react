@@ -1,6 +1,7 @@
 import {
   Box,
   Flex,
+  For,
   FormatNumber,
   Heading,
   Icon,
@@ -24,7 +25,7 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
   const topInstitutions = [...institutions]
     .sort((a, b) => (b.Balance ?? 0) - (a.Balance ?? 0))
     .slice(0, 3);
-
+  const placeholders = Array(3 - topInstitutions.length).fill("N/A");
   const chartData = institutions.map((institution) => {
     const totalSpent = institution.Accounts.reduce(
       (total, acc) =>
@@ -68,7 +69,7 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
   );
   return (
     <Flex direction={"row"} gap={2} mx={"10px"}>
-      <Flex width={"70%"} bgColor={"white"} borderRadius={"md"}>
+      <Flex width={"100%"} bgColor={"white"} borderRadius={"md"}>
         <BarChartComponent
           chartData={chartData}
           xAxisDataKey="institution"
@@ -230,7 +231,7 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
               </Icon>
             </Box>
           </Flex>
-          <Flex direction={"column"}>
+          <Flex direction={"column"} h={"full"}>
             <Text fontSize={"sm"} color={"gray.500"}>
               Top Institutions
             </Text>
@@ -246,6 +247,13 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
                   />
                 </List.Item>
               ))}
+              {topInstitutions.length < 3 &&
+                placeholders.map((institution) => (
+                  <List.Item key={institution + "-top"}>
+                    <List.Indicator color={"teal.100"} />
+                    {institution}
+                  </List.Item>
+                ))}
             </List.Root>
           </Flex>
         </Flex>
