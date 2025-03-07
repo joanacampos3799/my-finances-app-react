@@ -1,4 +1,4 @@
-import { Box, Center, Heading } from "@chakra-ui/react";
+import { Box, Flex, HStack, Tabs } from "@chakra-ui/react";
 import useFixedTransactions from "../hooks/useFixedTransactions";
 import { useMutationState } from "@tanstack/react-query";
 import { queryKeys } from "../../common/constants";
@@ -6,11 +6,16 @@ import { HelperEntity } from "../../common/helper";
 import { EmptyState } from "../../components/ui/empty-state";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import NewFixedTransactionDrawer from "../components/NewFixedTransactionDrawer";
-import FixedTransactionsGrid from "../components/FixedTransactionsGrid";
+import FixedTransactionsList from "../components/FixedTransactionsList";
+import CollapsibleTitle from "../../common/components/CollapsibleTitle";
+import TimePeriodMenu from "../../common/components/TimePeriodMenu";
+import usePeriodStore from "../../common/hooks/usePeriodStore";
+import FixedTransaction from "../model/FixedTransaction";
 import FixedTransactionList from "../model/FixedTransactionsList";
 
 const FixedTransactionsPage = () => {
   const fixedTransactions = useFixedTransactions();
+  const { period, setPeriod } = usePeriodStore();
   const pendingData = useMutationState({
     filters: {
       mutationKey: [queryKeys.fixedTransactions],
@@ -34,39 +39,62 @@ const FixedTransactionsPage = () => {
     fixedCount = tCount;
   }
   return (
-    <Box>
-      <Center>
-        <Heading size="3xl">Fixed Transactions</Heading>
-      </Center>
+    <Box padding={"15px"}>
+      <Box>
+        <HStack
+          justifyContent={"space-between"}
+          alignItems={"flex-start"}
+          justifyItems={"flex-end"}
+        >
+          <CollapsibleTitle
+            title="Fixed Transactions"
+            description="Welcome to the Fixed transactions Page, where you can easily manage all your subscriptions, fixed bills and incomes"
+          />
+          <Flex
+            direction={"row"}
+            gap={2}
+            alignItems={"flex-start"}
+            justifyItems={"flex-end"}
+          >
+            <TimePeriodMenu period={period} setPeriod={setPeriod} />
+
+            <NewFixedTransactionDrawer />
+          </Flex>
+        </HStack>
+      </Box>
       {!fixedData || fixedCount === 0 ? (
         <EmptyState
           paddingTop="10%"
           icon={<FaMoneyBillTransfer />}
           title="Start adding fixed transactions"
-          description="Add a new Fixed transaction to get started"
-        >
-          <NewFixedTransactionDrawer isEmpty={true} active={true} />
-        </EmptyState>
+          description="Add a new subscription, bill or fixed income"
+        />
       ) : (
         <Box>
-          {fixedData.filter((f) => f.active).length > 0 && (
-            <Box key={"active-box"}>
-              <Heading>Active</Heading>
-              <FixedTransactionsGrid
-                key={"active"}
+          <Tabs.Root
+            defaultValue={"Active"}
+            justify={"end"}
+            colorPalette={"teal"}
+          >
+            <Tabs.List width={"full"} border={0}>
+              <Tabs.Trigger key={"activeTabTrigger"} value={"Active"}>
+                Active
+              </Tabs.Trigger>
+              <Tabs.Trigger key={"inactiveTabTrigger"} value={"Inactive"}>
+                Inactive
+              </Tabs.Trigger>
+            </Tabs.List>
+            <Tabs.Content value={"Active"}>
+              <FixedTransactionsList
                 fixedTransactions={fixedData.filter((f) => f.active)}
               />
-            </Box>
-          )}
-          {fixedData.filter((f) => !f.active).length > 0 && (
-            <Box key={"inactive-box"}>
-              <Heading>Inactive</Heading>
-              <FixedTransactionsGrid
-                key={"inactive"}
+            </Tabs.Content>
+            <Tabs.Content value={"Inactive"}>
+              <FixedTransactionsList
                 fixedTransactions={fixedData.filter((f) => !f.active)}
               />
-            </Box>
-          )}
+            </Tabs.Content>
+          </Tabs.Root>
         </Box>
       )}
     </Box>

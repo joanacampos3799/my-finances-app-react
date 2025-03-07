@@ -17,7 +17,7 @@ import { LinkButton } from "../../components/ui/link-button";
 import Overview from "../components/Overview";
 import TransactionsAndAccounts from "../components/TransactionsAndAccounts";
 import BudgetAndCategories from "../components/BudgetAndCategories";
-import FixedAndDebts from "../components/FixedAndDebts";
+import FixedTransactions from "../components/FixedAndDebts";
 import LimitsandGoals from "../components/LimitsAndGoals";
 import AlertsAndInsights from "../components/AlertsAndInsights";
 import Benefits from "../components/Benefits";
@@ -88,7 +88,7 @@ export default function HeroPage() {
         <Overview />
         <TransactionsAndAccounts />
         <BudgetAndCategories />
-        <FixedAndDebts />
+        <FixedTransactions />
         <LimitsandGoals />
         <AlertsAndInsights />
         <Benefits />

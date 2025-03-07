@@ -33,20 +33,19 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
   }, [data]);
   const { values, handleChange, resetForm } = useForm<AccountFormObject>({
     Name: account ? account.Name : "",
-    ib: account ? account.InitialBalance : 0,
-    limit: account ? account.InitialBalance : 0,
+    ib: account ? "" + account.InitialBalance : "0",
+    limit: account ? "" + account.InitialBalance : "0",
     selectedInstitution: institutionId
       ? "" + institutionId
       : account && account.Institution
         ? "" + account.Institution.Id
         : "0",
     selectedAccountTypeId: account ? "" + account.Type : "-1",
-    interest: account ? account.Interest : 0,
+    interest: account ? "" + account.Interest : "0",
     paymentDate:
       account && account.PaymentDueDate
         ? parseDate(account.PaymentDueDate)
         : new Date(),
-    jointUsername: account?.JointUserName ?? undefined,
   });
   const nameRef = useRef<HTMLInputElement>(null);
   const addAccount = useAddAccount(() => resetForm());
@@ -82,15 +81,16 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               institutionId: +values.selectedInstitution,
               Type: +values.selectedAccountTypeId,
               userId: userId!!,
-              InitialBalance: values.ib,
+              InitialBalance: parseFloat(values.ib.replace(",", ".")),
               Id: account.Id,
-              SpendingLimit: values.limit,
+              SpendingLimit: parseFloat(values.limit.replace(",", ".")),
               Transactions: account.Transactions,
-              jointUserId: values.jointUsername,
               paymentDueDate: values.paymentDate
                 ? format(values.paymentDate, "dd/MM/yyyy")
                 : undefined,
-              interest: values.interest,
+              interest: values.interest
+                ? parseFloat(values.interest.replace(",", "."))
+                : undefined,
             });
           } else {
             addAccount({
@@ -98,14 +98,15 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               institutionId: +values.selectedInstitution,
               Type: +values.selectedAccountTypeId,
               userId: userId!!,
-              InitialBalance: values.ib,
-              SpendingLimit: values.limit,
+              InitialBalance: parseFloat(values.ib.replace(",", ".")),
+              SpendingLimit: parseFloat(values.limit.replace(",", ".")),
               Transactions: [],
-              jointUserId: values.jointUsername,
               paymentDueDate: values.paymentDate
                 ? format(values.paymentDate, "dd/MM/yyyy")
                 : undefined,
-              interest: values.interest,
+              interest: values.interest
+                ? parseFloat(values.interest.replace(",", "."))
+                : undefined,
             });
           }
         }}
@@ -123,7 +124,7 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
 
           <Field label="Initial Account Balance">
             <NumberInput
-              number={values.ib}
+              number={"" + values.ib}
               setNumber={(e) => handleChange("ib", e)}
               isCurrency
             />
@@ -153,7 +154,7 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
           <Show when={showSpendingLimit}>
             <Field label="Spending Limit">
               <NumberInput
-                number={values.limit}
+                number={"" + values.limit}
                 setNumber={(e) => handleChange("limit", e)}
                 isCurrency
               />
@@ -161,7 +162,7 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
           </Show>
           <Field label="Interest">
             <NumberInput
-              number={values.interest}
+              number={"" + values.interest}
               setNumber={(e) => handleChange("interest", e)}
               isCurrency={false}
             />
@@ -172,8 +173,6 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               setSelectedDate={(d) => handleChange("paymentDate", d)}
             />
           </Field>
-
-          <Field label="Joint User Account"></Field>
         </Stack>
       </form>
     </DrawerComponent>

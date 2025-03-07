@@ -22,7 +22,7 @@ const NewCategoryDrawer = ({ category }: Props) => {
   const { values, resetForm, handleChange } = useForm<CategoryFormObject>({
     Name: category ? category.Name : "",
     icon: category ? category.Icon : "",
-    budget: category ? category.Budget : undefined,
+    budget: category ? "" + category.Budget : undefined,
     selectedTT: category ? "" + category.CategoryType : "-1",
     color: category ? category.Color : "",
   });
@@ -62,7 +62,9 @@ const NewCategoryDrawer = ({ category }: Props) => {
               Icon: values.icon,
               CategoryType: +values.selectedTT,
               userId: userId!!,
-              Budget: values.budget,
+              Budget: values.budget
+                ? parseFloat(values.budget?.replace(",", "."))
+                : undefined,
               Color: values.color,
               Transactions: category.Transactions,
             });
@@ -70,7 +72,9 @@ const NewCategoryDrawer = ({ category }: Props) => {
             addCategory({
               Name: values.Name,
               Icon: values.icon,
-              Budget: values.budget,
+              Budget: values.budget
+                ? parseFloat(values.budget?.replace(",", "."))
+                : undefined,
               CategoryType: movementTypes[+values.selectedTT].id,
               userId: userId!!,
               Color: values.color,
@@ -126,7 +130,7 @@ const NewCategoryDrawer = ({ category }: Props) => {
           <Show when={values.selectedTT === "0"}>
             <Field label="Budget" mt={4}>
               <NumberInput
-                number={values.budget ?? 0}
+                number={"" + values.budget}
                 setNumber={(val) => handleChange("budget", val)}
                 isCurrency
               />

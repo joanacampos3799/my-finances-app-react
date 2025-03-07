@@ -1,10 +1,9 @@
 export default interface AccountFormObject {
   Name: string;
-  ib: number;
-  limit: number;
+  ib: string;
+  limit: string;
   selectedInstitution: string;
   selectedAccountTypeId: string;
   paymentDate: Date;
-  interest?: number;
-  jointUsername?: string;
+  interest?: string;
 }

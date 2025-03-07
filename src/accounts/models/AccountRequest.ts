@@ -10,7 +10,6 @@ export default interface AccountRequest {
   Transactions: Transaction[];
   Type: number;
   institutionId: number;
-  jointUserId?: string;
   paymentDueDate?: string;
   interest?: number;
 }

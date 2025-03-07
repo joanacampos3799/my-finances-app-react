@@ -11,7 +11,6 @@ import RootLayout from "../../hero/layouts/RootLayout";
 import DashboardLayout from "../../hero/layouts/DashboardLayout";
 import AccountsPage from "../../accounts/AccountsPage";
 import TransactionsPage from "../../transactions/page/TransactionsPage";
-import DebtsPage from "../../debts/page/DebtsPage";
 import InstitutionsPage from "../../institutions/page/InstitutionsPage";
 import AccountDetailsPage from "../../account/page/AccountDetailsPage";
 import AboutUsPage from "../../info/pages/AboutUsPage";
@@ -40,7 +39,6 @@ const router = createBrowserRouter([
           { path: "/s/accounts", element: <AccountsPage /> },
           { path: "/s/accounts/:id", element: <AccountDetailsPage /> },
           { path: "/s/institutions", element: <InstitutionsPage /> },
-          { path: "/s/debts", element: <DebtsPage /> },
           { path: "/s/fixed-transactions", element: <FixedTransactionsPage /> },
           { path: "/s/transactions", element: <TransactionsPage /> },
         ],

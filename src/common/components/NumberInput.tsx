@@ -7,8 +7,8 @@ import {
 } from "../../components/ui/number-input";
 
 interface Props {
-  number?: number;
-  setNumber: (val: number) => void;
+  number?: string;
+  setNumber: (val: string) => void;
   isCurrency: boolean;
   label?: string;
   helperText?: string;
@@ -31,12 +31,16 @@ const NumberInput = ({
           )}
           <NumberInputRoot
             width={"full"}
-            value={"" + number}
+            value={number}
             min={0}
             locale="pt-PT"
-            onValueChange={(e) =>
-              setNumber(e.value === "" ? 0 : e.valueAsNumber)
-            }
+            onValueChange={(e) => {
+              if (e.value === "" || e.value === "-") {
+                setNumber(e.value); // Allow empty or "-" while typing
+              } else {
+                setNumber(e.value); // Store as a string
+              }
+            }}
             formatOptions={{
               style: isCurrency ? "decimal" : undefined,
               minimumFractionDigits: isCurrency ? 2 : undefined,

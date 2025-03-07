@@ -98,13 +98,6 @@ const NavBar = () => {
             isOpen={sideBarOpen}
             active={activePage === "/s/transactions"}
           />
-          <NavBarButton
-            link="/s/debts"
-            icon={BiReceipt}
-            isOpen={sideBarOpen}
-            active={activePage === "/s/debts"}
-            title="Debts"
-          />
         </Flex>
       </SignedIn>
 

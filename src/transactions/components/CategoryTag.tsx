@@ -11,7 +11,12 @@ const CategoryTag = ({ category }: Props) => {
   const Icon =
     iconPack?.find((icon) => icon.name === category.Icon)?.icon ?? FaPen;
   return (
-    <Tag key={category.Id + "-cat"} rounded={"md"} startElement={<Icon />}>
+    <Tag
+      colorPalette={"teal"}
+      key={category.Id + "-cat"}
+      rounded={"md"}
+      startElement={<Icon />}
+    >
       {category.Name}
     </Tag>
   );

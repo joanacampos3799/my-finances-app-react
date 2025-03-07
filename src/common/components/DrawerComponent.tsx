@@ -77,7 +77,12 @@ const DrawerComponent = ({
           >
             Cancel
           </Button>
-          <Button colorPalette={"teal"} type="submit" form={formName}>
+          <Button
+            colorPalette={"teal"}
+            type="submit"
+            form={formName}
+            onClick={() => setOpen(false)}
+          >
             Save
           </Button>
         </DrawerFooter>

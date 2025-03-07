@@ -10,7 +10,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import TransactionTable from "../../transactions/components/TransactionTable";
-import DebtsTable from "../../debts/components/DebtsTable";
 import NewTransactionDrawer from "../../transactions/components/NewTransactionDrawer";
 import AccountHeader from "../components/AccountHeader";
 import BreadCrumb from "../components/BreadCrumb";
@@ -104,19 +103,6 @@ const AccountDetailsPage = () => {
               <Flex justifyContent={"flex-end"} alignItems={"flex-end"}>
                 <NewTransactionDrawer accountId={account.Id} />
               </Flex>
-            </Flex>
-
-            <Flex
-              direction={"column"}
-              bgColor={"white"}
-              borderRadius={"md"}
-              p={"10px"}
-              flex="1"
-            >
-              <Heading size="md" color={"teal.700"}>
-                Debts
-              </Heading>
-              <DebtsTable data={account.Debts} />
             </Flex>
           </Flex>
         </Flex>

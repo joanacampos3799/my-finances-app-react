@@ -1,5 +1,4 @@
 import { UUID } from "crypto";
-import Debt from "../../debts/model/Debt";
 import Transaction from "../../transactions/model/Transaction";
 import InstitutionList from "../../institutions/model/InstitutionList";
 
@@ -9,7 +8,6 @@ export default interface AccountList {
   Balance: number;
   InitialBalance: number;
   Transactions: Transaction[];
-  Debts: Debt[];
   Type: number;
   Institution?: InstitutionList;
   PaymentDueDate?: DateObj;
@@ -17,5 +15,4 @@ export default interface AccountList {
   userId: UUID;
   active: boolean;
   deleted?: boolean;
-  JointUserName?: string;
 }

@@ -6,7 +6,7 @@ interface Entity {
   deleted?: boolean;
 }
 
-interface EntitySelected<T extends Entity> {
+export interface EntitySelected<T extends Entity> {
   data: T;
   checked: boolean;
 }

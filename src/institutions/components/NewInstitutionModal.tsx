@@ -60,10 +60,12 @@ const NewInstitutionModal = ({ institution }: Props) => {
           </Field>
           <Field label="Select Institution Type">
             <RadioMenu
+              variant={"outline"}
               placeholder=" institution type"
               data={institutionTypes}
               selectedId={type}
               setSelectedId={setType}
+              color
               hasArrow
             />
           </Field>

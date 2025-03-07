@@ -1,7 +1,7 @@
 export default interface CategoryFormObject {
   Name: string;
   icon: string;
-  budget?: number;
+  budget?: string;
   color: string;
   selectedTT: string;
 }
