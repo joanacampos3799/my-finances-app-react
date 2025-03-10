@@ -5,7 +5,7 @@ import { FaPen } from "react-icons/fa6";
 import NewFixedTransactionDrawer from "./NewFixedTransactionDrawer";
 import FixedTransactionDetails from "./FixedTransactionDetails";
 import { LuArchiveRestore, LuTrash2 } from "react-icons/lu";
-import CategoryTag from "../../transactions/components/CategoryTag";
+import CategoryTag from "../../common/components/CategoryTag";
 import { movementTypes } from "../../common/constants";
 
 interface Props {

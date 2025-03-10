@@ -36,12 +36,16 @@ const TabContent = ({ transactions }: Props) => {
   });
 
   return (
-    <AccordionRoot collapsible defaultValue={["info"]} variant={"plain"}>
+    <AccordionRoot
+      collapsible
+      defaultValue={[months[months.length - 1].value]}
+      variant={"plain"}
+    >
       {monthlyTransactions.map((item) => (
         <AccordionItem key={item.name} value={item.name}>
           <AccordionItemTrigger>{item.name}</AccordionItemTrigger>
           <AccordionItemContent>
-            <TransactionTable data={item.transactions} />
+            <TransactionTable data={item.transactions} showFooter />
           </AccordionItemContent>
         </AccordionItem>
       ))}

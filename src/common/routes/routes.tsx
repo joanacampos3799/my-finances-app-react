@@ -14,7 +14,6 @@ import TransactionsPage from "../../transactions/page/TransactionsPage";
 import InstitutionsPage from "../../institutions/page/InstitutionsPage";
 import AccountDetailsPage from "../../account/page/AccountDetailsPage";
 import AboutUsPage from "../../info/pages/AboutUsPage";
-import PricingPage from "../../info/pages/PricingPage";
 import PrivacyPage from "../../info/pages/PrivacyPage";
 import TermsPage from "../../info/pages/TermsPage";
 
@@ -27,7 +26,6 @@ const router = createBrowserRouter([
       { path: "/sign-in/*", element: <SignInPage /> },
       { path: "/sign-up/*", element: <SignUpPage /> },
       { path: "/about-us", element: <AboutUsPage /> },
-      { path: "/pricing", element: <PricingPage /> },
       { path: "/privacy", element: <PrivacyPage /> },
       { path: "/terms", element: <TermsPage /> },
       {

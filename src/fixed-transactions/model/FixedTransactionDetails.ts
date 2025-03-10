@@ -15,4 +15,5 @@ export default interface FixedTransactionDetails {
   TotalSpent: number;
   active: boolean;
   Transactions: Transaction[];
+  Account: string;
 }

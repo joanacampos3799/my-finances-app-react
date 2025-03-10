@@ -1,7 +1,7 @@
 import Category from "../../categories/model/Category";
 
 export default interface TransactionFormObject {
-  amount: number;
+  amount: string;
   date: Date;
   description: string;
   selectedTT: string;

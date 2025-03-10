@@ -19,7 +19,9 @@ import {
 } from "../../components/ui/pagination";
 import TransactionEmptyState from "./TransactionEmptyState";
 import useDateFilter from "../../common/hooks/useDateFilter";
-import CategoryTag from "./CategoryTag";
+import CategoryTag from "../../common/components/CategoryTag";
+import TransactionRow from "./TransactionRow";
+import { useDeleteTransaction } from "../hooks/useDeleteTransaction";
 
 interface Props {
   data: Transaction[];
@@ -34,22 +36,33 @@ const TransactionTable = ({
   showFooter,
 }: Props) => {
   const { isSorting, getSortingState, sortNumber, sortString } = useSorting();
-  const { parseDate } = useDateFilter();
+  const deleteTransaction = useDeleteTransaction();
   const [sortedTransactions, setSortedTransactions] = useState<
     Transaction[] | undefined
   >();
   useEffect(() => {
     if (data.length > 0) setSortedTransactions(data);
   }, [data]);
-
+  const handleDelete = (element: Transaction) => {
+    element.deleted = true;
+    deleteTransaction(element);
+  };
   return (
-    <Flex direction={"column"} gap={2} py={2} colorPalette={"teal"}>
+    <Flex
+      justifyContent={"center"}
+      bgColor="white"
+      gap={2}
+      py={2}
+      borderRadius={"md"}
+      direction={"column"}
+      w="full"
+    >
       {sortedTransactions && sortedTransactions.length > 0 ? (
         <>
           <Table.Root colorPalette={"teal"} stickyHeader>
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeader></Table.ColumnHeader>
+                <Table.ColumnHeader w={"30px"}></Table.ColumnHeader>
                 <TableHeader
                   label={"Name"}
                   w={"100px"}
@@ -63,7 +76,7 @@ const TransactionTable = ({
                 />
                 <TableHeader
                   label={"Description"}
-                  w={"100px"}
+                  w={"150px"}
                   isSorting={isSorting("Description")}
                   sortingState={getSortingState()}
                   sortFn={() =>
@@ -74,7 +87,7 @@ const TransactionTable = ({
                 />
                 <TableHeader
                   label={"Amount"}
-                  w={"100px"}
+                  w={"80px"}
                   isSorting={isSorting("Amount")}
                   sortingState={getSortingState()}
                   sortFn={() =>
@@ -86,7 +99,7 @@ const TransactionTable = ({
 
                 <TableHeader
                   label={"Date"}
-                  w={"100px"}
+                  w={"120px"}
                   isSorting={isSorting("Date")}
                   sortingState={getSortingState()}
                   sortFn={() =>
@@ -96,48 +109,26 @@ const TransactionTable = ({
                   }
                 />
                 <Show when={!fromAccount}>
-                  <Table.ColumnHeader>Account</Table.ColumnHeader>
+                  <Table.ColumnHeader w={"100px"}>Account</Table.ColumnHeader>
                 </Show>
                 <Show when={!fromCategory}>
-                  <Table.ColumnHeader>Categories</Table.ColumnHeader>
+                  <Table.ColumnHeader w={"100px"}>
+                    Categories
+                  </Table.ColumnHeader>
                 </Show>
+                <Table.ColumnHeader w="80px" textAlign={"end"}>
+                  Actions
+                </Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>
               {sortedTransactions.map((t) => (
-                <Table.Row key={t.Id + "-transaction"}>
-                  <Table.Cell>
-                    {t.transactionType === 1 ? (
-                      <Icon>
-                        <TbArrowBarDown />
-                      </Icon>
-                    ) : (
-                      <Icon>
-                        <TbArrowBarUp />
-                      </Icon>
-                    )}
-                  </Table.Cell>
-                  <Table.Cell>{t.Name}</Table.Cell>
-                  <Table.Cell>{t.Description}</Table.Cell>
-                  <Table.Cell>
-                    <FormatNumber
-                      value={t.Amount}
-                      style={"currency"}
-                      currency="EUR"
-                    />
-                  </Table.Cell>
-                  <Table.Cell>{parseDate(t.Date).toDateString()}</Table.Cell>
-                  <Show when={!fromAccount}>
-                    <Table.Cell>{t.accountName}</Table.Cell>
-                  </Show>
-                  <Show when={!fromCategory}>
-                    <Table.Cell>
-                      {t.categories.map((val) => (
-                        <CategoryTag category={val} key={val.Id + "-cat_tag"} />
-                      ))}
-                    </Table.Cell>
-                  </Show>
-                </Table.Row>
+                <TransactionRow
+                  transaction={t}
+                  onDelete={handleDelete}
+                  fromAccount={fromAccount!!}
+                  fromCategory={fromCategory!!}
+                />
               ))}
             </Table.Body>
             <Show when={showFooter}>

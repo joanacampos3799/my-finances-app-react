@@ -34,15 +34,17 @@ import { format } from "date-fns";
 import TransactionFormObject from "../model/TransactionFormObject";
 import Transaction from "../model/Transaction";
 import { Checkbox } from "../../components/ui/checkbox";
+import { useUpdateTransaction } from "../hooks/useUpdateTransaction";
+import useDateFilter from "../../common/hooks/useDateFilter";
 
 interface Props {
-  Transaction?: Transaction;
+  transaction?: Transaction;
   categoriesIds?: number[];
   accountId?: number;
   creditAccountId?: number;
 }
 const NewTransactionDrawer = ({
-  Transaction,
+  transaction,
   categoriesIds,
   accountId,
   creditAccountId,
@@ -52,6 +54,7 @@ const NewTransactionDrawer = ({
   const { data: categories } = useCategories();
   const { data: fixedTransactions } = useFixedTransactions();
   const { data: accounts } = useAccounts();
+  const { parseDate } = useDateFilter();
   const [fixedList, setFixedList] = useState<FixedTransactionList[]>([]);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [accountList, setAccountList] = useState<AccountList[]>([]);
@@ -72,10 +75,13 @@ const NewTransactionDrawer = ({
   );
   const ref = useRef(null);
   const { values, resetForm, handleChange } = useForm<TransactionFormObject>({
-    amount: 0,
-    date: new Date(),
-    description: "",
-    selectedTT: "",
+    amount: transaction ? "" + transaction.Amount : "0",
+    date: transaction ? parseDate(transaction.Date) : new Date(),
+    description:
+      transaction && transaction.Description ? transaction.Description : "",
+    selectedTT: transaction
+      ? movementTypes[transaction.transactionType].name
+      : "",
     selectedAccount: accountId ? "" + accountId : "",
     Name: "",
     selectedFixedId: "",
@@ -85,7 +91,7 @@ const NewTransactionDrawer = ({
     selectedCreditCard: creditAccountId ? "" + creditAccountId : undefined,
   });
   const addTransaction = useAddTransaction(() => resetForm());
-
+  const updateTransaction = useUpdateTransaction(() => resetForm());
   const fixedSelect =
     fixedList.length > 0
       ? new HelperEntity<FixedTransactionList>().getMappedRadioEntity(fixedList)
@@ -107,6 +113,7 @@ const NewTransactionDrawer = ({
       name={creditAccountId ? "Payment" : "Transaction"}
       formName="new-transaction-form"
       refElement={ref.current}
+      update={transaction !== undefined}
     >
       <form
         id="new-transaction-form"
@@ -115,7 +122,7 @@ const NewTransactionDrawer = ({
 
           addTransaction({
             Name: values.Name,
-            Amount: values.amount,
+            Amount: parseFloat(values.amount.replace(",", ".")),
             transactionType: movementTypes[+values.selectedTT].id,
             userId: userId!!,
             Date: format(values.date, "dd/MM/yyyy"),
@@ -187,7 +194,7 @@ const NewTransactionDrawer = ({
                     <DataListItem label="Categories" value={""}>
                       <HStack>
                         {categories
-                          .filter((cat) => fixed.categories.includes(cat.Id!!))
+                          .filter((cat) => fixed.categories.includes(cat))
                           .map((i) => (
                             <TagComponent
                               key={i.Id}

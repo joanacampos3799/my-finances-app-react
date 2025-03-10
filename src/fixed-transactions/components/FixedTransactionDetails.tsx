@@ -1,8 +1,15 @@
-import { Flex, FormatNumber, Heading, HStack, Text } from "@chakra-ui/react";
+import {
+  Flex,
+  FormatNumber,
+  Heading,
+  HStack,
+  Separator,
+  Text,
+} from "@chakra-ui/react";
 import { movementTypes } from "../../common/constants";
 import useFixedTransaction from "../hooks/useFixedTransaction";
 import DialogComponent from "../../common/components/DialogComponent";
-import CategoryTag from "../../transactions/components/CategoryTag";
+import CategoryTag from "../../common/components/CategoryTag";
 import { addMonths, format, isBefore, setDate, startOfDay } from "date-fns";
 import TransactionTable from "../../transactions/components/TransactionTable";
 
@@ -80,6 +87,13 @@ const FixedTransactionDetails = ({ id }: Props) => {
           <HStack>
             <Heading color={"teal.700"} size={"sm"}>
               {" "}
+              Account
+            </Heading>
+            <Text>{fixedTransaction.Account}</Text>
+          </HStack>
+          <HStack>
+            <Heading color={"teal.700"} size={"sm"}>
+              {" "}
               Categories
             </Heading>
             {fixedTransaction.categories.map((i) => (
@@ -88,6 +102,7 @@ const FixedTransactionDetails = ({ id }: Props) => {
           </HStack>
         </Flex>
       </Flex>
+      <Separator />
       <TransactionTable data={fixedTransaction.Transactions} />
     </DialogComponent>
   );

@@ -1,5 +1,5 @@
 import NewTransactionDrawer from "../components/NewTransactionDrawer";
-import { HStack, Tabs } from "@chakra-ui/react";
+import { Box, Flex, HStack, Tabs } from "@chakra-ui/react";
 import { HelperEntity } from "../../common/helper";
 import Transaction from "../model/Transaction";
 import useTransactions from "../hooks/useTransactions";
@@ -7,6 +7,8 @@ import { useMutationState } from "@tanstack/react-query";
 import { queryKeys } from "../../common/constants";
 import TabContent from "../components/TabContent";
 import TransactionEmptyState from "../components/TransactionEmptyState";
+import CollapsibleTitle from "../../common/components/CollapsibleTitle";
+import TimePeriodMenu from "../../common/components/TimePeriodMenu";
 
 const TransactionsPage = () => {
   const transactions = useTransactions();
@@ -38,24 +40,38 @@ const TransactionsPage = () => {
       .map((s) => s.Date.year.toString())
       .sort((a, b) => +b - +a);
   return (
-    <>
-      {" "}
+    <Box padding={"15px"}>
+      <Box>
+        <HStack
+          justifyContent={"space-between"}
+          alignItems={"flex-start"}
+          justifyItems={"flex-end"}
+        >
+          <CollapsibleTitle
+            title="Transactions"
+            description="Welcome to the Transactions Page, where you can easily manage all your expenses and incomes"
+          />
+          <Flex
+            direction={"row"}
+            gap={2}
+            alignItems={"flex-start"}
+            justifyItems={"flex-end"}
+          >
+            <NewTransactionDrawer />
+          </Flex>
+        </HStack>
+      </Box>
       {!transData || transCount === 0 ? (
         <TransactionEmptyState />
       ) : (
-        <>
-          <HStack float={"right"}>
-            <NewTransactionDrawer />
-          </HStack>
-          <Tabs.Root defaultValue={years[0]} variant="plain">
-            <Tabs.List>
+        <Box>
+          <Tabs.Root defaultValue={years[0]} colorPalette={"teal"}>
+            <Tabs.List width={"full"} border={0}>
               {years.map((year) => (
                 <Tabs.Trigger key={year} value={year}>
                   {year}
                 </Tabs.Trigger>
               ))}
-
-              <Tabs.Indicator />
             </Tabs.List>
             {years.map((year) => (
               <Tabs.Content key={year} value={year}>
@@ -67,9 +83,9 @@ const TransactionsPage = () => {
               </Tabs.Content>
             ))}
           </Tabs.Root>
-        </>
+        </Box>
       )}
-    </>
+    </Box>
   );
 };
 
