@@ -20,16 +20,9 @@ interface Props {
 }
 const InstitutionDetails = ({ institution }: Props) => {
   const { period } = usePeriodStore();
-  const {
-    calculateAssetsAndDebts,
-    calculateNetWorthChange,
-    spendingTrend,
-    calculateTotalFeesPaid,
-  } = useAccountInsights();
+  const { calculateNetWorthChange, spendingTrend } = useAccountInsights();
   const { getTransactionsTotalAmount } = useInsights();
-  const { totalAssets, totalDebts } = calculateAssetsAndDebts(
-    institution.Accounts
-  );
+
   const totalSpent = institution.Accounts.reduce(
     (total, acc) =>
       total + getTransactionsTotalAmount(acc.Transactions, undefined, 0),
@@ -87,33 +80,7 @@ const InstitutionDetails = ({ institution }: Props) => {
             </Badge>
           </Flex>
         </Flex>
-        <Flex direction={"row"} gap={10}>
-          <Flex gap={2} w="100%">
-            <Heading color={"teal.700"} size={"sm"}>
-              {" "}
-              Total Assets
-            </Heading>
-            <FormatNumber value={totalAssets} style="currency" currency="Eur" />
-          </Flex>
-          <Flex gap={2} w="100%">
-            <Heading color={"teal.700"} size={"sm"}>
-              {" "}
-              Total Debts
-            </Heading>
-            <FormatNumber value={totalDebts} style="currency" currency="Eur" />
-          </Flex>
-          <Flex gap={2} w="100%">
-            <Heading color={"teal.700"} size={"sm"}>
-              {" "}
-              Total Fees
-            </Heading>
-            <FormatNumber
-              value={calculateTotalFeesPaid(institution.Accounts, period)}
-              style="currency"
-              currency="Eur"
-            />
-          </Flex>
-        </Flex>
+
         <Flex direction={"row"} gap={10}>
           <Flex gap={2} w="100%">
             <Heading color={"teal.700"} size={"sm"}>

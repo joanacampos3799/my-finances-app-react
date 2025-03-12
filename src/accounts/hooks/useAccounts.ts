@@ -6,7 +6,7 @@ import AccountList from "../models/AccountList";
 
 const apiClient = new APIClient<AccountList>("/accounts");
 
-const useAccounts = () => {
+const useAccounts = (select?: (data: AccountList[]) => AccountList[]) => {
   const { userId, userToken } = useLoginData();
 
   const fallback: FetchResponse<AccountList> = {
@@ -16,6 +16,13 @@ const useAccounts = () => {
   const { data: accounts = fallback } = useQuery({
     enabled: !!userToken,
     queryKey: [queryKeys.accounts],
+    select: (response) => {
+      const filteredData = select ? select(response.data) : response.data;
+      return {
+        data: filteredData,
+        count: filteredData.length,
+      };
+    },
     queryFn: () => apiClient.getAll(userId!!, userToken!!),
   });
   return accounts;

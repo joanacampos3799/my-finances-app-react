@@ -13,7 +13,6 @@ import BalanceHistory from "./BalanceHistory";
 import useAccountStore from "../hooks/useAccountStore";
 import ExpensesChart from "./ExpensesChart";
 import Revenue from "./Revenue";
-import MainGoal from "./MainGoal";
 
 const AccountKPIs = () => {
   const { account } = useAccountStore();

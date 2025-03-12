@@ -6,7 +6,7 @@ import { queryKeys } from "../../common/constants";
 
 const apiClient = new APIClient<Transaction>("/transactions");
 
-const useTransactions = () => {
+const useTransactions = (select?: (data: Transaction[]) => Transaction[]) => {
   const { userId, userToken } = useLoginData();
 
   const fallback: FetchResponse<Transaction> = {
@@ -16,6 +16,13 @@ const useTransactions = () => {
   const { data: transactions = fallback } = useQuery({
     enabled: !!userToken,
     queryKey: [queryKeys.transactions],
+    select: (response) => {
+      const filteredData = select ? select(response.data) : response.data;
+      return {
+        data: filteredData,
+        count: filteredData.length,
+      };
+    },
     queryFn: () => apiClient.getAll(userId!!, userToken!!),
   });
   return transactions;

@@ -4,6 +4,7 @@ export default interface AccountFormObject {
   limit: string;
   selectedInstitution: string;
   selectedAccountTypeId: string;
-  paymentDate: Date;
+  paymentDate?: Date;
+  statementDate?: Date;
   interest?: string;
 }

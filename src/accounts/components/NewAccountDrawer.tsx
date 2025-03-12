@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { accountTypes } from "../../common/constants";
-import { Input, Show, Stack } from "@chakra-ui/react";
+import { HStack, Input, Show, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field";
 import useAddAccount from "../hooks/useAddAccount";
 import useInstitutions from "../../institutions/hooks/useInstitutions";
@@ -46,19 +46,19 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
       account && account.PaymentDueDate
         ? parseDate(account.PaymentDueDate)
         : new Date(),
+    statementDate:
+      account && account.StatementDate
+        ? parseDate(account.StatementDate)
+        : new Date(),
   });
   const nameRef = useRef<HTMLInputElement>(null);
   const addAccount = useAddAccount(() => resetForm());
   const updateAccount = useUpdateAccount(() => resetForm());
   const institutionsSelect =
     new HelperEntity<InstitutionList>().getMappedRadioEntity(institutions);
-  const showSpendingLimit =
-    +values.selectedAccountTypeId === 0 ||
-    +values.selectedAccountTypeId === 1 ||
-    +values.selectedAccountTypeId === 3 ||
-    +values.selectedAccountTypeId === 6 ||
-    +values.selectedAccountTypeId === 7 ||
-    +values.selectedAccountTypeId === 8;
+  const showSpendingLimit = +values.selectedAccountTypeId !== 2;
+  const isCreditCard = +values.selectedAccountTypeId === 1;
+
   const [open, setOpen] = useState(false);
   return (
     <DrawerComponent
@@ -88,6 +88,9 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               paymentDueDate: values.paymentDate
                 ? format(values.paymentDate, "dd/MM/yyyy")
                 : undefined,
+              statementDate: values.statementDate
+                ? format(values.statementDate, "dd/MM/yyyy")
+                : undefined,
               interest: values.interest
                 ? parseFloat(values.interest.replace(",", "."))
                 : undefined,
@@ -103,6 +106,9 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               Transactions: [],
               paymentDueDate: values.paymentDate
                 ? format(values.paymentDate, "dd/MM/yyyy")
+                : undefined,
+              statementDate: values.statementDate
+                ? format(values.statementDate, "dd/MM/yyyy")
                 : undefined,
               interest: values.interest
                 ? parseFloat(values.interest.replace(",", "."))
@@ -129,28 +135,28 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               isCurrency
             />
           </Field>
-
-          <Field label="Institution">
-            <RadioMenu
-              hasArrow
-              data={institutionsSelect}
-              selectedId={values.selectedInstitution}
-              setSelectedId={(v) => handleChange("selectedInstitution", v)}
-              placeholder="a institution"
-              variant={"outline"}
-            />
-          </Field>
-          <Field label="Account Type">
-            <RadioMenu
-              placeholder="account type"
-              data={accountTypes}
-              selectedId={values.selectedAccountTypeId}
-              setSelectedId={(v) => handleChange("selectedAccountTypeId", v)}
-              hasArrow
-              variant={"outline"}
-            />
-          </Field>
-
+          <HStack>
+            <Field label="Institution">
+              <RadioMenu
+                hasArrow
+                data={institutionsSelect}
+                selectedId={values.selectedInstitution}
+                setSelectedId={(v) => handleChange("selectedInstitution", v)}
+                placeholder="a institution"
+                variant={"outline"}
+              />
+            </Field>
+            <Field label="Account Type">
+              <RadioMenu
+                placeholder="account type"
+                data={accountTypes}
+                selectedId={values.selectedAccountTypeId}
+                setSelectedId={(v) => handleChange("selectedAccountTypeId", v)}
+                hasArrow
+                variant={"outline"}
+              />
+            </Field>
+          </HStack>
           <Show when={showSpendingLimit}>
             <Field label="Spending Limit">
               <NumberInput
@@ -160,19 +166,29 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               />
             </Field>
           </Show>
-          <Field label="Interest">
-            <NumberInput
-              number={"" + values.interest}
-              setNumber={(e) => handleChange("interest", e)}
-              isCurrency={false}
-            />
-          </Field>
-          <Field label="Payment Due Date">
-            <DatePicker
-              selectedDate={values.paymentDate}
-              setSelectedDate={(d) => handleChange("paymentDate", d)}
-            />
-          </Field>
+          <Show when={isCreditCard}>
+            <Field label="Interest">
+              <NumberInput
+                number={"" + values.interest}
+                setNumber={(e) => handleChange("interest", e)}
+                isCurrency={false}
+              />
+            </Field>
+            <HStack>
+              <Field label="Statement Date">
+                <DatePicker
+                  selectedDate={values.statementDate!!}
+                  setSelectedDate={(d) => handleChange("statementDate", d)}
+                />
+              </Field>
+              <Field label="Payment Due Date">
+                <DatePicker
+                  selectedDate={values.paymentDate!!}
+                  setSelectedDate={(d) => handleChange("paymentDate", d)}
+                />
+              </Field>
+            </HStack>
+          </Show>
         </Stack>
       </form>
     </DrawerComponent>

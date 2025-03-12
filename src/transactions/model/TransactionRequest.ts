@@ -11,7 +11,6 @@ export default interface Transaction {
   userId: UUID;
   transactionType: number;
   fixedTransactionId?: number;
-  isFee: boolean;
   isCreditCardPayment: boolean;
   creditCardId?: number;
 }

@@ -42,9 +42,6 @@ const Footer = () => {
             <Link href="#features" _hover={{ color: "gray.600" }}>
               Features
             </Link>
-            <Link href="/pricing" _hover={{ color: "gray.600" }}>
-              Pricing
-            </Link>
             <Link href="/about-us" _hover={{ color: "gray.600" }}>
               About Us
             </Link>

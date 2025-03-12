@@ -32,10 +32,15 @@ export const AuthContextProvider = ({
   // can't destructure since loginData might be null
   const userId = user?.userId;
   const userToken = user?.userToken;
+  const name = user?.name;
 
-  const setLoginData = ({ userId: Id, userToken: Token }: User) => {
-    if (userId !== Id || userToken !== Token) {
-      setUser({ userId: Id, userToken: Token });
+  const setLoginData = ({
+    userId: Id,
+    userToken: Token,
+    name: username,
+  }: User) => {
+    if (userId !== Id || userToken !== Token || name !== username) {
+      setUser({ userId: Id, userToken: Token, name: username });
     }
   };
 

@@ -5,8 +5,10 @@ import { format, parse } from "date-fns";
 interface Props {
   data: { x: string; y: number }[];
   caption: string;
+  width?: number;
+  height?: number;
 }
-const LineChartComponent = ({ data, caption }: Props) => {
+const LineChartComponent = ({ data, caption, width, height }: Props) => {
   let interval = 1;
   if (data.length > 7 && data.length <= 30) interval = 4;
   else if (data.length > 30 && data.length <= 100) interval = 8;
@@ -25,8 +27,8 @@ const LineChartComponent = ({ data, caption }: Props) => {
     >
       <Heading color={"teal.700"}>{caption}</Heading>
       <LineChart
-        width={350}
-        height={300}
+        width={width ?? 350}
+        height={height ?? 300}
         series={[
           {
             data: data.map((d) => d.y),

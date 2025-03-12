@@ -22,11 +22,7 @@ interface Props {
 const AccountsKPIs = ({ accounts }: Props) => {
   const { period } = usePeriodStore();
   const { calculateAccountTypeBalances } = useInsights();
-  const {
-    calculateAssetsAndDebts,
-    calculateTotalFeesPaid,
-    getProjectedSavings,
-  } = useAccountInsights();
+  const { calculateAssetsAndDebts, getProjectedSavings } = useAccountInsights();
   const accountTypeBalances = calculateAccountTypeBalances(accounts);
   const donutData = Object.entries(accountTypeBalances).map(
     ([type, balance]) => ({
@@ -177,11 +173,7 @@ const AccountsKPIs = ({ accounts }: Props) => {
                 Total Fees Paid
               </Text>
               <Heading size={"2xl"}>
-                <FormatNumber
-                  value={calculateTotalFeesPaid(accounts, period)}
-                  style="currency"
-                  currency="eur"
-                />
+                <FormatNumber value={0} style="currency" currency="eur" />
               </Heading>
             </Box>
           </Flex>

@@ -1,5 +1,4 @@
 import { UUID } from "crypto";
-import Debt from "../../debts/model/Debt";
 import Transaction from "../../transactions/model/Transaction";
 import InstitutionList from "../../institutions/model/InstitutionList";
 
@@ -9,38 +8,29 @@ export default interface Account {
   Balance: number;
   InitialBalance: number;
   Transactions: Transaction[];
-  Debts: Debt[];
   Type: number;
   Institution?: InstitutionList;
   SpendingLimit?: number;
   PaymentDueDate?: DateObj;
+  StatementDate?: DateObj;
   Payments?: Payment[];
   Interest?: number;
-  JointUserName?: string;
-  Goals?: Goal[];
   userId: UUID;
+  DailyBalances: DailyBalance[];
+}
+
+export interface DailyBalance {
+  date: DateObj;
+  accountId: number;
+  balance: number;
 }
 
 export interface Payment {
   Id: number;
   Amount: number;
   Date: DateObj;
-}
-
-export interface Goal {
-  Id?: number;
-  Goal: number;
-  SavedAmount: number;
-  Name: string;
-  TargetDate: DateObj;
-  AccountId: number;
-}
-
-export interface GoalFormObject {
-  Goal: number;
-
-  Name: string;
-  TargetDate: Date;
+  CreditCardId: number;
+  AccountName: string;
 }
 
 export const fallbackAccount: Account = {
@@ -50,6 +40,6 @@ export const fallbackAccount: Account = {
   Balance: 0,
   InitialBalance: 0,
   Transactions: [] as Transaction[],
-  Debts: [],
   Type: 0,
+  DailyBalances: [] as DailyBalance[],
 };

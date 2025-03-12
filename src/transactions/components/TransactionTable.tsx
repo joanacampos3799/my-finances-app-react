@@ -1,14 +1,6 @@
-import {
-  Flex,
-  FormatNumber,
-  HStack,
-  Icon,
-  Show,
-  Table,
-} from "@chakra-ui/react";
+import { Flex, FormatNumber, HStack, Show, Table } from "@chakra-ui/react";
 import Transaction from "../model/Transaction";
 import { useEffect, useState } from "react";
-import { TbArrowBarDown, TbArrowBarUp } from "react-icons/tb";
 import useSorting from "../../common/hooks/useSorting";
 import TableHeader from "../../common/components/TableHeader";
 import {
@@ -18,8 +10,6 @@ import {
   PaginationRoot,
 } from "../../components/ui/pagination";
 import TransactionEmptyState from "./TransactionEmptyState";
-import useDateFilter from "../../common/hooks/useDateFilter";
-import CategoryTag from "../../common/components/CategoryTag";
 import TransactionRow from "./TransactionRow";
 import { useDeleteTransaction } from "../hooks/useDeleteTransaction";
 

@@ -85,18 +85,14 @@ export const accountTypes: EnumType[] = [
   },
   {
     id: 5,
-    name: "Loan",
-  },
-  {
-    id: 6,
     name: "MultiCurrency",
   },
   {
-    id: 7,
+    id: 6,
     name: "Gift Card",
   },
   {
-    id: 8,
+    id: 7,
     name: "Cash",
   },
 ];

@@ -2,15 +2,16 @@ import usePeriodStore from "../../common/hooks/usePeriodStore";
 import Transaction from "../../transactions/model/Transaction";
 import useDateFilter from "../../common/hooks/useDateFilter";
 import {
+  addMonths,
   Day,
   eachDayOfInterval,
   eachMonthOfInterval,
   eachWeekOfInterval,
   format,
-  getDate,
   getDay,
   getWeekOfMonth,
   startOfMonth,
+  subMonths,
 } from "date-fns";
 import StackedBarChart from "../../common/components/StackedBarChart";
 import useAccountStore from "../hooks/useAccountStore";
@@ -20,10 +21,24 @@ const ExpensesChart = () => {
   const { period } = usePeriodStore();
   const { account } = useAccountStore();
   const { getStartEndDates, parseDate } = useDateFilter();
+
   const dates = getStartEndDates(period);
   const uniqueCategories = Array.from(
     new Set(account.Transactions.flatMap((t) => t.categories))
   );
+  // Handle credit card statement period
+  let statementStartDate: Date | null = null;
+  if (account.Type === 1 && account.StatementDate) {
+    const statementDate = parseDate(account.StatementDate);
+
+    // If today is on or after the statement date, use this month’s statement period
+    if (new Date() >= statementDate) {
+      statementStartDate = statementDate;
+    } else {
+      // Otherwise, we're still in the previous period
+      statementStartDate = subMonths(statementDate, 1);
+    }
+  }
   const groupTransactionsByPeriod = (
     transactions: Transaction[],
     period: string
@@ -34,23 +49,29 @@ const ExpensesChart = () => {
         dates.startDate,
         dates.endDate,
         parseDate,
-        uniqueCategories
+        uniqueCategories,
+        account.Type,
+        statementStartDate
       );
-    } else if (period === "Weekly")
+    } else if (period === "Weekly") {
       return groupTransactionsByDay(
         transactions,
         dates.startDate,
         dates.endDate,
         parseDate,
-        uniqueCategories
+        uniqueCategories,
+        account.Type,
+        statementStartDate
       );
-
+    }
     return groupTransactionsByMonth(
       transactions,
       dates.startDate,
       dates.endDate,
       parseDate,
-      uniqueCategories
+      uniqueCategories,
+      account.Type,
+      statementStartDate
     );
   };
 
@@ -66,6 +87,7 @@ const ExpensesChart = () => {
     color: category.Color,
     dataKey: category.Name,
   }));
+
   return (
     <StackedBarChart
       height={300}
@@ -83,14 +105,32 @@ const groupTransactionsByWeek = (
   startDate: Date,
   endDate: Date,
   parseDate: (date: DateObj) => Date,
-  uniqueCategories: Category[]
+  uniqueCategories: Category[],
+  accountType: number,
+  statementStartDate?: Date | null
 ) => {
   const groupedData: { [key: string]: { [category: string]: number } } = {};
+  const periodStart =
+    accountType === 1 && statementStartDate ? statementStartDate : startDate;
+  const periodEnd =
+    accountType === 1 && statementStartDate
+      ? addMonths(statementStartDate, 1)
+      : endDate; // Next statement date
 
   transactions.forEach((transaction) => {
-    const transactionDate = format(parseDate(transaction.Date), "dd/MM/yyyy");
+    const transactionDate = parseDate(transaction.Date);
 
-    const weekKey = "Week " + getWeekOfMonth(transactionDate); // Use the week's starting date as the key
+    // Ensure transactions fall within the correct statement period
+    if (transactionDate < periodStart || transactionDate >= periodEnd) {
+      return;
+    }
+
+    // Get the first weekday of the month
+    const firstDayOfMonth = startOfMonth(periodStart);
+    const weekStartsOn = getDay(firstDayOfMonth) as Day;
+
+    // Get the correct week number
+    const weekKey = "Week " + getWeekOfMonth(transactionDate, { weekStartsOn });
 
     if (!groupedData[weekKey]) {
       groupedData[weekKey] = {};
@@ -100,25 +140,25 @@ const groupTransactionsByWeek = (
       if (!groupedData[weekKey][category.Name]) {
         groupedData[weekKey][category.Name] = 0;
       }
-      groupedData[weekKey][category.Name] += Math.abs(transaction.Amount); // Summing amounts
+      groupedData[weekKey][category.Name] += Math.abs(transaction.Amount);
     });
   });
 
+  // Ensure all weeks in the range are initialized
   const weeksInRange = eachWeekOfInterval(
-    { start: startDate, end: endDate },
-    { weekStartsOn: getDay(startOfMonth(startDate)) as Day }
+    { start: periodStart, end: periodEnd },
+    { weekStartsOn: getDay(startOfMonth(periodStart)) as Day }
   );
-
   const groupedWeeks: { [key: string]: { [category: string]: number } } = {};
 
-  weeksInRange.forEach((week) => {
-    const weekKey = "Week " + getWeekOfMonth(week);
+  weeksInRange.forEach((week, index) => {
+    const weekKey = "Week " + (index + 1);
     groupedWeeks[weekKey] = groupedData[weekKey] || {};
 
     // Initialize missing categories to 0
     uniqueCategories.forEach((category) => {
       if (!groupedWeeks[weekKey][category.Name]) {
-        groupedWeeks[weekKey][category.Name] = 0; // Ensure zero for empty periods
+        groupedWeeks[weekKey][category.Name] = 0;
       }
     });
   });
@@ -131,38 +171,50 @@ const groupTransactionsByDay = (
   startDate: Date,
   endDate: Date,
   parseDate: (date: DateObj) => Date,
-  uniqueCategories: Category[]
+  uniqueCategories: Category[],
+  accountType: number,
+  statementStartDate?: Date | null
 ) => {
-  const groupedData: { [key: string]: { [category: string]: number } } = {};
+  const groupedData: { [day: string]: { [category: string]: number } } = {};
 
   transactions.forEach((transaction) => {
-    const transactionDate = format(parseDate(transaction.Date), "dd/MM/yyyy");
+    const transactionDate = parseDate(transaction.Date);
+    if (accountType === 1 && statementStartDate) {
+      if (
+        transactionDate < statementStartDate ||
+        transactionDate >= startDate
+      ) {
+        return;
+      }
+    } else {
+      if (transactionDate < startDate || transactionDate > endDate) {
+        return;
+      }
+    }
 
-    const dayKey = getDate(transactionDate).toString();
+    const dayKey = format(transactionDate, "dd/MM");
 
     if (!groupedData[dayKey]) {
       groupedData[dayKey] = {};
     }
 
     transaction.categories.forEach((category) => {
-      if (!groupedData[dayKey][category.Name]) {
-        groupedData[dayKey][category.Name] = 0;
-      }
-      groupedData[dayKey][category.Name] += Math.abs(transaction.Amount); // Summing amounts
+      groupedData[dayKey][category.Name] =
+        (groupedData[dayKey][category.Name] || 0) +
+        Math.abs(transaction.Amount);
     });
   });
 
+  const daysInRange = eachDayOfInterval({ start: startDate, end: endDate });
   const groupedDays: { [key: string]: { [category: string]: number } } = {};
 
-  const daysInRange = eachDayOfInterval({ start: startDate, end: endDate });
   daysInRange.forEach((day) => {
-    const dayKey = getDate(day);
+    const dayKey = format(day, "dd/MM");
     groupedDays[dayKey] = groupedData[dayKey] || {};
 
-    // Initialize missing categories to 0
     uniqueCategories.forEach((category) => {
       if (!groupedDays[dayKey][category.Name]) {
-        groupedDays[dayKey][category.Name] = 0; // Ensure zero for empty periods
+        groupedDays[dayKey][category.Name] = 0;
       }
     });
   });
@@ -170,50 +222,60 @@ const groupTransactionsByDay = (
   return groupedDays;
 };
 
-export const groupTransactionsByMonth = (
+const groupTransactionsByMonth = (
   transactions: Transaction[],
-  startDate: Date, // Start of the desired period
-  endDate: Date, // End of the desired period
+  startDate: Date,
+  endDate: Date,
   parseDate: (date: DateObj) => Date,
-  uniqueCategories: Category[]
+  uniqueCategories: Category[],
+  accountType: number,
+  statementStartDate?: Date | null
 ) => {
   const groupedData: { [month: string]: { [category: string]: number } } = {};
 
-  // First, group transactions by month and category
   transactions.forEach((transaction) => {
-    const transactionDate = format(parseDate(transaction.Date), "dd/MM/yyyy");
-    const monthKey = format(startOfMonth(transactionDate), "MMM"); // Use the month as the key
+    const transactionDate = parseDate(transaction.Date);
+
+    if (accountType === 1 && statementStartDate) {
+      if (
+        transactionDate < statementStartDate ||
+        transactionDate >= startDate
+      ) {
+        return;
+      }
+    } else {
+      if (transactionDate < startDate || transactionDate > endDate) {
+        return;
+      }
+    }
+    const monthKey = format(transactionDate, "MMM");
 
     if (!groupedData[monthKey]) {
       groupedData[monthKey] = {};
     }
 
     transaction.categories.forEach((category) => {
-      if (!groupedData[monthKey][category.Name]) {
-        groupedData[monthKey][category.Name] = 0;
-      }
-      groupedData[monthKey][category.Name] += Math.abs(transaction.Amount); // Summing amounts
+      groupedData[monthKey][category.Name] =
+        (groupedData[monthKey][category.Name] || 0) +
+        Math.abs(transaction.Amount);
     });
   });
-
-  // Generate complete list of months in the period
-  const groupedMonths: { [key: string]: { [category: string]: number } } = {};
 
   const monthsInRange = eachMonthOfInterval({ start: startDate, end: endDate });
+  const groupedMonths: { [key: string]: { [category: string]: number } } = {};
+
   monthsInRange.forEach((month) => {
     const monthKey = format(month, "MMM");
-
     groupedMonths[monthKey] = groupedData[monthKey] || {};
 
-    // Initialize missing categories to 0
     uniqueCategories.forEach((category) => {
       if (!groupedMonths[monthKey][category.Name]) {
-        groupedMonths[monthKey][category.Name] = 0; // Ensure zero for empty periods
+        groupedMonths[monthKey][category.Name] = 0;
       }
     });
   });
 
-  // Return chart-ready data with totals for each period
   return groupedMonths;
 };
+
 export default ExpensesChart;

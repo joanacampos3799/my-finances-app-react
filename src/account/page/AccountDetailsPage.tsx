@@ -20,21 +20,19 @@ import { accountTypes } from "../../common/constants";
 import CreditKPIs from "../components/CreditKPIs";
 import PaymentsTable from "../components/PaymentsTable";
 import { LoadingOverlay } from "../../components/ui/loading-overlay";
-import MainGoal from "../components/MainGoal";
 
 const AccountDetailsPage = () => {
   const { id } = useParams();
 
   const { account: acc, isLoading, error } = useAccount(+id!);
   const { account, setAccount } = useAccountStore();
-  console.log(acc);
   useEffect(() => {
     if (acc !== undefined) setAccount(acc);
   }, [acc, setAccount]);
   if (isLoading) return <LoadingOverlay />;
 
   if (error || !account) return <Text>No data</Text>;
-
+  console.log(account);
   return (
     <Box>
       <AccountHeader name={account.Name} />
@@ -56,7 +54,6 @@ const AccountDetailsPage = () => {
                   currency="Eur"
                 />
               </Heading>
-              {account.Goals && <MainGoal goals={account.Goals} />}
             </Flex>
             {accountTypes[account.Type].name === "Credit" ? (
               <CreditKPIs />

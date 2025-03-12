@@ -21,11 +21,17 @@ const CreditKPIs = () => {
     account.PaymentDueDate!!.month - 1,
     account.PaymentDueDate!!.day
   );
+
+  const statementDate = new Date(
+    account.StatementDate!.year,
+    account.StatementDate!.month - 1,
+    account.StatementDate!.day
+  );
   return (
     <>
       {/* Responsive Flex for Account Information */}
       <Flex
-        direction={{ base: "column", lg: "row" }}
+        direction={"column"}
         gap={8}
         p="10px"
         w="100%"
@@ -62,6 +68,12 @@ const CreditKPIs = () => {
         <Flex direction={{ base: "column", md: "row" }} gap={8}>
           <HStack>
             <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
+              Next Statement Date
+            </Heading>
+            <Text>{statementDate.toDateString()}</Text>
+          </HStack>
+          <HStack>
+            <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
               Next Payment Due
             </Heading>
             <Text>{dueDate.toDateString()}</Text>
@@ -75,12 +87,6 @@ const CreditKPIs = () => {
               style="currency"
               currency="Eur"
             />
-          </HStack>
-          <HStack>
-            <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
-              Interest Rate
-            </Heading>
-            <FormatNumber value={account.Interest ?? 0} style="percent" />
           </HStack>
         </Flex>
       </Flex>

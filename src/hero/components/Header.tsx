@@ -13,9 +13,6 @@ const Header = () => {
         <Heading color={"teal.500"}>MoneyTrack.</Heading>
       </HStack>
       <HStack gap={2}>
-        <LinkButton variant="plain" colorPalette={"teal"} href="/pricing">
-          Plans
-        </LinkButton>
         <LinkButton variant={"plain"} colorPalette={"teal"} href="/about-us">
           About Us
         </LinkButton>
