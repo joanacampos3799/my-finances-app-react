@@ -8,7 +8,7 @@ import { queryKeys } from "../../common/constants";
 import TabContent from "../components/TabContent";
 import TransactionEmptyState from "../components/TransactionEmptyState";
 import CollapsibleTitle from "../../common/components/CollapsibleTitle";
-import TimePeriodMenu from "../../common/components/TimePeriodMenu";
+import DateObj from "../../common/date";
 
 const TransactionsPage = () => {
   const transactions = useTransactions();
@@ -27,6 +27,13 @@ const TransactionsPage = () => {
 
   const helper = new HelperEntity<Transaction>();
   if (pendingTransaction) {
+    pendingTransaction.categories = [];
+    const now = new Date();
+    pendingTransaction.Date = {
+      year: now.getFullYear(),
+      month: now.getMonth(),
+      day: now.getDate(),
+    } as DateObj;
     const { tCount, tData } = helper.getPendingData(
       transactions,
       pendingTransaction
@@ -36,9 +43,9 @@ const TransactionsPage = () => {
   }
   let years: string[] = [];
   if (transData && transCount > 0)
-    years = transData
-      .map((s) => s.Date.year.toString())
-      .sort((a, b) => +b - +a);
+    years = Array.from(
+      new Set(transData.map((s) => s.Date.year.toString()))
+    ).sort((a, b) => +b - +a);
   return (
     <Box padding={"15px"}>
       <Box>

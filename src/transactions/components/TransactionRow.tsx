@@ -1,4 +1,3 @@
-import React from "react";
 import Transaction from "../model/Transaction";
 import {
   Button,
@@ -8,12 +7,11 @@ import {
   Show,
   Table,
 } from "@chakra-ui/react";
-import { TbArrowBarDown, TbArrowBarUp } from "react-icons/tb";
 import CategoryTag from "../../common/components/CategoryTag";
 import useDateFilter from "../../common/hooks/useDateFilter";
 import TransactionDetails from "./TransactionDetails";
 import NewTransactionDrawer from "./NewTransactionDrawer";
-import { LuTrash2 } from "react-icons/lu";
+import { LuArrowDownToLine, LuArrowUpFromLine, LuTrash2 } from "react-icons/lu";
 
 interface Props {
   transaction: Transaction;
@@ -31,13 +29,13 @@ const TransactionRow = ({
   return (
     <Table.Row key={transaction.Id + "-transaction"}>
       <Table.Cell>
-        {transaction.transactionType === 1 ? (
-          <Icon>
-            <TbArrowBarDown />
+        {transaction.transactionType === 0 ? (
+          <Icon color={"red.500"}>
+            <LuArrowUpFromLine />
           </Icon>
         ) : (
-          <Icon>
-            <TbArrowBarUp />
+          <Icon color={"green.500"}>
+            <LuArrowDownToLine />
           </Icon>
         )}
       </Table.Cell>

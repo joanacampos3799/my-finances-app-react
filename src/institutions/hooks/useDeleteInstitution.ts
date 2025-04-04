@@ -6,7 +6,7 @@ import { useLoginData } from "../../auth/contexts/AuthContext";
 import { toaster } from "../../components/ui/toaster";
 import InstitutionList from "../model/InstitutionList";
 
-const apiClient = new APIClient<InstitutionList>("/institution");
+const apiClient = new APIClient<InstitutionList>("/institutions");
 
 export function useDeleteInstitution() {
   const queryClient = useQueryClient();

@@ -33,6 +33,7 @@ const AccountsPage = React.memo(() => {
   let accountCount = accounts.count;
   const accountHelper = new HelperEntity<AccountList>();
   if (pendingAccount) {
+    pendingAccount.DailyBalances = [];
     const { tCount, tData } = accountHelper.getPendingData(
       accounts,
       pendingAccount

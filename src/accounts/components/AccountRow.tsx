@@ -1,6 +1,6 @@
 import { Badge, FormatNumber, HStack, Show, Table } from "@chakra-ui/react";
 import { Button } from "../../components/ui/button";
-import { LuSearch, LuTrash2 } from "react-icons/lu";
+import { LuArchiveRestore, LuSearch, LuTrash2 } from "react-icons/lu";
 import AccountList from "../models/AccountList";
 
 import NewAccountDrawer from "./NewAccountDrawer";
@@ -59,7 +59,7 @@ const AccountRow = ({ account, onDelete, fromInstitution }: Props) => {
             bgColor="red.500"
             onClick={() => onDelete(account)}
           >
-            <LuTrash2 />
+            {account.active ? <LuTrash2 /> : <LuArchiveRestore />}
           </Button>
         </HStack>
       </Table.Cell>

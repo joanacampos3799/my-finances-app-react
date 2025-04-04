@@ -8,7 +8,6 @@ interface Props {
   height?: number;
 }
 const HorizontalBarChart = ({ title, chartData, width, height }: Props) => {
-  console.log(chartData);
   return (
     <Flex
       w={"100%"}

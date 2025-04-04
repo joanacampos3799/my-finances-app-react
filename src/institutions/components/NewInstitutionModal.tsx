@@ -34,6 +34,7 @@ const NewInstitutionModal = ({ institution }: Props) => {
           if (ref.current && ref.current.value) {
             if (institution) {
               updateInstitution({
+                Id: institution.Id,
                 Name: ref.current?.value,
                 userId: userId!!,
                 Type: +type,

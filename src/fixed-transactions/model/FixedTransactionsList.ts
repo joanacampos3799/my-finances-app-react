@@ -13,4 +13,5 @@ export default interface FixedTransactionList {
   categories: Category[];
   Periodicity: number;
   PaymentDay: number;
+  Account: number;
 }

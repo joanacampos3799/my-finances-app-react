@@ -32,7 +32,6 @@ const AccountDetailsPage = () => {
   if (isLoading) return <LoadingOverlay />;
 
   if (error || !account) return <Text>No data</Text>;
-  console.log(account);
   return (
     <Box>
       <AccountHeader name={account.Name} />

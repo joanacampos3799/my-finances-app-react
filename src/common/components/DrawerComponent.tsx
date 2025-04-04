@@ -1,4 +1,4 @@
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren } from "react";
 import {
   DrawerBackdrop,
   DrawerBody,
@@ -77,12 +77,7 @@ const DrawerComponent = ({
           >
             Cancel
           </Button>
-          <Button
-            colorPalette={"teal"}
-            type="submit"
-            form={formName}
-            onClick={() => setOpen(false)}
-          >
+          <Button colorPalette={"teal"} type="submit" form={formName}>
             Save
           </Button>
         </DrawerFooter>

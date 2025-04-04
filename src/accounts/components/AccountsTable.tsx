@@ -10,9 +10,11 @@ import {
 } from "../../components/ui/pagination";
 import useSorting from "../../common/hooks/useSorting";
 import AccountList from "../models/AccountList";
-import { useDeleteAccount } from "../hooks/useDeleteAccount";
 import AccountRow from "./AccountRow";
 import AccountsEmptyState from "./AccountsEmptyState";
+import { useUpdateAccount } from "../hooks/useUpdateAccount";
+import { format } from "date-fns";
+import useDateFilter from "../../common/hooks/useDateFilter";
 
 interface Props {
   accounts: AccountList[];
@@ -22,6 +24,8 @@ interface Props {
 const AccountsTable = ({ accounts, fromInstitution }: Props) => {
   const { getSortingState, sortString, sortNumber, isSorting, SortSum } =
     useSorting();
+
+  const { parseDate } = useDateFilter();
 
   const [sortedAccounts, setSortedAccounts] = useState<AccountList[]>(accounts);
   const [page, setPage] = useState(1);
@@ -37,10 +41,27 @@ const AccountsTable = ({ accounts, fromInstitution }: Props) => {
     setPage(page);
     setSortedAccounts(accounts.slice((page - 1) * size, page * size));
   };
-  const deleteAccount = useDeleteAccount();
+  const upateAccount = useUpdateAccount(() => {});
   const handleDelete = (element: AccountList) => {
-    element.deleted = true;
-    deleteAccount(element);
+    upateAccount({
+      Name: element.Name,
+      institutionId: element.Institution.Id,
+      Type: element.Type,
+      userId: element.userId!!,
+      InitialBalance: element.InitialBalance,
+      Id: element.Id,
+      SpendingLimit: element.SpendingLimit,
+      Transactions: element.Transactions,
+      paymentDueDate: element.PaymentDueDate
+        ? format(parseDate(element.PaymentDueDate), "dd/MM/yyyy")
+        : undefined,
+      statementDate: element.StatementDate
+        ? format(parseDate(element.StatementDate), "dd/MM/yyyy")
+        : undefined,
+      interest: element.Interest,
+      active: !element.active,
+      goal: element.Goal,
+    });
   };
 
   return (

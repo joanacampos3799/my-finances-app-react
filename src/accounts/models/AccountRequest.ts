@@ -13,4 +13,6 @@ export default interface AccountRequest {
   paymentDueDate?: string;
   statementDate?: string;
   interest?: number;
+  active: boolean;
+  goal?: number;
 }

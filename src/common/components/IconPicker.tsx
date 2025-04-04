@@ -39,7 +39,7 @@ const IconPicker = ({ color, iconSize, iconParam, setIconParam }: Props) => {
   const [page, setPage] = useState(1);
   let size = 100;
   const iconPack = useIconPack();
-  const ref = useRef<HTMLInputElement>(null);
+
   if (!iconPack) {
     return <Skeleton variant="pulse" width={210} height={40} />;
   }
@@ -59,7 +59,7 @@ const IconPicker = ({ color, iconSize, iconParam, setIconParam }: Props) => {
   else ButtonIcon = FaPen;
   return (
     <HStack>
-      <PopoverRoot open={open} initialFocusEl={() => ref.current}>
+      <PopoverRoot open={open}>
         <PopoverTrigger asChild onClick={() => setOpen(true)}>
           <Button variant={"plain"} size={"xs"}>
             <Icon color={color ?? "black"} boxSize={iconSize}>
@@ -73,10 +73,11 @@ const IconPicker = ({ color, iconSize, iconParam, setIconParam }: Props) => {
             <HStack>
               <InputGroup width="full" startElement={<FaMagnifyingGlass />}>
                 <Input
-                  ref={ref}
+                  name="icon-search"
                   placeholder="Search"
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
+                  required={false}
                 />
               </InputGroup>
               <Button

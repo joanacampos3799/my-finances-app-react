@@ -11,17 +11,23 @@ interface Props {
   transactions: Transaction[];
 }
 const TabContent = ({ transactions }: Props) => {
-  const months = transactions.map((transaction) => {
-    const date = new Date(
-      transaction.Date.year,
-      transaction.Date.month - 1,
-      transaction.Date.day
-    );
-    return {
-      id: date.getMonth(),
-      value: format(date, "LLLL"),
-    };
-  });
+  const months = Object.values(
+    transactions.reduce(
+      (acc, transaction) => {
+        const date = new Date(
+          transaction.Date.year,
+          transaction.Date.month - 1,
+          transaction.Date.day
+        );
+        const monthId = date.getMonth();
+        const monthName = format(date, "LLLL");
+
+        acc[monthId] = { id: monthId, value: monthName };
+        return acc;
+      },
+      {} as Record<number, { id: number; value: string }>
+    )
+  );
 
   const monthlyTransactions = months.map((month) => {
     return {

@@ -3,7 +3,6 @@ import APIClient from "../../common/apiClient";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { mutationKeys, queryKeys } from "../../common/constants";
 import { toaster } from "../../components/ui/toaster";
-import AccountList from "../models/AccountList";
 import AccountRequest from "../models/AccountRequest";
 
 const apiClient = new APIClient<AccountRequest>("/accounts/new");
@@ -27,8 +26,9 @@ const useAddAccount = (onAdd: () => void) => {
     onSettled: () => {
       // return promise to maintain 'inProgress' status until query invalidation
       //    is complete
+
       return queryClient.invalidateQueries({
-        queryKey: [queryKeys.accounts],
+        queryKey: [queryKeys.accounts, queryKeys.institutions],
       });
     },
 

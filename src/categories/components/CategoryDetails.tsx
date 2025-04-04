@@ -43,7 +43,7 @@ const CategoryDetails = ({ category, total }: Props) => {
         category.Name +
         `'${category.Name.endsWith("s") ? "" : "s"} Transactions`
       }
-      footer={<NewTransactionDrawer categoriesIds={[category.Id!!]} />}
+      footer={<NewTransactionDrawer categoriesId={[category.Id!!]} />}
     >
       <Flex direction={"column"} gap={5} mb={3}>
         <Flex direction={"row"} gap={10}>

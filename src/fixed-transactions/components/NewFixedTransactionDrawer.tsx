@@ -16,6 +16,8 @@ import useForm from "../../common/hooks/useForm";
 import FixedTransactionFormObject from "../model/FixedTransactionFormObject";
 import { useUpdateFixedTransaction } from "../hooks/useUpdateFixedTransaction";
 import FixedTransactionList from "../model/FixedTransactionsList";
+import AccountList from "../../accounts/models/AccountList";
+import useAccounts from "../../accounts/hooks/useAccounts";
 
 interface Props {
   fixedTransaction?: FixedTransactionList;
@@ -25,6 +27,8 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
   const { userId } = useLoginData();
   const ref = useRef<HTMLInputElement>(null);
   const { data: categories } = useCategories();
+  const { data: accounts } = useAccounts();
+  const [accountList, setAccountList] = useState<AccountList[]>([]);
   const [initialState, setInitialState] =
     useState<EntitySelected<Category>[]>();
   const { values, handleChange, resetForm } =
@@ -34,13 +38,21 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
       amount: fixedTransaction ? "" + fixedTransaction.Amount : "0",
       paymentDay: fixedTransaction ? fixedTransaction.PaymentDay : 1,
       periodicity: fixedTransaction ? fixedTransaction.Periodicity : 1,
+      selectedAccount: fixedTransaction ? "" + fixedTransaction.Account : "",
       selectedTT: fixedTransaction
-        ? movementTypes[fixedTransaction.transactionType].name
-        : "",
+        ? "" + movementTypes[fixedTransaction.transactionType].id
+        : "-1",
       selectedCategories: initialState!!,
     });
+  const accountsSelect = new HelperEntity<AccountList>().getMappedRadioEntity(
+    accountList
+  );
+
   useEffect(() => {
-    if (categories && categories.length > 0) {
+    if (accounts && accounts.length > 0) {
+      setAccountList(accounts);
+    }
+    if (categories && categories.length > 0 && initialState === undefined) {
       const init = fixedTransaction
         ? new HelperEntity<Category>().getMappedCheckboxEntity(
             categories,
@@ -51,7 +63,7 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
       setInitialState(init);
       handleChange("selectedCategories", init);
     }
-  }, [categories]);
+  }, [categories, accounts]);
 
   const addFixedTransaction = useAddFixedTransaction(() => resetForm());
   const updateFixedTransaction = useUpdateFixedTransaction();
@@ -68,11 +80,11 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
     >
       <form
         id="new-fixed-form"
-        name="new-fixed-form"
         onSubmit={(e) => {
           e.preventDefault();
           if (fixedTransaction) {
             updateFixedTransaction({
+              Id: fixedTransaction.Id,
               Name: values.Name,
               Icon: values.icon,
               Amount: parseFloat(values.amount.replace(",", ".")),
@@ -84,6 +96,7 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
               categories: values.selectedCategories
                 .filter((cat) => cat.checked)
                 .map((cat) => cat.data.Id!!),
+              account: +values.selectedAccount,
             });
           } else {
             addFixedTransaction({
@@ -98,8 +111,10 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
               categories: values.selectedCategories
                 .filter((cat) => cat.checked)
                 .map((cat) => cat.data.Id!!),
+              account: +values.selectedAccount,
             });
           }
+          setOpen(false);
         }}
       >
         <Stack>
@@ -117,8 +132,9 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
             </Box>
 
             <Box width={"full"}>
-              <Field label="Name" required>
+              <Field label="Name">
                 <Input
+                  name="name"
                   ref={ref}
                   value={values.Name}
                   onChange={(e) => handleChange("Name", e.target.value)}
@@ -143,15 +159,14 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
             variant={"outline"}
           />
 
-          <Show when={values.selectedCategories !== undefined}>
-            <Field label="Choose the categories">
-              <CheckBoxMenu
-                name={"Category"}
-                items={values.selectedCategories}
-                setItems={(val) => handleChange("selectedCategories", val)}
-              />
-            </Field>
-          </Show>
+          <Field label="Choose the categories">
+            <CheckBoxMenu
+              name={"Category"}
+              items={values.selectedCategories}
+              setItems={(val) => handleChange("selectedCategories", val)}
+            />
+          </Field>
+
           <HStack>
             <NumberInput
               number={"" + values.paymentDay}
@@ -168,6 +183,16 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
               helperText="In months"
             />
           </HStack>
+          <Field label="Account">
+            <RadioMenu
+              hasArrow
+              placeholder="account"
+              data={accountsSelect}
+              selectedId={values.selectedAccount}
+              setSelectedId={(value) => handleChange("selectedAccount", value)}
+              variant={"outline"}
+            />
+          </Field>
         </Stack>
       </form>
     </DrawerComponent>

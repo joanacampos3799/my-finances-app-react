@@ -16,6 +16,7 @@ import {
 import StackedBarChart from "../../common/components/StackedBarChart";
 import useAccountStore from "../hooks/useAccountStore";
 import Category from "../../categories/model/Category";
+import DateObj from "../../common/date";
 
 const ExpensesChart = () => {
   const { period } = usePeriodStore();
@@ -82,11 +83,13 @@ const ExpensesChart = () => {
     ...(groupedData[key] || {}),
   }));
 
-  const data = uniqueCategories.map((category) => ({
-    label: category.Name,
-    color: category.Color,
-    dataKey: category.Name,
-  }));
+  const data = uniqueCategories
+    .filter((cat) => cat.CategoryType !== 1)
+    .map((category) => ({
+      label: category.Name,
+      color: category.Color,
+      dataKey: category.Name,
+    }));
 
   return (
     <StackedBarChart
@@ -136,12 +139,14 @@ const groupTransactionsByWeek = (
       groupedData[weekKey] = {};
     }
 
-    transaction.categories.forEach((category) => {
-      if (!groupedData[weekKey][category.Name]) {
-        groupedData[weekKey][category.Name] = 0;
-      }
-      groupedData[weekKey][category.Name] += Math.abs(transaction.Amount);
-    });
+    transaction.categories
+      .filter((cat) => cat.CategoryType !== 1)
+      .forEach((category) => {
+        if (!groupedData[weekKey][category.Name]) {
+          groupedData[weekKey][category.Name] = 0;
+        }
+        groupedData[weekKey][category.Name] += Math.abs(transaction.Amount);
+      });
   });
 
   // Ensure all weeks in the range are initialized
@@ -156,11 +161,14 @@ const groupTransactionsByWeek = (
     groupedWeeks[weekKey] = groupedData[weekKey] || {};
 
     // Initialize missing categories to 0
-    uniqueCategories.forEach((category) => {
-      if (!groupedWeeks[weekKey][category.Name]) {
-        groupedWeeks[weekKey][category.Name] = 0;
-      }
-    });
+    uniqueCategories
+      .filter((cat) => cat.CategoryType !== 1)
+      .forEach((category) => {
+        if (category.CategoryType !== 1)
+          if (!groupedWeeks[weekKey][category.Name]) {
+            groupedWeeks[weekKey][category.Name] = 0;
+          }
+      });
   });
 
   return groupedWeeks;
@@ -198,11 +206,13 @@ const groupTransactionsByDay = (
       groupedData[dayKey] = {};
     }
 
-    transaction.categories.forEach((category) => {
-      groupedData[dayKey][category.Name] =
-        (groupedData[dayKey][category.Name] || 0) +
-        Math.abs(transaction.Amount);
-    });
+    transaction.categories
+      .filter((cat) => cat.CategoryType !== 1)
+      .forEach((category) => {
+        groupedData[dayKey][category.Name] =
+          (groupedData[dayKey][category.Name] || 0) +
+          Math.abs(transaction.Amount);
+      });
   });
 
   const daysInRange = eachDayOfInterval({ start: startDate, end: endDate });
@@ -212,11 +222,13 @@ const groupTransactionsByDay = (
     const dayKey = format(day, "dd/MM");
     groupedDays[dayKey] = groupedData[dayKey] || {};
 
-    uniqueCategories.forEach((category) => {
-      if (!groupedDays[dayKey][category.Name]) {
-        groupedDays[dayKey][category.Name] = 0;
-      }
-    });
+    uniqueCategories
+      .filter((cat) => cat.CategoryType !== 1)
+      .forEach((category) => {
+        if (!groupedDays[dayKey][category.Name]) {
+          groupedDays[dayKey][category.Name] = 0;
+        }
+      });
   });
 
   return groupedDays;
@@ -254,11 +266,13 @@ const groupTransactionsByMonth = (
       groupedData[monthKey] = {};
     }
 
-    transaction.categories.forEach((category) => {
-      groupedData[monthKey][category.Name] =
-        (groupedData[monthKey][category.Name] || 0) +
-        Math.abs(transaction.Amount);
-    });
+    transaction.categories
+      .filter((cat) => cat.CategoryType !== 1)
+      .forEach((category) => {
+        groupedData[monthKey][category.Name] =
+          (groupedData[monthKey][category.Name] || 0) +
+          Math.abs(transaction.Amount);
+      });
   });
 
   const monthsInRange = eachMonthOfInterval({ start: startDate, end: endDate });
@@ -268,11 +282,13 @@ const groupTransactionsByMonth = (
     const monthKey = format(month, "MMM");
     groupedMonths[monthKey] = groupedData[monthKey] || {};
 
-    uniqueCategories.forEach((category) => {
-      if (!groupedMonths[monthKey][category.Name]) {
-        groupedMonths[monthKey][category.Name] = 0;
-      }
-    });
+    uniqueCategories
+      .filter((cat) => cat.CategoryType !== 1)
+      .forEach((category) => {
+        if (!groupedMonths[monthKey][category.Name]) {
+          groupedMonths[monthKey][category.Name] = 0;
+        }
+      });
   });
 
   return groupedMonths;

@@ -28,20 +28,18 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
   const { data } = useInstitutions();
   const { parseDate } = useDateFilter();
   const [institutions, setInstitutions] = useState<InstitutionList[]>([]);
-  useEffect(() => {
-    if (data && data.length > 0) setInstitutions(data);
-  }, [data]);
+
   const { values, handleChange, resetForm } = useForm<AccountFormObject>({
     Name: account ? account.Name : "",
     ib: account ? "" + account.InitialBalance : "0",
-    limit: account ? "" + account.InitialBalance : "0",
+    limit: account ? "" + account.SpendingLimit : "0",
     selectedInstitution: institutionId
       ? "" + institutionId
       : account && account.Institution
         ? "" + account.Institution.Id
         : "0",
     selectedAccountTypeId: account ? "" + account.Type : "-1",
-    interest: account ? "" + account.Interest : "0",
+    interest: account && account.Interest ? "" + account.Interest : "0",
     paymentDate:
       account && account.PaymentDueDate
         ? parseDate(account.PaymentDueDate)
@@ -50,16 +48,45 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
       account && account.StatementDate
         ? parseDate(account.StatementDate)
         : new Date(),
+    goal: account && account.Goal ? "" + account.Goal : "0",
   });
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (data && data.length > 0) setInstitutions(data);
+  }, [data]);
+  useEffect(() => {
+    console.log(account);
+    if (account) {
+      handleChange("Name", account.Name || "");
+      handleChange("ib", account.InitialBalance?.toString() || "0");
+      handleChange("limit", account.SpendingLimit?.toString() || "0");
+      handleChange(
+        "selectedInstitution",
+        account.Institution?.Id?.toString() || "0"
+      );
+      handleChange("selectedAccountTypeId", account.Type?.toString() || "-1");
+      handleChange("interest", account.Interest?.toString() || "0");
+      handleChange(
+        "paymentDate",
+        account.PaymentDueDate ? parseDate(account.PaymentDueDate) : new Date()
+      );
+      handleChange(
+        "statementDate",
+        account.StatementDate ? parseDate(account.StatementDate) : new Date()
+      );
+      handleChange("goal", account.Goal?.toString() || "0");
+      setOpen(open);
+    }
+  }, [account]);
   const nameRef = useRef<HTMLInputElement>(null);
   const addAccount = useAddAccount(() => resetForm());
   const updateAccount = useUpdateAccount(() => resetForm());
   const institutionsSelect =
     new HelperEntity<InstitutionList>().getMappedRadioEntity(institutions);
   const showSpendingLimit = +values.selectedAccountTypeId !== 2;
+  const showGoal = +values.selectedAccountTypeId === 2;
   const isCreditCard = +values.selectedAccountTypeId === 1;
 
-  const [open, setOpen] = useState(false);
   return (
     <DrawerComponent
       placement={"end"}
@@ -81,9 +108,15 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               institutionId: +values.selectedInstitution,
               Type: +values.selectedAccountTypeId,
               userId: userId!!,
-              InitialBalance: parseFloat(values.ib.replace(",", ".")),
+              InitialBalance: parseFloat(
+                values.ib.replace(",", ".").replace(/[^\d.,]/g, "")
+              ),
               Id: account.Id,
-              SpendingLimit: parseFloat(values.limit.replace(",", ".")),
+              SpendingLimit: parseFloat(
+                values.limit
+                  ? values.limit.replace(",", ".").replace(/[^\d.,]/g, "")
+                  : "0"
+              ),
               Transactions: account.Transactions,
               paymentDueDate: values.paymentDate
                 ? format(values.paymentDate, "dd/MM/yyyy")
@@ -92,7 +125,15 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
                 ? format(values.statementDate, "dd/MM/yyyy")
                 : undefined,
               interest: values.interest
-                ? parseFloat(values.interest.replace(",", "."))
+                ? parseFloat(
+                    values.interest.replace(",", ".").replace(/[^\d.,]/g, "")
+                  )
+                : undefined,
+              active: account.active,
+              goal: values.goal
+                ? parseFloat(
+                    values.goal.replace(",", ".").replace(/[^\d.,]/g, "")
+                  )
                 : undefined,
             });
           } else {
@@ -101,8 +142,14 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               institutionId: +values.selectedInstitution,
               Type: +values.selectedAccountTypeId,
               userId: userId!!,
-              InitialBalance: parseFloat(values.ib.replace(",", ".")),
-              SpendingLimit: parseFloat(values.limit.replace(",", ".")),
+              InitialBalance: parseFloat(
+                values.ib.replace(",", ".").replace(/[^\d.,]/g, "")
+              ),
+              SpendingLimit: parseFloat(
+                values.limit
+                  ? values.limit.replace(",", ".").replace(/[^\d.,]/g, "")
+                  : "0"
+              ),
               Transactions: [],
               paymentDueDate: values.paymentDate
                 ? format(values.paymentDate, "dd/MM/yyyy")
@@ -111,10 +158,19 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
                 ? format(values.statementDate, "dd/MM/yyyy")
                 : undefined,
               interest: values.interest
-                ? parseFloat(values.interest.replace(",", "."))
+                ? parseFloat(
+                    values.interest.replace(",", ".").replace(/[^\d.,]/g, "")
+                  )
+                : undefined,
+              active: true,
+              goal: values.goal
+                ? parseFloat(
+                    values.goal.replace(",", ".").replace(/[^\d.,]/g, "")
+                  )
                 : undefined,
             });
           }
+          setOpen(false);
         }}
       >
         <Stack gap={2}>
@@ -188,6 +244,15 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
                 />
               </Field>
             </HStack>
+          </Show>
+          <Show when={showGoal}>
+            <Field label="Saving Goal">
+              <NumberInput
+                number={"" + values.goal}
+                setNumber={(e) => handleChange("goal", e)}
+                isCurrency
+              />
+            </Field>
           </Show>
         </Stack>
       </form>

@@ -29,8 +29,19 @@ const FixedTransactionsList = ({ fixedTransactions }: Props) => {
     setSortedFx(sortedFx.slice((page - 1) * size, page * size));
   };
   const handleDelete = (element: FixedTransactionList) => {
-    element.active = !element.active;
-    updateFixedTransactions(element);
+    updateFixedTransactions({
+      Id: element.Id,
+      Name: element.Name,
+      Icon: element.Icon,
+      Amount: element.Amount,
+      transactionType: element.transactionType,
+      userId: element.userId!!,
+      PaymentDay: element.PaymentDay,
+      Periodicity: element.Periodicity,
+      active: !element.active,
+      categories: element.categories.map((cat) => cat.Id!!),
+      account: element.Account,
+    });
   };
   const [page, setPage] = useState(1);
   const [fxCount, setFxCount] = useState(fixedTransactions.length);

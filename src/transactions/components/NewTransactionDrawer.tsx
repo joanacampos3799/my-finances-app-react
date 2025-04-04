@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import useCategories from "../../categories/hooks/useCategories";
-import { HelperEntity } from "../../common/helper";
+import { EntitySelected, HelperEntity } from "../../common/helper";
 import Category from "../../categories/model/Category";
 import useAddTransaction from "../hooks/useAddTransaction";
 import DrawerComponent from "../../common/components/DrawerComponent";
@@ -21,41 +21,29 @@ import DatePicker from "../../common/components/DatePicker";
 import { format } from "date-fns";
 import TransactionFormObject from "../model/TransactionFormObject";
 import Transaction from "../model/Transaction";
-import { Checkbox } from "../../components/ui/checkbox";
 import { useUpdateTransaction } from "../hooks/useUpdateTransaction";
 import useDateFilter from "../../common/hooks/useDateFilter";
 
 interface Props {
   transaction?: Transaction;
-  categoriesIds?: number[];
   accountId?: number;
+  categoriesId?: number[];
   creditAccountId?: number;
 }
 const NewTransactionDrawer = ({
   transaction,
-  categoriesIds,
   accountId,
+  categoriesId,
   creditAccountId,
 }: Props) => {
   const { userId } = useLoginData();
   const { data: categories } = useCategories();
   const { data: accounts } = useAccounts();
   const { parseDate } = useDateFilter();
-
-  const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [accountList, setAccountList] = useState<AccountList[]>([]);
-  useEffect(() => {
-    if (accounts && accounts.length > 0) {
-      setAccountList(accounts);
-    }
-    if (categories && categories.length > 0) {
-      setCategoryList(categories);
-    }
-  }, [categories, accounts]);
-  const initialState = new HelperEntity<Category>().getMappedCheckboxEntity(
-    categoryList,
-    categoriesIds
-  );
+  const [initialState, setInitialState] =
+    useState<EntitySelected<Category>[]>();
+
   const ref = useRef(null);
   const { values, resetForm, handleChange } = useForm<TransactionFormObject>({
     amount: transaction ? "" + transaction.Amount : "0",
@@ -63,16 +51,50 @@ const NewTransactionDrawer = ({
     description:
       transaction && transaction.Description ? transaction.Description : "",
     selectedTT: transaction
-      ? movementTypes[transaction.transactionType].name
-      : "",
-    selectedAccount: accountId ? "" + accountId : "",
-    Name: "",
-    selectedFixedId: "",
-    selectedCategories: initialState,
+      ? "" + movementTypes[transaction.transactionType].id
+      : "-1",
+    selectedAccount: accountId
+      ? "" + accountId
+      : transaction
+        ? "" + transaction.accountId
+        : "",
+    Name: transaction ? transaction.Name : "",
+    selectedCategories: initialState!!,
 
     isCreditCardPayment: creditAccountId !== undefined,
     selectedCreditCard: creditAccountId ? "" + creditAccountId : undefined,
   });
+  useEffect(() => {
+    if (accounts?.length) {
+      setAccountList(accounts);
+    }
+
+    if (categories?.length && initialState === undefined) {
+      const helper = new HelperEntity<Category>();
+      let init;
+
+      if (transaction) {
+        init = helper.getMappedCheckboxEntity(
+          categories,
+          transaction.categories.map((cat) => cat.Id!)
+        );
+      } else if (categoriesId) {
+        init = helper.getMappedCheckboxEntity(categories, categoriesId);
+      } else {
+        init = helper.getMappedCheckboxEntity(categories);
+      }
+
+      setInitialState(init);
+      handleChange("selectedCategories", init);
+    }
+  }, [accounts, categories, initialState]);
+  useEffect(() => {
+    if (accountId !== undefined) {
+      handleChange("selectedAccount", "" + accountId);
+      setOpen(open);
+    }
+  }, [accountId]);
+
   const addTransaction = useAddTransaction(() => resetForm());
   const updateTransaction = useUpdateTransaction(() => resetForm());
   const accountsSelect = new HelperEntity<AccountList>().getMappedRadioEntity(
@@ -101,15 +123,12 @@ const NewTransactionDrawer = ({
           e.preventDefault();
           if (transaction) {
             updateTransaction({
+              Id: transaction.Id,
               Name: values.Name,
               Amount: parseFloat(values.amount.replace(",", ".")),
               transactionType: movementTypes[+values.selectedTT].id,
               userId: userId!!,
               Date: format(values.date, "dd/MM/yyyy"),
-              fixedTransactionId:
-                values.selectedFixedId !== ""
-                  ? +values.selectedFixedId
-                  : undefined,
               Description: values.description,
               accountId: +values.selectedAccount,
               categories: values.selectedCategories
@@ -127,10 +146,6 @@ const NewTransactionDrawer = ({
               transactionType: movementTypes[+values.selectedTT].id,
               userId: userId!!,
               Date: format(values.date, "dd/MM/yyyy"),
-              fixedTransactionId:
-                values.selectedFixedId !== ""
-                  ? +values.selectedFixedId
-                  : undefined,
               Description: values.description,
               accountId: +values.selectedAccount,
               categories: values.selectedCategories
@@ -142,6 +157,7 @@ const NewTransactionDrawer = ({
                 : undefined,
             });
           }
+          setOpen(false);
         }}
       >
         <Field label="Date">

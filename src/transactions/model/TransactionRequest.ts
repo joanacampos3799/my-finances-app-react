@@ -10,7 +10,6 @@ export default interface Transaction {
   categories: number[];
   userId: UUID;
   transactionType: number;
-  fixedTransactionId?: number;
   isCreditCardPayment: boolean;
   creditCardId?: number;
 }

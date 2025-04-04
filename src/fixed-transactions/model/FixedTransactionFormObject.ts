@@ -6,6 +6,7 @@ export default interface FixedTransactionFormObject {
   icon: string;
   amount: string;
   selectedTT: string;
+  selectedAccount: string;
   paymentDay: number;
   periodicity: number;
   selectedCategories: EntitySelected<Category>[];

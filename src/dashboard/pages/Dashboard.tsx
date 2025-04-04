@@ -39,10 +39,12 @@ export default function DashboardPage() {
     },
   });
   const pendingTransaction = pendingData ? pendingData[0] : null;
+
   let transData = transactions.data;
 
   const helper = new HelperEntity<Transaction>();
   if (pendingTransaction) {
+    pendingTransaction.categories = [];
     const { tData } = helper.getPendingData(transactions, pendingTransaction);
     transData = tData;
   }
@@ -109,7 +111,9 @@ export default function DashboardPage() {
   const categorySpending = useMemo(() => {
     const categoryMap: Record<string, { amount: number; color: string }> = {};
     transData.forEach((transaction) => {
-      const categories = transaction.categories;
+      const categories = transaction.categories.filter(
+        (cat) => cat.CategoryType == 0
+      );
       if (categories.length > 0) {
         const splitAmount = transaction.Amount / categories.length;
         categories.forEach((category) => {
@@ -125,7 +129,7 @@ export default function DashboardPage() {
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 3);
   }, [transData]);
-  console.log(categorySpending);
+
   return (
     <Box padding={"15px"}>
       <Box>
@@ -185,13 +189,13 @@ export default function DashboardPage() {
           />
           <ValueKPIComponent
             title="Total Expenses"
-            IconEl={LuArrowDownFromLine}
+            IconEl={LuArrowUpFromLine}
             value={totalExpenses}
           />
 
           <ValueKPIComponent
             title="Total Income"
-            IconEl={LuArrowUpFromLine}
+            IconEl={LuArrowDownFromLine}
             value={totalIncome}
           />
           <HorizontalBarChart

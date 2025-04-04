@@ -13,6 +13,7 @@ interface Props {
   label: string;
   initialEl: HTMLElement | null;
   formName: string;
+  formRef?: React.RefObject<HTMLFormElement>;
   update?: boolean;
 }
 const FormDialog = ({
@@ -20,6 +21,7 @@ const FormDialog = ({
   label,
   children,
   formName,
+  formRef,
   update,
 }: PropsWithChildren<Props>) => {
   const [open, setOpen] = useState(false);
@@ -59,7 +61,10 @@ const FormDialog = ({
           </Button>
           <Button
             bgColor={"teal.500"}
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              formRef?.current?.requestSubmit();
+              setOpen(false);
+            }}
             type="submit"
             form={formName}
           >

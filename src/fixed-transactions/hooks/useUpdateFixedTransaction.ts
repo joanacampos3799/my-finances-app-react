@@ -6,9 +6,7 @@ import { toaster } from "../../components/ui/toaster";
 import FixedTransaction from "../model/FixedTransaction";
 import FixedTransactionList from "../model/FixedTransactionsList";
 
-const apiClient = new APIClient<FixedTransaction | FixedTransactionList>(
-  "/fixed-transactions"
-);
+const apiClient = new APIClient<FixedTransaction>("/fixed-transactions");
 
 export function useUpdateFixedTransaction() {
   const queryClient = useQueryClient();
@@ -20,12 +18,9 @@ export function useUpdateFixedTransaction() {
       queryKeys.fixedTransactions,
       mutationKeys.updateFixedTransaction,
     ],
-    mutationFn: (fixed: FixedTransaction | FixedTransactionList) =>
+    mutationFn: (fixed: FixedTransaction) =>
       apiClient.update(fixed.Id!!, fixed, userId!!, userToken!!),
-    onSuccess: (
-      data: FixedTransaction | FixedTransactionList,
-      variables: FixedTransaction | FixedTransactionList
-    ) => {
+    onSuccess: (data: FixedTransaction, variables: FixedTransaction) => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.fixedTransactions],
       });

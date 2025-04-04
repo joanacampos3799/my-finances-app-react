@@ -14,8 +14,7 @@ const BalanceHistory = () => {
   const balanceHistoryData = calculateDailyBalances(
     account.DailyBalances,
     period,
-    account.Type,
-    account.StatementDate
+    account
   ).map((entry) => ({
     x: format(parseDate(entry.date), "dd/MM/yyyy"),
     y: entry.balance,

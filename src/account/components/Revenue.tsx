@@ -15,6 +15,7 @@ import {
   startOfMonth,
 } from "date-fns";
 import Transaction from "../../transactions/model/Transaction";
+import DateObj from "../../common/date";
 
 const Revenue = () => {
   const { period } = usePeriodStore();
@@ -26,8 +27,11 @@ const Revenue = () => {
     period,
     dates.startDate,
     dates.endDate,
+    account.Type,
     parseDate
   );
+
+  const chartLabel = account.Type === 2 ? "Deposits vs Withdrawals" : "Revenue";
   return (
     <Flex
       direction={"column"}
@@ -38,7 +42,7 @@ const Revenue = () => {
       flex={1}
       p={"10px"}
     >
-      <Heading color={"teal.700"}>Revenue</Heading>
+      <Heading color={"teal.700"}>{chartLabel}</Heading>
       <BarChartComponent
         height={300}
         width={350}
@@ -55,6 +59,7 @@ const prepareIncomeVsExpensesData = (
   period: string,
   start: Date,
   end: Date,
+  accountType: number,
   parseDate: (date: DateObj) => Date
 ) => {
   const groupedData: { [key: string]: { income: number; expenses: number } } =
@@ -118,8 +123,16 @@ const prepareIncomeVsExpensesData = (
 
   // Prepare `data` for the chart, defining the income and expense series
   const data = [
-    { label: "Income", dataKey: "income", color: "#4caf50" }, // Green for income
-    { label: "Expenses", dataKey: "expenses", color: "#f44336" }, // Red for expenses
+    {
+      label: accountType === 2 ? "Deposits" : "Income",
+      dataKey: "income",
+      color: "#4caf50",
+    }, // Green for income
+    {
+      label: accountType === 2 ? "Withdrawals" : "Expenses",
+      dataKey: "expenses",
+      color: "#f44336",
+    }, // Red for expenses
   ];
 
   return { chartData, data };

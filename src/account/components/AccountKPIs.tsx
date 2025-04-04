@@ -13,6 +13,7 @@ import BalanceHistory from "./BalanceHistory";
 import useAccountStore from "../hooks/useAccountStore";
 import ExpensesChart from "./ExpensesChart";
 import Revenue from "./Revenue";
+import GoalProgress from "./GoalProgress";
 
 const AccountKPIs = () => {
   const { account } = useAccountStore();
@@ -80,8 +81,13 @@ const AccountKPIs = () => {
       </Flex>
       <Flex direction={{ base: "column", lg: "row" }} gap={4}>
         <BalanceHistory />
-        <ExpensesChart />
         <Revenue />{" "}
+        <Show when={account.Type === 2}>
+          <GoalProgress />
+        </Show>
+        <Show when={account.Type !== 2}>
+          <ExpensesChart />
+        </Show>
       </Flex>{" "}
     </>
   );

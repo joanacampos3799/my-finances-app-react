@@ -49,7 +49,8 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
     .map((institution) =>
       institution.Accounts.reduce(
         (total, acc) =>
-          total + (isAsset(acc.Type) ? acc.Balance : -1 * acc.Balance),
+          total +
+          (isAsset(acc.Type) ? acc.Balance : -1 * (acc.StatementBalance ?? 0)),
         0
       )
     )

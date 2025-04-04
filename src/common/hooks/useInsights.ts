@@ -105,7 +105,7 @@ const useInsights = () => {
     return Math.round(average * 100) / 100;
   };
   const getPercentage = (current: number, total: number) => {
-    return (current / total) * 100;
+    return parseFloat(((current / total) * 100).toFixed(2));
   };
 
   function budgetInsight(totalSpending: number, budget: number) {

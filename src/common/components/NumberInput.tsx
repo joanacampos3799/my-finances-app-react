@@ -1,10 +1,6 @@
-import { Box, Group, Icon } from "@chakra-ui/react";
+import { Box, Group, Icon, Input } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field";
 import { LuEuro } from "react-icons/lu";
-import {
-  NumberInputField,
-  NumberInputRoot,
-} from "../../components/ui/number-input";
 
 interface Props {
   number?: string;
@@ -29,25 +25,19 @@ const NumberInput = ({
               <LuEuro />
             </Icon>
           )}
-          <NumberInputRoot
-            width={"full"}
-            value={number}
-            min={0}
-            locale="pt-PT"
-            onValueChange={(e) => {
-              if (e.value === "" || e.value === "-") {
-                setNumber(e.value); // Allow empty or "-" while typing
+          <Input
+            name={"" + number}
+            type="text"
+            value={number ?? "0"}
+            onChange={(e) => {
+              if (e.target.value === "" || e.target.value === "-") {
+                setNumber(e.target.value); // Allow empty or "-" while typing
               } else {
-                setNumber(e.value); // Store as a string
+                setNumber(e.target.value); // Store as a string
               }
             }}
-            formatOptions={{
-              style: isCurrency ? "decimal" : undefined,
-              minimumFractionDigits: isCurrency ? 2 : undefined,
-            }}
-          >
-            <NumberInputField />
-          </NumberInputRoot>
+            placeholder="Enter a number"
+          />
         </Group>
       </Field>
     </Box>

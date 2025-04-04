@@ -1,6 +1,7 @@
 import {
   addMonths,
   eachDayOfInterval,
+  endOfDay,
   format,
   formatDate,
   interval,
@@ -10,7 +11,8 @@ import AccountList from "../../accounts/models/AccountList";
 import { accountTypes } from "../constants";
 import useDateFilter from "./useDateFilter";
 import Transaction from "../../transactions/model/Transaction";
-import { DailyBalance } from "../../account/Model/Account";
+import Account, { DailyBalance } from "../../account/Model/Account";
+import DateObj from "../date";
 
 const useAccountInsights = () => {
   const { parseDate, getStartEndDates } = useDateFilter();
@@ -50,7 +52,7 @@ const useAccountInsights = () => {
         }
 
         if (isDebt(account.Type)) {
-          totalDebts += account.Balance;
+          totalDebts += account.StatementBalance ?? 0;
         }
       });
     else {
@@ -61,16 +63,20 @@ const useAccountInsights = () => {
       }
 
       accounts.forEach((account) => {
-        account.Transactions.filter((f) => {
-          const itemDate = parseDate(f.Date);
-          return itemDate >= dates.startDate && itemDate <= dates.endDate;
-        }).forEach((transaction) => {
-          if (isAsset(account.Type)) {
-            totalAssets += transaction.Amount;
-          } else {
-            totalDebts += Math.abs(transaction.Amount);
-          }
-        });
+        let balance = 0;
+        if (previous)
+          balance =
+            account.DailyBalances.find(
+              (db) => parseDate(db.date) == dates.endDate
+            )?.balance ?? 0;
+        else balance = account.DailyBalances.at(-1)?.balance ?? 0;
+        if (isAsset(account.Type)) {
+          totalAssets += account.Balance;
+        }
+
+        if (isDebt(account.Type)) {
+          totalDebts += account.StatementBalance ?? 0;
+        }
       });
     }
 
@@ -181,35 +187,66 @@ const useAccountInsights = () => {
   function calculateDailyBalances(
     dailyBalances: DailyBalance[],
     period: string,
-    accountType: number,
-    statementDate?: DateObj
+    account: Account
   ): DailyBalance[] {
     const dates = getStartEndDates(period);
 
     let statementStartDate: Date | null = null;
     let statementEndDate: Date = new Date();
 
-    if (accountType === 1 && statementDate) {
-      const parsedStatementDate = parseDate(statementDate);
+    if (account.Type === 1 && account.StatementDate) {
+      const parsedStatementDate = parseDate(account.StatementDate);
 
-      // The current statement period starts from the last occurrence of statementDate
+      // Determine statement start date
       if (new Date() >= parsedStatementDate) {
         statementStartDate = parsedStatementDate;
       } else {
         statementStartDate = subMonths(parsedStatementDate, 1);
       }
 
-      // The next statement date defines the end of this period
+      // Determine statement end date
       statementEndDate = addMonths(statementStartDate, 1);
     }
 
-    // Define range for daily balance calculation
+    // Set range for daily balance calculation
     const startDate =
-      accountType === 1 && statementStartDate
+      account.Type === 1 && statementStartDate
         ? statementStartDate
         : dates.startDate;
 
-    return dailyBalances.filter((db) => parseDate(db.date) >= startDate);
+    const endDate = statementEndDate; // Use statement end or today
+
+    // Generate all days in the range
+    const allDays = eachDayOfInterval({ start: startDate, end: endDate });
+
+    // Convert dailyBalances to a map for quick lookup
+    const balanceMap = new Map(
+      dailyBalances.map((db) => [
+        format(parseDate(db.date), "yyyy-MM-dd"),
+        db.balance,
+      ])
+    );
+
+    let lastKnownBalance = account.Balance;
+
+    // Fill in missing days
+    return allDays.map((day) => {
+      const dateKey = format(day, "yyyy-MM-dd");
+
+      if (balanceMap.has(dateKey)) {
+        lastKnownBalance = balanceMap.get(dateKey)!;
+      }
+
+      return {
+        date: {
+          day: day.getDate(),
+          month: day.getMonth() + 1,
+          year: day.getFullYear(),
+        } as DateObj,
+        accountId: account.Id,
+        balance: lastKnownBalance,
+      } as DailyBalance;
+    });
   }
 
   /**

@@ -40,7 +40,7 @@ const AccountsKPIs = ({ accounts }: Props) => {
   const topAccounts = accounts
     .sort((a, b) => b.Balance - a.Balance)
     .slice(0, 3);
-  console.log(chartData);
+
   return (
     <Flex flexDir={"row"} gap={2} p={"10px"} w="100%">
       <DonutChart data={donutData} caption={"Accounts Distribution"} />
@@ -137,45 +137,6 @@ const AccountsKPIs = ({ accounts }: Props) => {
                 </List.Item>
               ))}
             </List.Root>
-          </Flex>
-        </Flex>
-        <Flex
-          h={"full"}
-          bgColor={"white"}
-          direction={"row"}
-          borderRadius={"md"}
-          gap={2}
-          p={4}
-        >
-          <Flex alignItems={"center"}>
-            <Box
-              borderRadius={"full"}
-              bgColor={"teal.100"}
-              boxSize={10}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Icon
-                alignItems={"center"}
-                justifyContent={"center"}
-                color={"teal.700"}
-                boxSize={6}
-              >
-                <TbReceipt2 />
-              </Icon>
-            </Box>
-          </Flex>
-
-          <Flex direction={"column"} justifyContent={"center"}>
-            <Box>
-              <Text fontSize={"sm"} color={"gray.500"}>
-                Total Fees Paid
-              </Text>
-              <Heading size={"2xl"}>
-                <FormatNumber value={0} style="currency" currency="eur" />
-              </Heading>
-            </Box>
           </Flex>
         </Flex>
       </Flex>

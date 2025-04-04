@@ -1,6 +1,7 @@
 import { UUID } from "crypto";
 import Transaction from "../../transactions/model/Transaction";
 import InstitutionList from "../../institutions/model/InstitutionList";
+import DateObj from "../../common/date";
 
 export default interface Account {
   Id: number;
@@ -9,7 +10,7 @@ export default interface Account {
   InitialBalance: number;
   Transactions: Transaction[];
   Type: number;
-  Institution?: InstitutionList;
+  Institution: InstitutionList;
   SpendingLimit?: number;
   PaymentDueDate?: DateObj;
   StatementDate?: DateObj;
@@ -17,6 +18,8 @@ export default interface Account {
   Interest?: number;
   userId: UUID;
   DailyBalances: DailyBalance[];
+  active: boolean;
+  Goal?: number;
 }
 
 export interface DailyBalance {
@@ -42,4 +45,6 @@ export const fallbackAccount: Account = {
   Transactions: [] as Transaction[],
   Type: 0,
   DailyBalances: [] as DailyBalance[],
+  active: true,
+  Institution: {} as InstitutionList,
 };

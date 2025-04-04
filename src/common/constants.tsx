@@ -29,9 +29,6 @@ export const mutationKeys = {
   addAccount: "new-account",
   updateAccount: "update-account",
   deleteAccount: "delete-account",
-  addGoal: "new-goal",
-  updateGoal: "update-goal",
-  deleteGoal: "delete-goal",
   addFixedTransaction: "new-fixed-transaction",
   updateFixedTransaction: "update-fixed-transaction",
   deleteFixedTransaction: "update-active-fixed-transaction",
@@ -112,31 +109,26 @@ export const institutionTypes: EnumType[] = [
   },
   {
     id: 3,
-    name: "Credit Provider",
-  },
-
-  {
-    id: 4,
     name: "Employer-Linked",
   },
   {
-    id: 5,
+    id: 4,
     name: "Investement Firm/Bank",
   },
   {
-    id: 6,
+    id: 5,
     name: "Virtual Bank",
   },
   {
-    id: 7,
+    id: 6,
     name: "E-Wallet",
   },
   {
-    id: 8,
+    id: 7,
     name: "Gift Card Provider",
   },
   {
-    id: 9,
+    id: 8,
     name: "Cash",
   },
 ];

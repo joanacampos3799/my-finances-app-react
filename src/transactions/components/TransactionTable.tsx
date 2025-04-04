@@ -118,28 +118,31 @@ const TransactionTable = ({
                   onDelete={handleDelete}
                   fromAccount={fromAccount!!}
                   fromCategory={fromCategory!!}
+                  key={"tr-row-" + t.Id}
                 />
               ))}
             </Table.Body>
             <Show when={showFooter}>
               <Table.Footer>
-                <Table.ColumnHeader></Table.ColumnHeader>
-                <Table.ColumnHeader></Table.ColumnHeader>
-                <Table.ColumnHeader></Table.ColumnHeader>
-                <Table.ColumnHeader>Total</Table.ColumnHeader>
-                <Table.ColumnHeader>
-                  <FormatNumber
-                    value={data.reduce(
-                      (total, { Amount }) => (total += Amount),
-                      0
-                    )}
-                    style={"currency"}
-                    currency="EUR"
-                  />
-                </Table.ColumnHeader>
-                <Table.ColumnHeader></Table.ColumnHeader>
-                <Table.ColumnHeader></Table.ColumnHeader>
-                <Table.ColumnHeader></Table.ColumnHeader>
+                <Table.Row>
+                  <Table.Cell></Table.Cell>
+                  <Table.Cell></Table.Cell>
+                  <Table.Cell></Table.Cell>
+                  <Table.Cell>Total</Table.Cell>
+                  <Table.Cell>
+                    <FormatNumber
+                      value={data.reduce(
+                        (total, { Amount }) => (total += Amount),
+                        0
+                      )}
+                      style={"currency"}
+                      currency="EUR"
+                    />
+                  </Table.Cell>
+                  <Table.Cell></Table.Cell>
+                  <Table.Cell></Table.Cell>
+                  <Table.Cell></Table.Cell>
+                </Table.Row>
               </Table.Footer>
             </Show>
           </Table.Root>

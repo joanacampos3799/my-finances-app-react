@@ -22,7 +22,7 @@ const NewCategoryDrawer = ({ category }: Props) => {
   const { values, resetForm, handleChange } = useForm<CategoryFormObject>({
     Name: category ? category.Name : "",
     icon: category ? category.Icon : "",
-    budget: category ? "" + category.Budget : undefined,
+    budget: category ? "" + category.Budget : "0",
     selectedTT: category ? "" + category.CategoryType : "-1",
     color: category ? category.Color : "",
   });
@@ -130,9 +130,9 @@ const NewCategoryDrawer = ({ category }: Props) => {
           <Show when={values.selectedTT === "0"}>
             <Field label="Budget" mt={4}>
               <NumberInput
-                number={"" + values.budget}
+                number={values.budget}
                 setNumber={(val) => handleChange("budget", val)}
-                isCurrency
+                isCurrency={true}
               />
             </Field>
           </Show>
