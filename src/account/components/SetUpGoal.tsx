@@ -48,7 +48,7 @@ const SetUpGoal = () => {
       Id: account.Id,
       SpendingLimit: account.SpendingLimit,
       Transactions: account.Transactions,
-      paymentDueDate: account.PaymentDueDate
+      paymentDate: account.PaymentDueDate
         ? format(parseDate(account.PaymentDueDate), "dd/MM/yyyy")
         : undefined,
       statementDate: account.StatementDate

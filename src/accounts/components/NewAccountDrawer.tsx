@@ -117,7 +117,7 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
                   : "0"
               ),
               Transactions: account.Transactions,
-              paymentDueDate: values.paymentDate
+              paymentDate: values.paymentDate
                 ? format(values.paymentDate, "dd/MM/yyyy")
                 : undefined,
               statementDate: values.statementDate
@@ -150,7 +150,7 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
                   : "0"
               ),
               Transactions: [],
-              paymentDueDate: values.paymentDate
+              paymentDate: values.paymentDate
                 ? format(values.paymentDate, "dd/MM/yyyy")
                 : undefined,
               statementDate: values.statementDate
