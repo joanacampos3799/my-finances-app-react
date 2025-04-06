@@ -49,8 +49,13 @@ const ExportDrawer = () => {
             <DatePicker
               selectedDate={startDate}
               setSelectedDate={setStartDate}
+              allowFutureDates={false}
             />
-            <DatePicker selectedDate={endDate} setSelectedDate={setEndDate} />
+            <DatePicker
+              selectedDate={endDate}
+              setSelectedDate={setEndDate}
+              allowFutureDates={false}
+            />
             <RadioMenu
               width="30%"
               minW="10rem"

@@ -25,8 +25,13 @@ import RadioMenu from "./RadioMenu";
 interface Props {
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
+  allowFutureDates: boolean;
 }
-const DatePicker = ({ selectedDate, setSelectedDate }: Props) => {
+const DatePicker = ({
+  selectedDate,
+  setSelectedDate,
+  allowFutureDates,
+}: Props) => {
   const [open, setOpen] = useState(false);
   const { daysOfWeek, daysInMonth, getMonths, getYears } = useCalendar();
 
@@ -90,7 +95,7 @@ const DatePicker = ({ selectedDate, setSelectedDate }: Props) => {
             <Button
               size={"sm"}
               variant={"plain"}
-              disabled={isThisMonth(selectedDate)}
+              disabled={allowFutureDates ? false : isThisMonth(selectedDate)}
               onClick={() => {
                 setSelectedDate(addMonths(selectedDate, 1));
                 setMonth("" + addMonths(selectedDate, 1).getMonth());

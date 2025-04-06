@@ -164,6 +164,7 @@ const NewTransactionDrawer = ({
           <DatePicker
             selectedDate={values.date}
             setSelectedDate={(d) => handleChange("date", d)}
+            allowFutureDates={false}
           />
         </Field>
 
