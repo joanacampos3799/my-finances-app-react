@@ -52,7 +52,7 @@ const AccountsTable = ({ accounts, fromInstitution }: Props) => {
       Id: element.Id,
       SpendingLimit: element.SpendingLimit,
       Transactions: element.Transactions,
-      paymentDueDate: element.PaymentDueDate
+      paymentDate: element.PaymentDueDate
         ? format(parseDate(element.PaymentDueDate), "dd/MM/yyyy")
         : undefined,
       statementDate: element.StatementDate

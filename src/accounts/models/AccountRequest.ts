@@ -10,7 +10,7 @@ export default interface AccountRequest {
   Transactions: Transaction[];
   Type: number;
   institutionId: number;
-  paymentDueDate?: string;
+  paymentDate?: string;
   statementDate?: string;
   interest?: number;
   active: boolean;
