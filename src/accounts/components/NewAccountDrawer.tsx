@@ -55,7 +55,6 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
     if (data && data.length > 0) setInstitutions(data);
   }, [data]);
   useEffect(() => {
-    console.log(account);
     if (account) {
       handleChange("Name", account.Name || "");
       handleChange("ib", account.InitialBalance?.toString() || "0");
@@ -235,12 +234,14 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
                 <DatePicker
                   selectedDate={values.statementDate!!}
                   setSelectedDate={(d) => handleChange("statementDate", d)}
+                  allowFutureDates
                 />
               </Field>
               <Field label="Payment Due Date">
                 <DatePicker
                   selectedDate={values.paymentDate!!}
                   setSelectedDate={(d) => handleChange("paymentDate", d)}
+                  allowFutureDates
                 />
               </Field>
             </HStack>
