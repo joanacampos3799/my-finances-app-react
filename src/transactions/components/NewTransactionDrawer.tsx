@@ -23,6 +23,7 @@ import TransactionFormObject from "../model/TransactionFormObject";
 import Transaction from "../model/Transaction";
 import { useUpdateTransaction } from "../hooks/useUpdateTransaction";
 import useDateFilter from "../../common/hooks/useDateFilter";
+import { isEqual } from "lodash";
 
 interface Props {
   transaction?: Transaction;
@@ -81,7 +82,6 @@ const NewTransactionDrawer = ({
       const helper = new HelperEntity<Category>();
 
       let init: EntitySelected<Category>[];
-      console.log("here");
       if (transaction) {
         init = helper.getMappedCheckboxEntity(
           categories,
@@ -99,9 +99,10 @@ const NewTransactionDrawer = ({
   }, [categories, initialState]);
 
   // Filter categories on transaction type change
+
   useEffect(() => {
     if (!categories || values.selectedTT === "-1") return;
-    console.log("here 2");
+
     const selectedTTId = +values.selectedTT;
     const filtered = categories.filter(
       (cat) => cat.CategoryType === selectedTTId || cat.CategoryType === 2
@@ -109,8 +110,18 @@ const NewTransactionDrawer = ({
     const helper = new HelperEntity<Category>();
     const updated = helper.getMappedCheckboxEntity(filtered);
 
-    setInitialState(updated);
-    handleChange("selectedCategories", updated);
+    // Preserve checked states of already selected items
+    const merged = updated.map((newItem) => {
+      const existing = values.selectedCategories.find(
+        (c) => c.data.Id === newItem.data.Id
+      );
+      return existing ? { ...newItem, checked: existing.checked } : newItem;
+    });
+
+    if (!isEqual(merged, values.selectedCategories)) {
+      setInitialState(merged);
+      handleChange("selectedCategories", merged);
+    }
   }, [values.selectedTT]);
 
   useEffect(() => {
