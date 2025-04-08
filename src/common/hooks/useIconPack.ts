@@ -15,27 +15,26 @@ export const useIconPack = () => {
   useEffect(() => {
     if (!iconPack) {
       const { ...exportFa6 } = Fa6;
-      const fas: Icon[] = Object.values(exportFa6).map((icon: IconType) => ({
-        icon: icon,
-        name: icon.name,
+      const fas: Icon[] = Object.entries(exportFa6).map(([name, icon]) => ({
+        icon: icon as IconType,
+        name,
       }));
-
       const { ...exportLu } = Lu;
-      const lus: Icon[] = Object.values(exportLu).map((icon: IconType) => ({
-        icon: icon,
-        name: icon.name,
+      const lus: Icon[] = Object.entries(exportLu).map(([name, icon]) => ({
+        icon: icon as IconType,
+        name: name,
       }));
 
       const { ...exportMd } = Md;
-      const mds: Icon[] = Object.values(exportMd).map((icon: IconType) => ({
-        icon: icon,
-        name: icon.name,
+      const mds: Icon[] = Object.entries(exportMd).map(([name, icon]) => ({
+        icon: icon as IconType,
+        name: name,
       }));
 
       const { ...exportTb } = Tb;
-      const tbs: Icon[] = Object.values(exportTb).map((icon: IconType) => ({
-        icon: icon,
-        name: icon.name,
+      const tbs: Icon[] = Object.entries(exportTb).map(([name, icon]) => ({
+        icon: icon as IconType,
+        name: name,
       }));
 
       setIconPack([...fas, ...lus, ...mds, ...tbs]);
