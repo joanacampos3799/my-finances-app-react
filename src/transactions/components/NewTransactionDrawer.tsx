@@ -77,26 +77,25 @@ const NewTransactionDrawer = ({
 
   // Initialize categories (once)
   useEffect(() => {
-    console.log(initialState);
-    if (!categories && initialState !== undefined) return;
+    if (categories && initialState === undefined) {
+      const helper = new HelperEntity<Category>();
 
-    const helper = new HelperEntity<Category>();
+      let init: EntitySelected<Category>[];
+      console.log("here");
+      if (transaction) {
+        init = helper.getMappedCheckboxEntity(
+          categories,
+          transaction.categories.map((cat) => cat.Id!)
+        );
+      } else if (categoriesId) {
+        init = helper.getMappedCheckboxEntity(categories, categoriesId);
+      } else {
+        init = helper.getMappedCheckboxEntity(categories);
+      }
 
-    let init: EntitySelected<Category>[];
-    console.log("here");
-    if (transaction) {
-      init = helper.getMappedCheckboxEntity(
-        categories,
-        transaction.categories.map((cat) => cat.Id!)
-      );
-    } else if (categoriesId) {
-      init = helper.getMappedCheckboxEntity(categories, categoriesId);
-    } else {
-      init = helper.getMappedCheckboxEntity(categories);
+      setInitialState(init);
+      handleChange("selectedCategories", init);
     }
-
-    setInitialState(init);
-    handleChange("selectedCategories", init);
   }, [categories, initialState]);
 
   // Filter categories on transaction type change
