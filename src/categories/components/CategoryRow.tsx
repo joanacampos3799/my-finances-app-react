@@ -19,7 +19,6 @@ interface CategoryRowProps {
 }
 
 const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
-  console.log(category);
   const { period } = usePeriodStore();
   const iconPack = useIconPack();
   const { getTransactionsTotalAmount, getTransactionsTotal } = useInsights();
@@ -42,7 +41,7 @@ const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
     iconPack?.find((i) => i.name === category.Icon)?.icon ?? FaPen;
   console.log(iconPack);
   console.log(iconPack?.find((i) => i.name === category.Icon));
-  console.log(CatIcon);
+
   return (
     <Table.Row key={category.Id + "-row"}>
       <Table.Cell w="150px">
