@@ -69,21 +69,28 @@ const NewTransactionDrawer = ({
       setAccountList(accounts);
     }
 
-    if (categories?.length && initialState === undefined) {
+    if (
+      categories?.length &&
+      (initialState === undefined || +values.selectedTT >= -1)
+    ) {
       const helper = new HelperEntity<Category>();
+      const selectedTTId = +values.selectedTT;
+      const filteredCategories = categories.filter(
+        (cat) => cat.CategoryType === selectedTTId || cat.CategoryType === 2
+      );
+
       let init;
 
       if (transaction) {
         init = helper.getMappedCheckboxEntity(
-          categories,
+          filteredCategories,
           transaction.categories.map((cat) => cat.Id!)
         );
       } else if (categoriesId) {
-        init = helper.getMappedCheckboxEntity(categories, categoriesId);
+        init = helper.getMappedCheckboxEntity(filteredCategories, categoriesId);
       } else {
-        init = helper.getMappedCheckboxEntity(categories);
+        init = helper.getMappedCheckboxEntity(filteredCategories);
       }
-
       setInitialState(init);
       handleChange("selectedCategories", init);
     }
