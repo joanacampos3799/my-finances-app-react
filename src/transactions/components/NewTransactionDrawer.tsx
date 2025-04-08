@@ -75,6 +75,7 @@ const NewTransactionDrawer = ({
     ) {
       const helper = new HelperEntity<Category>();
       const selectedTTId = +values.selectedTT;
+      console.log(selectedTTId);
       const filteredCategories = categories.filter(
         (cat) => cat.CategoryType === selectedTTId || cat.CategoryType === 2
       );
@@ -94,7 +95,7 @@ const NewTransactionDrawer = ({
       setInitialState(init);
       handleChange("selectedCategories", init);
     }
-  }, [accounts, categories, initialState]);
+  }, [accounts, categories, initialState, values.selectedTT]);
   useEffect(() => {
     if (accountId !== undefined) {
       handleChange("selectedAccount", "" + accountId);
