@@ -77,6 +77,7 @@ const NewTransactionDrawer = ({
 
   // Initialize categories (once)
   useEffect(() => {
+    console.log(initialState);
     if (!categories && initialState !== undefined) return;
 
     const helper = new HelperEntity<Category>();
