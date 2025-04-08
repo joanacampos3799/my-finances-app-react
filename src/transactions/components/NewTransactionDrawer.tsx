@@ -82,7 +82,7 @@ const NewTransactionDrawer = ({
     const helper = new HelperEntity<Category>();
 
     let init: EntitySelected<Category>[];
-
+    console.log("here");
     if (transaction) {
       init = helper.getMappedCheckboxEntity(
         categories,
