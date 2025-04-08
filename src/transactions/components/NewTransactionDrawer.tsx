@@ -77,7 +77,7 @@ const NewTransactionDrawer = ({
 
   // Initialize categories (once)
   useEffect(() => {
-    if (!categories) return;
+    if (!categories && initialState !== undefined) return;
 
     const helper = new HelperEntity<Category>();
 
@@ -96,12 +96,12 @@ const NewTransactionDrawer = ({
 
     setInitialState(init);
     handleChange("selectedCategories", init);
-  }, [categories]);
+  }, [categories, initialState]);
 
   // Filter categories on transaction type change
   useEffect(() => {
     if (!categories || values.selectedTT === "-1") return;
-
+    console.log("here 2");
     const selectedTTId = +values.selectedTT;
     const filtered = categories.filter(
       (cat) => cat.CategoryType === selectedTTId || cat.CategoryType === 2
