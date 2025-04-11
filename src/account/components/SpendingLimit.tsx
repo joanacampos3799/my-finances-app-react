@@ -1,6 +1,4 @@
-import { Flex, Heading, HStack } from "@chakra-ui/react";
-import React from "react";
-import useInsights from "../../common/hooks/useInsights";
+import { Heading, HStack } from "@chakra-ui/react";
 import useAccountStore from "../hooks/useAccountStore";
 import useDateFilter from "../../common/hooks/useDateFilter";
 import usePeriodStore from "../../common/hooks/usePeriodStore";

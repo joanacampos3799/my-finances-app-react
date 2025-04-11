@@ -1,4 +1,3 @@
-import React from "react";
 import Category from "../../categories/model/Category";
 import { Tag } from "../../components/ui/tag";
 import { useIconPack } from "../hooks/useIconPack";

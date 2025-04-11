@@ -12,7 +12,7 @@ import {
 } from "../../components/ui/drawer";
 import { LuFileSpreadsheet } from "react-icons/lu";
 import ExportCategoriesButton from "./ExportCategoriesButton";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useDateFilter from "../../common/hooks/useDateFilter";
 import DatePicker from "../../common/components/DatePicker";
 import RadioMenu from "../../common/components/RadioMenu";

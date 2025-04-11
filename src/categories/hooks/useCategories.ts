@@ -11,14 +11,15 @@ const useCategories = () => {
 
   const fallback: FetchResponse<Category> = {
     data: [],
+    isValueSet: false,
     count: 0,
   };
-  const { data: categories = fallback } = useQuery({
+  const { data: categories = fallback, isLoading } = useQuery({
     enabled: !!userToken,
     queryKey: [queryKeys.categories],
     queryFn: () => apiClient.getAll(userId!!, userToken!!),
   });
-  return categories;
+  return { categories, isLoading };
 };
 
 export default useCategories;

@@ -196,7 +196,7 @@ const CategoriesList = ({ categories, categoryTypeId }: Props) => {
           </Table.Root>
           <PaginationRoot
             count={catCount}
-            pageSize={5}
+            pageSize={size}
             page={page}
             onPageChange={(e) => handlePageChange(e.page)}
           >

@@ -19,6 +19,7 @@ export function useDeleteAccount() {
       apiClient.delete(data.Id!!, userId!!, userToken!!),
     onSuccess: (data: AccountList, variables: AccountList) => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.accounts] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.institutions] });
       toaster.create({
         title: `You have deleted the ${data.Name} account`,
         type: "warning",

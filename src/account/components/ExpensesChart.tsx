@@ -24,9 +24,25 @@ const ExpensesChart = () => {
   const { getStartEndDates, parseDate } = useDateFilter();
 
   const dates = getStartEndDates(period);
-  const uniqueCategories = Array.from(
-    new Set(account.Transactions.flatMap((t) => t.categories))
-  );
+  const transactions = account.Transactions.filter((transaction) => {
+    const txDate = parseDate(transaction.Date);
+    if (account.Type === 1 && statementStartDate) {
+      const nextStatement = addMonths(statementStartDate, 1);
+      return txDate >= statementStartDate && txDate < nextStatement;
+    }
+    return txDate >= dates.startDate && txDate <= dates.endDate;
+  });
+  const categories = transactions.flatMap((t) => t.categories || []);
+  const uniqueMap = new Map();
+
+  for (const category of categories) {
+    const key = category.Name.trim().toLowerCase();
+    if (!uniqueMap.has(key)) {
+      uniqueMap.set(key, category);
+    }
+  }
+
+  const uniqueCategories = Array.from(uniqueMap.values());
   // Handle credit card statement period
   let statementStartDate: Date | null = null;
   if (account.Type === 1 && account.StatementDate) {
@@ -76,7 +92,7 @@ const ExpensesChart = () => {
     );
   };
 
-  const groupedData = groupTransactionsByPeriod(account.Transactions, period);
+  const groupedData = groupTransactionsByPeriod(transactions, period);
 
   const spendingCategories = Object.keys(groupedData).map((key) => ({
     category: key,

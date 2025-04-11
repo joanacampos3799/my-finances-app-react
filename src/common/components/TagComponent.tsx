@@ -1,4 +1,3 @@
-import React from "react";
 import { Tag } from "../../components/ui/tag";
 import { Icon } from "@chakra-ui/react";
 import { useIconPack } from "../hooks/useIconPack";

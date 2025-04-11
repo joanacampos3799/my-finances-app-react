@@ -1,15 +1,5 @@
-import React from "react";
 import useAccountStore from "../hooks/useAccountStore";
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  HStack,
-  ProgressCircle,
-  Text,
-} from "@chakra-ui/react";
-import { LinearProgress } from "@mui/material";
+import { Flex, Heading, HStack, Text } from "@chakra-ui/react";
 import SetUpGoal from "./SetUpGoal";
 import { ProgressBar, ProgressRoot } from "../../components/ui/progress";
 

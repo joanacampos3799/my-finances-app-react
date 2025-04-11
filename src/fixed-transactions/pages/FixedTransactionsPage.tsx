@@ -10,11 +10,11 @@ import FixedTransactionsList from "../components/FixedTransactionsList";
 import CollapsibleTitle from "../../common/components/CollapsibleTitle";
 import TimePeriodMenu from "../../common/components/TimePeriodMenu";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
-import FixedTransaction from "../model/FixedTransaction";
 import FixedTransactionList from "../model/FixedTransactionsList";
+import LoadingPage from "../../common/components/LoadingPage";
 
 const FixedTransactionsPage = () => {
-  const fixedTransactions = useFixedTransactions();
+  const { fixedTransactions, isLoading } = useFixedTransactions();
   const { period, setPeriod } = usePeriodStore();
   const pendingData = useMutationState({
     filters: {
@@ -38,6 +38,7 @@ const FixedTransactionsPage = () => {
     fixedData = tData;
     fixedCount = tCount;
   }
+  if (isLoading || !fixedTransactions.isValueSet) return <LoadingPage />;
   return (
     <Box padding={"15px"}>
       <Box>

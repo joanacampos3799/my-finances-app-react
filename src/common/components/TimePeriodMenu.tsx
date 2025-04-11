@@ -1,4 +1,3 @@
-import React from "react";
 import RadioMenu from "./RadioMenu";
 import { timePeriods } from "../constants";
 

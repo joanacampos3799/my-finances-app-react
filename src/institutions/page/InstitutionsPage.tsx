@@ -12,10 +12,11 @@ import { EmptyState } from "../../components/ui/empty-state";
 import { LuLandmark } from "react-icons/lu";
 import TimePeriodMenu from "../../common/components/TimePeriodMenu";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
+import LoadingPage from "../../common/components/LoadingPage";
 
 const InstitutionsPage = () => {
   const { period, setPeriod } = usePeriodStore();
-  const institutions = useInstitutions();
+  const { institutions, isLoading } = useInstitutions();
   const pendingInstiutionData = useMutationState({
     filters: {
       mutationKey: [queryKeys.institutions],
@@ -40,7 +41,7 @@ const InstitutionsPage = () => {
     instCount = tCount;
     instData = tData;
   }
-
+  if (isLoading || !institutions.isValueSet) return <LoadingPage />;
   return (
     <Box padding={"15px"}>
       <HStack

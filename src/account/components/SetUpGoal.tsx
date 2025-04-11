@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import FormDialog from "../../common/components/FormDialog";
 import useAccountStore from "../hooks/useAccountStore";
 import { Button, DialogBody, Flex, Text } from "@chakra-ui/react";
 import { useUpdateAccount } from "../../accounts/hooks/useUpdateAccount";
@@ -28,6 +27,7 @@ const SetUpGoal = () => {
     setWarning("");
   });
   useEffect(() => {
+    console.log("here");
     if (account.Goal && account.Goal > 0) {
       setGoal("" + account.Goal);
       setUpdate(true);

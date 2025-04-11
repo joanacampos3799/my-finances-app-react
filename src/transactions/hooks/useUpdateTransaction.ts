@@ -21,6 +21,8 @@ export function useUpdateTransaction(onUpdate: () => void) {
     },
     onSuccess: (data: TransactionRequest, variables: TransactionRequest) => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.transactions] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.categories] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.accounts] });
       toaster.create({
         title: `You have updated the ${variables.Name} transaction`,
         type: "success",

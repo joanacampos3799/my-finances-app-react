@@ -11,14 +11,15 @@ const useInstitutions = () => {
 
   const fallback: FetchResponse<InstitutionList> = {
     data: [],
+    isValueSet: false,
     count: 0,
   };
-  const { data: institutions = fallback } = useQuery({
+  const { data: institutions = fallback, isLoading } = useQuery({
     enabled: !!userToken,
     queryKey: [queryKeys.institutions],
     queryFn: () => apiClient.getAll(userId!!, userToken!!),
   });
-  return institutions;
+  return { institutions, isLoading };
 };
 
 export default useInstitutions;

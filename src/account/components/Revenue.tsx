@@ -66,7 +66,8 @@ const prepareIncomeVsExpensesData = (
     {};
 
   transactions.forEach((transaction) => {
-    const transactionDate = format(parseDate(transaction.Date), "dd/MM/yyyy");
+    const transactionDate = parseDate(transaction.Date);
+    if (transactionDate < start || transactionDate > end) return;
     let periodKey = "";
 
     // Grouping based on the selected period (day, week, month)

@@ -25,7 +25,7 @@ interface Props {
 }
 const NewAccountDrawer = ({ account, institutionId }: Props) => {
   const { userId } = useLoginData();
-  const { data } = useInstitutions();
+  const { institutions: data } = useInstitutions();
   const { parseDate } = useDateFilter();
   const [institutions, setInstitutions] = useState<InstitutionList[]>([]);
 
@@ -52,7 +52,7 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
   });
   const [open, setOpen] = useState(false);
   useEffect(() => {
-    if (data && data.length > 0) setInstitutions(data);
+    if (data && data.data.length > 0) setInstitutions(data.data);
   }, [data]);
   useEffect(() => {
     if (account) {

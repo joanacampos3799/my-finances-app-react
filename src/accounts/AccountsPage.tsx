@@ -13,10 +13,11 @@ import AccountsTable from "./components/AccountsTable";
 import usePeriodStore from "../common/hooks/usePeriodStore";
 import TimePeriodMenu from "../common/components/TimePeriodMenu";
 import React from "react";
+import LoadingPage from "../common/components/LoadingPage";
 
 const AccountsPage = React.memo(() => {
   const { period, setPeriod } = usePeriodStore();
-  const accounts = useAccounts();
+  const { accounts, isLoading } = useAccounts();
 
   const pendingAccountData = useMutationState({
     filters: {
@@ -38,10 +39,11 @@ const AccountsPage = React.memo(() => {
       accounts,
       pendingAccount
     );
+
     accountCount = tCount;
     accountData = tData;
   }
-
+  if (isLoading || !accounts.isValueSet) return <LoadingPage />;
   return (
     <Box padding={"15px"}>
       <Box>

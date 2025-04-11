@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import APIClient, { FetchResponse } from "../../common/apiClient";
+import APIClient from "../../common/apiClient";
 import { queryKeys } from "../../common/constants";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import Account from "../Model/Account";
-import { queryClient } from "../..";
 
 const apiClient = new APIClient<Account>("/accounts");
 
@@ -18,12 +17,6 @@ const useAccount = (id: number) => {
     enabled: !!userToken,
     queryKey: [queryKeys.accounts, id],
     queryFn: () => apiClient.get(id, userId!!, userToken!!),
-    initialData: () => {
-      const initialData = queryClient
-        .getQueryData<FetchResponse<Account>>([queryKeys.accounts])
-        ?.data.find((d) => d.Id === id);
-      return initialData;
-    },
   });
   return { account, isLoading, error };
 };
