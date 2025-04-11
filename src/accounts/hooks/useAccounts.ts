@@ -11,21 +11,23 @@ const useAccounts = (select?: (data: AccountList[]) => AccountList[]) => {
 
   const fallback: FetchResponse<AccountList> = {
     data: [],
+    isValueSet: false,
     count: 0,
   };
-  const { data: accounts = fallback } = useQuery({
+  const { data: accounts = fallback, isLoading } = useQuery({
     enabled: !!userToken,
     queryKey: [queryKeys.accounts],
     select: (response) => {
       const filteredData = select ? select(response.data) : response.data;
       return {
         data: filteredData,
+        isValueSet: true,
         count: filteredData.length,
       };
     },
     queryFn: () => apiClient.getAll(userId!!, userToken!!),
   });
-  return accounts;
+  return { accounts, isLoading };
 };
 
 export default useAccounts;

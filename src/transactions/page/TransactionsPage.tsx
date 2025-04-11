@@ -9,9 +9,10 @@ import TabContent from "../components/TabContent";
 import TransactionEmptyState from "../components/TransactionEmptyState";
 import CollapsibleTitle from "../../common/components/CollapsibleTitle";
 import DateObj from "../../common/date";
+import LoadingPage from "../../common/components/LoadingPage";
 
 const TransactionsPage = () => {
-  const transactions = useTransactions();
+  const { transactions, isLoading } = useTransactions();
   const pendingData = useMutationState({
     filters: {
       mutationKey: [queryKeys.transactions],
@@ -46,6 +47,7 @@ const TransactionsPage = () => {
     years = Array.from(
       new Set(transData.map((s) => s.Date.year.toString()))
     ).sort((a, b) => +b - +a);
+  if (isLoading || !transactions.isValueSet) return <LoadingPage />;
   return (
     <Box padding={"15px"}>
       <Box>

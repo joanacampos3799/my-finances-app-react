@@ -18,6 +18,8 @@ export function useDeleteTransaction() {
       apiClient.delete(data.Id!!, userId!!, userToken!!),
     onSuccess: (data: Transaction, variables: Transaction) => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.transactions] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.categories] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.accounts] });
       toaster.create({
         title: `You have deleted the ${data.Name} transaction`,
         type: "warning",

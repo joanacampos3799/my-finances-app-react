@@ -1,4 +1,3 @@
-import React from "react";
 import Transaction from "../../transactions/model/Transaction";
 import {
   Flex,
@@ -8,9 +7,9 @@ import {
   Link,
   Table,
 } from "@chakra-ui/react";
-import { TbArrowBarDown, TbArrowBarUp } from "react-icons/tb";
 import CategoryTag from "../../common/components/CategoryTag";
 import useDateFilter from "../../common/hooks/useDateFilter";
+import { LuArrowDownToLine, LuArrowUpFromLine } from "react-icons/lu";
 
 interface Props {
   transactions: Transaction[];
@@ -28,7 +27,7 @@ const RecentTransactionsTable = ({ transactions }: Props) => {
       direction={"column"}
       w="full"
     >
-      <Flex direction={"row"} justifyContent={"space-between"}>
+      <Flex direction={"row"} justifyContent={"space-between"} py={2}>
         <Heading color="teal.700">Recent Transactions</Heading>
         <Link href="/s/transactions" color={"teal.700"}>
           See all
@@ -49,13 +48,13 @@ const RecentTransactionsTable = ({ transactions }: Props) => {
           {transactions.map((t) => (
             <Table.Row key={t.Id + "-recent"}>
               <Table.Cell>
-                {t.transactionType === 1 ? (
-                  <Icon>
-                    <TbArrowBarDown />
+                {t.transactionType === 0 ? (
+                  <Icon color={"red.500"}>
+                    <LuArrowUpFromLine />
                   </Icon>
                 ) : (
-                  <Icon>
-                    <TbArrowBarUp />
+                  <Icon color={"green.500"}>
+                    <LuArrowDownToLine />
                   </Icon>
                 )}
               </Table.Cell>

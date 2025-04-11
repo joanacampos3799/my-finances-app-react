@@ -24,11 +24,12 @@ import {
 } from "react-icons/lu";
 import { useMemo } from "react";
 import HorizontalBarChart from "../../common/components/HorizontalBarChart";
+import LoadingPage from "../../common/components/LoadingPage";
 
 export default function DashboardPage() {
   const { period, setPeriod } = usePeriodStore();
   const { user } = useAuthStore();
-  const transactions = useTransactions();
+  const { transactions, isLoading: loadingTrans } = useTransactions();
   const pendingData = useMutationState({
     filters: {
       mutationKey: [queryKeys.transactions],
@@ -50,7 +51,7 @@ export default function DashboardPage() {
   }
   const recentTransaction = transData?.slice(-5).reverse();
   const { isAsset, calculateMergedDailyBalances } = useAccountInsights();
-  const accounts = useAccounts((accounts) =>
+  const { accounts, isLoading: loadingAcc } = useAccounts((accounts) =>
     accounts.filter((acc) => isAsset(acc.Type))
   );
 
@@ -129,7 +130,13 @@ export default function DashboardPage() {
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 3);
   }, [transData]);
-
+  if (
+    loadingAcc ||
+    !accounts.isValueSet ||
+    loadingTrans ||
+    !transactions.isValueSet
+  )
+    return <LoadingPage />;
   return (
     <Box padding={"15px"}>
       <Box>

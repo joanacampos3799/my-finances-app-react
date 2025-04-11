@@ -10,9 +10,15 @@ import { LinkButton } from "../../components/ui/link-button";
 interface Props {
   account: AccountList;
   fromInstitution?: boolean;
+  onArquiveRestore: (account: AccountList) => void;
   onDelete: (account: AccountList) => void;
 }
-const AccountRow = ({ account, onDelete, fromInstitution }: Props) => {
+const AccountRow = ({
+  account,
+  onArquiveRestore,
+  fromInstitution,
+  onDelete,
+}: Props) => {
   const { findMostRecentTransaction } = useInsights();
 
   return (
@@ -57,10 +63,20 @@ const AccountRow = ({ account, onDelete, fromInstitution }: Props) => {
             h="40px"
             w="40px"
             bgColor="red.500"
-            onClick={() => onDelete(account)}
+            onClick={() => onArquiveRestore(account)}
           >
             {account.active ? <LuTrash2 /> : <LuArchiveRestore />}
           </Button>
+          {!account.active && (
+            <Button
+              h="40px"
+              w="40px"
+              bgColor="red.500"
+              onClick={() => onDelete(account)}
+            >
+              <LuTrash2 />
+            </Button>
+          )}
         </HStack>
       </Table.Cell>
     </Table.Row>

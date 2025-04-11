@@ -1,5 +1,4 @@
-// src/transactions/components/NewTransactionDrawer.tsx
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import useCategories from "../../categories/hooks/useCategories";
 import { EntitySelected, HelperEntity } from "../../common/helper";
@@ -39,11 +38,9 @@ const NewTransactionDrawer = ({
   creditAccountId,
 }: Props) => {
   const { userId } = useLoginData();
-  const { data: categories } = useCategories();
-  const { data: accounts } = useAccounts();
+  const { categories } = useCategories();
+  const { accounts } = useAccounts();
   const { parseDate } = useDateFilter();
-
-  const [accountList, setAccountList] = useState<AccountList[]>([]);
   const [initialState, setInitialState] = useState<EntitySelected<Category>[]>(
     []
   );
@@ -66,56 +63,60 @@ const NewTransactionDrawer = ({
         ? "" + transaction.accountId
         : "",
     Name: transaction?.Name ?? "",
-    selectedCategories: [],
+    selectedCategories: initialState ?? [],
     isCreditCardPayment: creditAccountId !== undefined,
     selectedCreditCard: creditAccountId ? "" + creditAccountId : undefined,
   });
+  const [hasInitializedCategories, setHasInitializedCategories] =
+    useState(false);
+  const accountList = useMemo(() => accounts.data ?? [], [accounts]);
 
   useEffect(() => {
-    if (accounts?.length) {
-      setAccountList(accounts);
-    }
+    if (!categories?.data.length || hasInitializedCategories) return;
 
-    if (categories?.length && allCategories.length === 0) {
-      const helper = new HelperEntity<Category>();
-      let init;
+    const helper = new HelperEntity<Category>();
+    let init;
 
-      if (transaction) {
-        init = helper.getMappedCheckboxEntity(
-          categories,
-          transaction.categories.map((cat) => cat.Id!)
-        );
-      } else if (categoriesId) {
-        init = helper.getMappedCheckboxEntity(categories, categoriesId);
-      } else {
-        init = helper.getMappedCheckboxEntity(categories);
-      }
-
-      setInitialState(init);
-      setAllCategories(init);
-      handleChange("selectedCategories", init);
-    }
-  }, [accounts, categories]);
-
-  useEffect(() => {
-    if (accountId !== undefined) {
-      handleChange("selectedAccount", "" + accountId);
-      setOpen(open);
-    }
-  }, [accountId]);
-
-  useEffect(() => {
-    if (+values.selectedTT >= 0 && +values.selectedTT < 2) {
-      const filtered = allCategories.filter(
-        (cat) =>
-          cat.data.CategoryType === +values.selectedTT ||
-          cat.data.CategoryType === 2
+    if (transaction) {
+      init = helper.getMappedCheckboxEntity(
+        categories.data,
+        transaction.categories.map((cat) => cat.Id!)
       );
-      setInitialState(filtered);
-      handleChange("selectedCategories", filtered);
+    } else if (categoriesId) {
+      init = helper.getMappedCheckboxEntity(categories.data, categoriesId);
+    } else {
+      init = helper.getMappedCheckboxEntity(categories.data);
     }
-  }, [values.selectedTT, allCategories]);
 
+    setInitialState(init);
+    setAllCategories(init);
+    handleChange("selectedCategories", init);
+    setHasInitializedCategories(true);
+  }, [categories, transaction, categoriesId, hasInitializedCategories]);
+  const memoizedAccountId = useMemo(() => accountId, [accountId]);
+  useEffect(() => {
+    if (memoizedAccountId !== undefined) {
+      handleChange("selectedAccount", "" + memoizedAccountId);
+    }
+  }, [memoizedAccountId]);
+
+  useEffect(() => {
+    if (
+      !allCategories.length ||
+      +values.selectedTT < 0 ||
+      +values.selectedTT > 1
+    )
+      return;
+
+    const filtered = allCategories.filter(
+      (cat) =>
+        cat.data.CategoryType === +values.selectedTT ||
+        cat.data.CategoryType === 2
+    );
+
+    setInitialState(filtered);
+    handleChange("selectedCategories", filtered);
+  }, [values.selectedTT, allCategories]);
   const addTransaction = useAddTransaction(() => resetForm());
   const updateTransaction = useUpdateTransaction(() => resetForm());
 

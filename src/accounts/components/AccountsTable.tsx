@@ -15,6 +15,7 @@ import AccountsEmptyState from "./AccountsEmptyState";
 import { useUpdateAccount } from "../hooks/useUpdateAccount";
 import { format } from "date-fns";
 import useDateFilter from "../../common/hooks/useDateFilter";
+import { useDeleteAccount } from "../hooks/useDeleteAccount";
 
 interface Props {
   accounts: AccountList[];
@@ -42,7 +43,7 @@ const AccountsTable = ({ accounts, fromInstitution }: Props) => {
     setSortedAccounts(accounts.slice((page - 1) * size, page * size));
   };
   const upateAccount = useUpdateAccount(() => {});
-  const handleDelete = (element: AccountList) => {
+  const handleArquiveRestore = (element: AccountList) => {
     upateAccount({
       Name: element.Name,
       institutionId: element.Institution.Id,
@@ -63,7 +64,10 @@ const AccountsTable = ({ accounts, fromInstitution }: Props) => {
       goal: element.Goal,
     });
   };
-
+  const deleteAccount = useDeleteAccount();
+  const handleDelete = (element: AccountList) => {
+    deleteAccount(element);
+  };
   return (
     <Flex p={"10px"}>
       {sortedAccounts.length > 0 ? (
@@ -170,6 +174,7 @@ const AccountsTable = ({ accounts, fromInstitution }: Props) => {
                   key={account.Id + "-account"}
                   account={account}
                   fromInstitution={fromInstitution}
+                  onArquiveRestore={handleArquiveRestore}
                   onDelete={handleDelete}
                 />
               ))}

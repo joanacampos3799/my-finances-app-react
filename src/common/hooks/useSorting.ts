@@ -1,10 +1,12 @@
 import { useState } from "react";
 import useInsights from "./useInsights";
 import Transaction from "../../transactions/model/Transaction";
-import InstitutionList from "../../institutions/model/InstitutionList";
+import DateObj from "../date";
+import useDateFilter from "./useDateFilter";
 
 const useSorting = () => {
   const { getTransactionsTotalAmount } = useInsights();
+  const { parseDate } = useDateFilter();
   const [sorting, setSorting] = useState<{
     state: "asc" | "desc" | null;
     column: string | null;
@@ -84,6 +86,42 @@ const useSorting = () => {
       );
   };
 
+  const sortDate = <T, V>(
+    array: T[],
+    property: keyof T,
+    header: string,
+    id: keyof T,
+    subProperty?: keyof V
+  ) => {
+    const state = getNextState(header);
+    setSorting({ column: header, state: state });
+    if (state !== null) {
+      return array.sort((a, b) => {
+        if (subProperty) {
+          const dateA = parseDate(
+            (a[property] as V)[subProperty] as unknown as DateObj
+          );
+          const dateB = parseDate(
+            (b[property] as V)[subProperty] as unknown as DateObj
+          );
+
+          return state === "asc"
+            ? dateA.getTime() - dateB.getTime()
+            : dateB.getTime() - dateA.getTime();
+        }
+        const dateA = parseDate(a[property] as unknown as DateObj);
+        const dateB = parseDate(b[property] as unknown as DateObj);
+
+        return state === "asc"
+          ? dateA.getTime() - dateB.getTime()
+          : dateB.getTime() - dateA.getTime();
+      });
+    } else
+      return array.sort(
+        (a, b) => (a[id] as unknown as number) - (b[id] as unknown as number)
+      );
+  };
+
   const SortTotal = <T>(
     array: T[],
     subArray: keyof T,
@@ -141,6 +179,7 @@ const useSorting = () => {
     isSorting,
     getSortingState,
     sortNumber,
+    sortDate,
     sortString,
   };
 };

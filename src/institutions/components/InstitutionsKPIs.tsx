@@ -1,7 +1,6 @@
 import {
   Box,
   Flex,
-  For,
   FormatNumber,
   Heading,
   Icon,

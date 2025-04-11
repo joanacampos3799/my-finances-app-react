@@ -1,4 +1,3 @@
-import React from "react";
 import InstitutionList from "../model/InstitutionList";
 import { FormatNumber, HStack, Table } from "@chakra-ui/react";
 import { Button } from "../../components/ui/button";

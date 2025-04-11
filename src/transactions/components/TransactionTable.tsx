@@ -18,24 +18,37 @@ interface Props {
   fromAccount?: boolean;
   fromCategory?: boolean;
   showFooter?: boolean;
+  size?: number;
 }
 const TransactionTable = ({
   data,
   fromAccount,
   fromCategory,
   showFooter,
+  size,
 }: Props) => {
-  const { isSorting, getSortingState, sortNumber, sortString } = useSorting();
+  const { isSorting, getSortingState, sortNumber, sortString, sortDate } =
+    useSorting();
   const deleteTransaction = useDeleteTransaction();
-  const [sortedTransactions, setSortedTransactions] = useState<
-    Transaction[] | undefined
-  >();
+  const [sortedTransactions, setSortedTransactions] =
+    useState<Transaction[]>(data);
+  const [page, setPage] = useState(1);
+  const [transCount, setTransCount] = useState(data.length);
+
   useEffect(() => {
-    if (data.length > 0) setSortedTransactions(data);
-  }, [data]);
+    setTransCount(data.length);
+    if (size) setSortedTransactions(data.slice((page - 1) * size, page * size));
+  }, [setSortedTransactions, data, page, size]);
   const handleDelete = (element: Transaction) => {
     element.deleted = true;
     deleteTransaction(element);
+  };
+  const handlePageChange = (page: number) => {
+    setPage(page);
+    if (size)
+      setSortedTransactions(
+        sortedTransactions.slice((page - 1) * size, page * size)
+      );
   };
   return (
     <Flex
@@ -93,9 +106,7 @@ const TransactionTable = ({
                   isSorting={isSorting("Date")}
                   sortingState={getSortingState()}
                   sortFn={() =>
-                    setSortedTransactions(
-                      sortString(data, "Date", "Date", "Id")
-                    )
+                    setSortedTransactions(sortDate(data, "Date", "Date", "Id"))
                   }
                 />
                 <Show when={!fromAccount}>
@@ -146,17 +157,20 @@ const TransactionTable = ({
               </Table.Footer>
             </Show>
           </Table.Root>
-          <PaginationRoot
-            count={sortedTransactions.length}
-            pageSize={10}
-            page={1}
-          >
-            <HStack wrap="wrap" justifyContent={"center"}>
-              <PaginationPrevTrigger />
-              <PaginationItems />
-              <PaginationNextTrigger />
-            </HStack>
-          </PaginationRoot>
+          {size && (
+            <PaginationRoot
+              count={transCount}
+              pageSize={size}
+              page={page}
+              onPageChange={(e) => handlePageChange(e.page)}
+            >
+              <HStack wrap="wrap" justifyContent={"center"}>
+                <PaginationPrevTrigger />
+                <PaginationItems />
+                <PaginationNextTrigger />
+              </HStack>
+            </PaginationRoot>
+          )}
         </>
       ) : (
         <TransactionEmptyState />

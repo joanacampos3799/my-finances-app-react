@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import useAddFixedTransaction from "../hooks/useAddFixedTransaction";
 import { movementTypes } from "../../common/constants";
@@ -26,11 +26,13 @@ interface Props {
 const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
   const { userId } = useLoginData();
   const ref = useRef<HTMLInputElement>(null);
-  const { data: categories } = useCategories();
-  const { data: accounts } = useAccounts();
-  const [accountList, setAccountList] = useState<AccountList[]>([]);
+  const { categories } = useCategories();
+  const { accounts } = useAccounts();
   const [initialState, setInitialState] =
     useState<EntitySelected<Category>[]>();
+  const [allCategories, setAllCategories] = useState<
+    EntitySelected<Category>[]
+  >([]);
   const { values, handleChange, resetForm } =
     useForm<FixedTransactionFormObject>({
       Name: fixedTransaction ? fixedTransaction.Name : "",
@@ -42,28 +44,45 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
       selectedTT: fixedTransaction
         ? "" + movementTypes[fixedTransaction.transactionType].id
         : "-1",
-      selectedCategories: initialState!!,
+      selectedCategories: initialState ?? [],
     });
+
+  const accountList = useMemo(() => accounts.data ?? [], [accounts]);
   const accountsSelect = new HelperEntity<AccountList>().getMappedRadioEntity(
     accountList
   );
 
   useEffect(() => {
-    if (accounts && accounts.length > 0) {
-      setAccountList(accounts);
-    }
-    if (categories && categories.length > 0 && initialState === undefined) {
-      const init = fixedTransaction
-        ? new HelperEntity<Category>().getMappedCheckboxEntity(
-            categories,
-            fixedTransaction.categories.map((cat) => cat.Id!!)
-          )
-        : new HelperEntity<Category>().getMappedCheckboxEntity(categories);
+    if (categories?.data.length && allCategories.length === 0) {
+      const helper = new HelperEntity<Category>();
+      let init;
+
+      if (fixedTransaction) {
+        init = helper.getMappedCheckboxEntity(
+          categories.data,
+          fixedTransaction.categories.map((cat) => cat.Id!)
+        );
+      } else {
+        init = helper.getMappedCheckboxEntity(categories.data);
+      }
 
       setInitialState(init);
+      setAllCategories(init);
       handleChange("selectedCategories", init);
     }
-  }, [categories, accounts]);
+  }, [accounts, categories]);
+
+  useEffect(() => {
+    if (+values.selectedTT >= 0 && +values.selectedTT < 2) {
+      const filtered = allCategories.filter(
+        (cat) =>
+          cat.data.CategoryType === +values.selectedTT ||
+          cat.data.CategoryType === 2
+      );
+      setInitialState(filtered);
+      handleChange("selectedCategories", filtered);
+    }
+  }, [values.selectedTT, allCategories]);
 
   const addFixedTransaction = useAddFixedTransaction(() => resetForm());
   const updateFixedTransaction = useUpdateFixedTransaction();
@@ -162,7 +181,7 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
           <Field label="Choose the categories">
             <CheckBoxMenu
               name={"Category"}
-              items={values.selectedCategories}
+              items={values.selectedCategories ?? []}
               setItems={(val) => handleChange("selectedCategories", val)}
             />
           </Field>
@@ -170,14 +189,14 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
           <HStack>
             <NumberInput
               number={"" + values.paymentDay}
-              setNumber={(e) => handleChange("paymentDay", e)}
+              setNumber={(e) => handleChange("paymentDay", +e)}
               isCurrency={false}
               label="Payment Day"
               helperText="Day of the month"
             />
             <NumberInput
               number={"" + values.periodicity}
-              setNumber={(v) => handleChange("periodicity", v)}
+              setNumber={(v) => handleChange("periodicity", +v)}
               isCurrency={false}
               label="Periodicity"
               helperText="In months"

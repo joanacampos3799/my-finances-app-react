@@ -26,12 +26,14 @@ const useAddTransaction = (onAdd: () => void) => {
     onSettled: () => {
       // return promise to maintain 'inProgress' status until query invalidation
       //    is complete
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.accounts],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.categories],
+      });
       return queryClient.invalidateQueries({
-        queryKey: [
-          queryKeys.transactions,
-          queryKeys.categories,
-          queryKeys.accounts,
-        ],
+        queryKey: [queryKeys.transactions],
       });
     },
 

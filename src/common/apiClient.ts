@@ -3,6 +3,7 @@ import { UUID } from "crypto";
 
 export interface FetchResponse<T> {
   count: number;
+  isValueSet: boolean;
   data: T[];
 }
 

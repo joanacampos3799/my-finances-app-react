@@ -11,21 +11,23 @@ const useTransactions = (select?: (data: Transaction[]) => Transaction[]) => {
 
   const fallback: FetchResponse<Transaction> = {
     data: [],
+    isValueSet: false,
     count: 0,
   };
-  const { data: transactions = fallback } = useQuery({
+  const { data: transactions = fallback, isLoading } = useQuery({
     enabled: !!userToken,
     queryKey: [queryKeys.transactions],
     select: (response) => {
       const filteredData = select ? select(response.data) : response.data;
       return {
         data: filteredData,
+        isValueSet: true,
         count: filteredData.length,
       };
     },
     queryFn: () => apiClient.getAll(userId!!, userToken!!),
   });
-  return transactions;
+  return { transactions, isLoading };
 };
 
 export default useTransactions;

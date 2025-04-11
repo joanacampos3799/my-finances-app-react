@@ -4,7 +4,6 @@ import APIClient from "../../common/apiClient";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import { toaster } from "../../components/ui/toaster";
 import FixedTransaction from "../model/FixedTransaction";
-import FixedTransactionList from "../model/FixedTransactionsList";
 
 const apiClient = new APIClient<FixedTransaction>("/fixed-transactions");
 

@@ -13,9 +13,10 @@ import ExportDrawer from "../components/ExportDrawer";
 import TimePeriodMenu from "../../common/components/TimePeriodMenu";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
 import React from "react";
+import LoadingPage from "../../common/components/LoadingPage";
 
 const CategoriesPage = React.memo(() => {
-  const categories = useCategories();
+  const { categories, isLoading } = useCategories();
   const { period, setPeriod } = usePeriodStore();
 
   const pendingData = useMutationState({
@@ -37,7 +38,7 @@ const CategoriesPage = React.memo(() => {
     catData = tData;
     catCount = tCount;
   }
-
+  if (isLoading || !categories.isValueSet) return <LoadingPage />;
   return (
     <Box padding={"15px"}>
       <Box>

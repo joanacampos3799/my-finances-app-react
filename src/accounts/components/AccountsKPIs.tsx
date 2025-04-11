@@ -12,7 +12,7 @@ import useInsights from "../../common/hooks/useInsights";
 import AccountList from "../models/AccountList";
 import GaugeChart from "../../common/components/GaugeChart";
 import { LuWalletCards } from "react-icons/lu";
-import { TbCoins, TbReceipt2 } from "react-icons/tb";
+import { TbCoins } from "react-icons/tb";
 import useAccountInsights from "../../common/hooks/useAccountInsights";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
 

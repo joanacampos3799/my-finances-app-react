@@ -19,18 +19,17 @@ import AccountKPIs from "../components/AccountKPIs";
 import { accountTypes } from "../../common/constants";
 import CreditKPIs from "../components/CreditKPIs";
 import PaymentsTable from "../components/PaymentsTable";
-import { LoadingOverlay } from "../../components/ui/loading-overlay";
+import LoadingPage from "../../common/components/LoadingPage";
 
 const AccountDetailsPage = () => {
   const { id } = useParams();
 
   const { account: acc, isLoading, error } = useAccount(+id!);
-  const { account, setAccount } = useAccountStore();
+  const { account, setAccount, isValueSet } = useAccountStore();
   useEffect(() => {
     if (acc !== undefined) setAccount(acc);
   }, [acc, setAccount]);
-  if (isLoading) return <LoadingOverlay />;
-
+  if (isLoading || !isValueSet) return <LoadingPage />;
   if (error || !account) return <Text>No data</Text>;
   return (
     <Box>
@@ -94,7 +93,11 @@ const AccountDetailsPage = () => {
                 <Heading size="md" color={"teal.700"}>
                   Transactions
                 </Heading>
-                <TransactionTable data={account.Transactions} fromAccount />
+                <TransactionTable
+                  data={account.Transactions}
+                  fromAccount
+                  size={10}
+                />
               </Stack>
               <Flex justifyContent={"flex-end"} alignItems={"flex-end"}>
                 <NewTransactionDrawer accountId={account.Id} />

@@ -137,7 +137,7 @@ const CategoryDetails = ({ category, total }: Props) => {
         <Editable.Preview />
         <Editable.Textarea />
       </Editable.Root>
-      <TransactionTable data={category.Transactions} fromCategory />
+      <TransactionTable data={category.Transactions} fromCategory size={5} />
     </DialogComponent>
   );
 };

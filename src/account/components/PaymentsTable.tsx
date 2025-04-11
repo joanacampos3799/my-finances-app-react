@@ -23,6 +23,7 @@ const PaymentsTable = () => {
   const [page, setPage] = useState(1);
   const [payCount, setPayCount] = useState(account.Payments?.length);
   useEffect(() => {
+    console.log("here");
     setPayCount(account.Payments?.length);
     setSortedPayments(account.Payments?.slice((page - 1) * size, page * size));
   }, [account.Payments, setSortedPayments, page]);

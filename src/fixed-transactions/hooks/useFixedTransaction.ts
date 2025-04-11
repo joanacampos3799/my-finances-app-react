@@ -19,13 +19,16 @@ const useFixedTransaction = (id: number) => {
     userId: userId!!,
     transactionType: 1,
     TotalSpent: 0,
+    active: false,
+    Transactions: [],
+    Account: "",
   };
-  const { data: fixedTransactions = fallback } = useQuery({
+  const { data: fixedTransaction = fallback, isLoading } = useQuery({
     enabled: !!userToken,
     queryKey: [queryKeys.fixedTransaction, id],
     queryFn: () => apiClient.get(id, userId!!, userToken!!),
   });
-  return fixedTransactions;
+  return { fixedTransaction, isLoading };
 };
 
 export default useFixedTransaction;

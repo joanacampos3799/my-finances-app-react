@@ -26,9 +26,10 @@ const useAddAccount = (onAdd: () => void) => {
     onSettled: () => {
       // return promise to maintain 'inProgress' status until query invalidation
       //    is complete
+      queryClient.invalidateQueries({ queryKey: [queryKeys.institutions] });
 
       return queryClient.invalidateQueries({
-        queryKey: [queryKeys.accounts, queryKeys.institutions],
+        queryKey: [queryKeys.accounts],
       });
     },
 

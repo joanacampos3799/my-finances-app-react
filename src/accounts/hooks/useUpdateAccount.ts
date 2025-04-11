@@ -19,6 +19,7 @@ export function useUpdateAccount(onUpdate: () => void) {
     onMutate: () => onUpdate(),
     onSuccess: (data: AccountRequest, variables: AccountRequest) => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.accounts] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.institutions] });
       toaster.create({
         title: `You have updated the ${variables.Name} account`,
         type: "success",

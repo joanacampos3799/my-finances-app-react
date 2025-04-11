@@ -1,4 +1,3 @@
-import React from "react";
 import DialogComponent from "../../common/components/DialogComponent";
 import Transaction from "../model/Transaction";
 
