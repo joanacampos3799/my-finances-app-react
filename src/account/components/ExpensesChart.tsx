@@ -24,6 +24,16 @@ const ExpensesChart = () => {
   const { getStartEndDates, parseDate } = useDateFilter();
 
   const dates = getStartEndDates(period);
+  let statementStartDate: Date | null = null;
+  if (account.Type === 1 && account.StatementDate) {
+    const statementDate = parseDate(account.StatementDate);
+    if (new Date() >= statementDate) {
+      statementStartDate = statementDate;
+    } else {
+      // Otherwise, we're still in the previous period
+      statementStartDate = subMonths(statementDate, 1);
+    }
+  }
   const transactions = account.Transactions.filter((transaction) => {
     const txDate = parseDate(transaction.Date);
     if (account.Type === 1 && statementStartDate) {
@@ -43,19 +53,7 @@ const ExpensesChart = () => {
   }
 
   const uniqueCategories = Array.from(uniqueMap.values());
-  // Handle credit card statement period
-  let statementStartDate: Date | null = null;
-  if (account.Type === 1 && account.StatementDate) {
-    const statementDate = parseDate(account.StatementDate);
 
-    // If today is on or after the statement date, use this month’s statement period
-    if (new Date() >= statementDate) {
-      statementStartDate = statementDate;
-    } else {
-      // Otherwise, we're still in the previous period
-      statementStartDate = subMonths(statementDate, 1);
-    }
-  }
   const groupTransactionsByPeriod = (
     transactions: Transaction[],
     period: string

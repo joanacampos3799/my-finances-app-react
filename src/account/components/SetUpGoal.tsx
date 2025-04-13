@@ -27,7 +27,6 @@ const SetUpGoal = () => {
     setWarning("");
   });
   useEffect(() => {
-    console.log("here");
     if (account.Goal && account.Goal > 0) {
       setGoal("" + account.Goal);
       setUpdate(true);

@@ -16,17 +16,20 @@ import PaymentRow from "./PaymentRow";
 
 const PaymentsTable = () => {
   const { account } = useAccountStore();
-  const { sortString, isSorting, getSortingState, sortNumber } = useSorting();
+  const { sortString, isSorting, getSortingState, sortNumber, sortDate } =
+    useSorting();
   const [sortedPayments, setSortedPayments] = useState<Payment[] | undefined>(
-    account.Payments
+    account.CreditCardPayments
   );
   const [page, setPage] = useState(1);
-  const [payCount, setPayCount] = useState(account.Payments?.length);
+  const [payCount, setPayCount] = useState(account.CreditCardPayments?.length);
+  console.log(account);
   useEffect(() => {
-    console.log("here");
-    setPayCount(account.Payments?.length);
-    setSortedPayments(account.Payments?.slice((page - 1) * size, page * size));
-  }, [account.Payments, setSortedPayments, page]);
+    setPayCount(account.CreditCardPayments?.length);
+    setSortedPayments(
+      account.CreditCardPayments?.slice((page - 1) * size, page * size)
+    );
+  }, [account.CreditCardPayments, setSortedPayments, page]);
 
   const size = 5;
   const handlePageChange = (page: number) => {
@@ -54,7 +57,12 @@ const PaymentsTable = () => {
                   w={"100px"}
                   sortFn={() => {
                     setSortedPayments(
-                      sortString(account.Payments!!, "Date", "Date", "Id")
+                      sortDate(
+                        account.CreditCardPayments!!,
+                        "Date",
+                        "Date",
+                        "Id"
+                      )
                     );
                   }}
                   isSorting={isSorting("Date")}
@@ -68,7 +76,28 @@ const PaymentsTable = () => {
                   sortingState={getSortingState()}
                   sortFn={() =>
                     setSortedPayments(
-                      sortNumber(account.Payments!!, "Amount", "Amount", "Id")
+                      sortNumber(
+                        account.CreditCardPayments!!,
+                        "Amount",
+                        "Amount",
+                        "Id"
+                      )
+                    )
+                  }
+                />
+                <TableHeader
+                  label={"Account"}
+                  w={"80px"}
+                  isSorting={isSorting("Account")}
+                  sortingState={getSortingState()}
+                  sortFn={() =>
+                    setSortedPayments(
+                      sortString(
+                        account.CreditCardPayments!!,
+                        "AccountName",
+                        "Account",
+                        "Id"
+                      )
                     )
                   }
                 />
