@@ -14,7 +14,7 @@ export default interface Account {
   SpendingLimit?: number;
   PaymentDueDate?: DateObj;
   StatementDate?: DateObj;
-  Payments?: Payment[];
+  CreditCardPayments?: Payment[];
   Interest?: number;
   userId: UUID;
   DailyBalances: DailyBalance[];

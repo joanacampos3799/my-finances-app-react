@@ -20,7 +20,6 @@ const AccountRow = ({
   onDelete,
 }: Props) => {
   const { findMostRecentTransaction } = useInsights();
-
   return (
     <Table.Row key={account.Id + "-row-account"}>
       <Table.Cell w="150px">{account.Name}</Table.Cell>

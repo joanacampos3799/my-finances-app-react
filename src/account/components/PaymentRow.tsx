@@ -21,6 +21,7 @@ const PaymentRow = ({ payment }: Props) => {
           currency="EUR"
         />
       </Table.Cell>
+      <Table.Cell>{payment.AccountName}</Table.Cell>
     </Table.Row>
   );
 };
