@@ -64,9 +64,18 @@ const NewTransactionDrawer = ({
         : "",
     Name: transaction?.Name ?? "",
     selectedCategories: initialState ?? [],
-    isCreditCardPayment: creditAccountId !== undefined,
-    selectedCreditCard: creditAccountId ? "" + creditAccountId : undefined,
+    isCreditCardPayment:
+      transaction != null
+        ? transaction.isCreditCardPayment
+        : creditAccountId !== undefined,
+    selectedCreditCard:
+      transaction != null
+        ? "" + transaction.creditCardId
+        : creditAccountId
+          ? "" + creditAccountId
+          : undefined,
   });
+
   const [hasInitializedCategories, setHasInitializedCategories] =
     useState(false);
   const accountList = useMemo(() => accounts.data ?? [], [accounts]);

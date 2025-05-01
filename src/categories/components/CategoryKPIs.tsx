@@ -29,7 +29,7 @@ const CategoryKPIs = ({ data }: Props) => {
             data.filter((f) => f.CategoryType === catType.id),
             catType.id
           )}
-          caption={catType.id === 2 ? "Net Balance" : catType.name}
+          caption={catType.name}
         />
       ))}
     </Flex>

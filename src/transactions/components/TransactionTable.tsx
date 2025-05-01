@@ -12,6 +12,8 @@ import {
 import TransactionEmptyState from "./TransactionEmptyState";
 import TransactionRow from "./TransactionRow";
 import { useDeleteTransaction } from "../hooks/useDeleteTransaction";
+import useDateFilter from "../../common/hooks/useDateFilter";
+import usePeriodStore from "../../common/hooks/usePeriodStore";
 
 interface Props {
   data: Transaction[];
@@ -34,11 +36,33 @@ const TransactionTable = ({
     useState<Transaction[]>(data);
   const [page, setPage] = useState(1);
   const [transCount, setTransCount] = useState(data.length);
+  const { period } = usePeriodStore();
+  const { getStartEndDates, parseDate } = useDateFilter();
+  const { startDate, endDate } = getStartEndDates(period);
 
   useEffect(() => {
     setTransCount(data.length);
-    if (size) setSortedTransactions(data.slice((page - 1) * size, page * size));
-  }, [setSortedTransactions, data, page, size]);
+
+    if (fromAccount || fromCategory) {
+      setSortedTransactions(
+        data
+          .filter(
+            (transaction) =>
+              parseDate(transaction.Date) >= startDate &&
+              parseDate(transaction.Date) > endDate
+          )
+          .reverse()
+      );
+    } else {
+      setSortedTransactions(data.reverse());
+    }
+  }, [setSortedTransactions, data]);
+  useEffect(() => {
+    if (size)
+      setSortedTransactions(
+        sortedTransactions.slice((page - 1) * size, page * size).reverse()
+      );
+  }, [setSortedTransactions, page, size]);
   const handleDelete = (element: Transaction) => {
     element.deleted = true;
     deleteTransaction(element);
@@ -73,7 +97,7 @@ const TransactionTable = ({
                   sortingState={getSortingState()}
                   sortFn={() =>
                     setSortedTransactions(
-                      sortString(data, "Name", "Name", "Id")
+                      sortString(sortedTransactions, "Name", "Name", "Id")
                     )
                   }
                 />
@@ -84,7 +108,14 @@ const TransactionTable = ({
                   sortingState={getSortingState()}
                   sortFn={() =>
                     setSortedTransactions(
-                      sortString(data, "Description", "Description", "Id")
+                      sortString(
+                        sortedTransactions,
+                        "Description",
+                        "Description",
+                        "Id",
+                        undefined,
+                        true
+                      )
                     )
                   }
                 />
@@ -95,7 +126,7 @@ const TransactionTable = ({
                   sortingState={getSortingState()}
                   sortFn={() =>
                     setSortedTransactions(
-                      sortNumber(data, "Amount", "Amount", "Id")
+                      sortNumber(sortedTransactions, "Amount", "Amount", "Id")
                     )
                   }
                 />
@@ -106,7 +137,9 @@ const TransactionTable = ({
                   isSorting={isSorting("Date")}
                   sortingState={getSortingState()}
                   sortFn={() =>
-                    setSortedTransactions(sortDate(data, "Date", "Date", "Id"))
+                    setSortedTransactions(
+                      sortDate(sortedTransactions, "Date", "Date", "Id")
+                    )
                   }
                 />
                 <Show when={!fromAccount}>

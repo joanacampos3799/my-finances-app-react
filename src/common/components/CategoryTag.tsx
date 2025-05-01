@@ -15,6 +15,7 @@ const CategoryTag = ({ category }: Props) => {
       key={category.Id + "-cat"}
       rounded={"md"}
       startElement={<Icon />}
+      mx={2}
     >
       {category.Name}
     </Tag>

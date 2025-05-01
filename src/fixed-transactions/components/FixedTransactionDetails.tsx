@@ -12,14 +12,13 @@ import DialogComponent from "../../common/components/DialogComponent";
 import CategoryTag from "../../common/components/CategoryTag";
 import { addMonths, format, isBefore, setDate, startOfDay } from "date-fns";
 import TransactionTable from "../../transactions/components/TransactionTable";
-import LoadingPage from "../../common/components/LoadingPage";
 
 interface Props {
   id: number;
 }
 
 const FixedTransactionDetails = ({ id }: Props) => {
-  const { fixedTransaction, isLoading } = useFixedTransaction(id);
+  const { fixedTransaction } = useFixedTransaction(id);
 
   function getNextDate(day: number) {
     const today = new Date();
@@ -31,7 +30,7 @@ const FixedTransactionDetails = ({ id }: Props) => {
 
     return format(targetDate, "dd/MM/yyyy");
   }
-  if (isLoading || !fixedTransaction) return <LoadingPage />;
+
   return (
     <DialogComponent
       size="xl"

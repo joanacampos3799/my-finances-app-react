@@ -32,7 +32,8 @@ const useSorting = () => {
     array: T[],
     property: keyof T,
     header: string,
-    id: keyof T
+    id: keyof T,
+    reverse?: boolean
   ) => {
     const state = getNextState(header);
     setSorting({ column: header, state: state });
@@ -48,9 +49,10 @@ const useSorting = () => {
               (b[property] as unknown as number) -
               (a[property] as unknown as number)
           )
-        : array.sort(
-            (a, b) =>
-              (a[id] as unknown as number) - (b[id] as unknown as number)
+        : array.sort((a, b) =>
+            reverse
+              ? (b[id] as unknown as number) - (a[id] as unknown as number)
+              : (a[id] as unknown as number) - (b[id] as unknown as number)
           );
   };
 
@@ -59,7 +61,8 @@ const useSorting = () => {
     property: keyof T,
     header: string,
     id: keyof T,
-    subProperty?: keyof V
+    subProperty?: keyof V,
+    reverse?: boolean
   ) => {
     const state = getNextState(header);
     setSorting({ column: header, state: state });
@@ -81,8 +84,10 @@ const useSorting = () => {
           : bValue.localeCompare(aValue);
       });
     } else
-      return array.sort(
-        (a, b) => (a[id] as unknown as number) - (b[id] as unknown as number)
+      return array.sort((a, b) =>
+        reverse
+          ? (b[id] as unknown as number) - (a[id] as unknown as number)
+          : (a[id] as unknown as number) - (b[id] as unknown as number)
       );
   };
 
@@ -91,7 +96,8 @@ const useSorting = () => {
     property: keyof T,
     header: string,
     id: keyof T,
-    subProperty?: keyof V
+    subProperty?: keyof V,
+    reverse?: boolean
   ) => {
     const state = getNextState(header);
     setSorting({ column: header, state: state });
@@ -117,8 +123,10 @@ const useSorting = () => {
           : dateB.getTime() - dateA.getTime();
       });
     } else
-      return array.sort(
-        (a, b) => (a[id] as unknown as number) - (b[id] as unknown as number)
+      return array.sort((a, b) =>
+        reverse
+          ? (b[id] as unknown as number) - (a[id] as unknown as number)
+          : (a[id] as unknown as number) - (b[id] as unknown as number)
       );
   };
 
@@ -129,7 +137,8 @@ const useSorting = () => {
     period: string,
     header: string,
     id: keyof T,
-    filterType?: number
+    filterType?: number,
+    reverse?: boolean
   ) => {
     const state = getNextState(header);
     setSorting({ column: header, state: state });
@@ -148,8 +157,10 @@ const useSorting = () => {
         return state === "asc" ? totalA - totalB : totalB - totalA;
       });
     } else
-      return array.sort(
-        (a, b) => (a[id] as unknown as number) - (b[id] as unknown as number)
+      return array.sort((a, b) =>
+        reverse
+          ? (b[id] as unknown as number) - (a[id] as unknown as number)
+          : (a[id] as unknown as number) - (b[id] as unknown as number)
       );
   };
 
@@ -157,7 +168,8 @@ const useSorting = () => {
     array: T[],
     subArray: keyof T,
     header: string,
-    id: keyof T
+    id: keyof T,
+    reverse?: boolean
   ) => {
     const state = getNextState(header);
     setSorting({ column: header, state: state });
@@ -169,8 +181,10 @@ const useSorting = () => {
         return state === "asc" ? sumA - sumB : sumB - sumA;
       });
     } else
-      return array.sort(
-        (a, b) => (a[id] as unknown as number) - (b[id] as unknown as number)
+      return array.sort((a, b) =>
+        reverse
+          ? (b[id] as unknown as number) - (a[id] as unknown as number)
+          : (a[id] as unknown as number) - (b[id] as unknown as number)
       );
   };
   return {
