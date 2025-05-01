@@ -5,6 +5,7 @@ import {
   Flex,
   FormatNumber,
   Heading,
+  HStack,
   Show,
   Stack,
   Text,
@@ -20,12 +21,15 @@ import { accountTypes } from "../../common/constants";
 import CreditKPIs from "../components/CreditKPIs";
 import PaymentsTable from "../components/PaymentsTable";
 import LoadingPage from "../../common/components/LoadingPage";
+import usePeriodStore from "../../common/hooks/usePeriodStore";
+import useDateFilter from "../../common/hooks/useDateFilter";
 
 const AccountDetailsPage = () => {
   const { id } = useParams();
 
   const { account: acc, isLoading, error } = useAccount(+id!);
   const { account, setAccount, isValueSet } = useAccountStore();
+
   useEffect(() => {
     if (acc !== undefined) setAccount(acc);
   }, [acc, setAccount]);
@@ -71,14 +75,16 @@ const AccountDetailsPage = () => {
                 justifyContent={"space-between"}
               >
                 <Stack>
-                  <Heading size="md" color={"teal.700"}>
-                    Credit Card Payments
-                  </Heading>
+                  <HStack justifyContent={"space-between"}>
+                    <Heading size="md" color={"teal.700"}>
+                      Credit Card Payments
+                    </Heading>
+                    <Flex justifyContent={"flex-end"} alignItems={"flex-end"}>
+                      <NewTransactionDrawer creditAccountId={account.Id} />
+                    </Flex>
+                  </HStack>
                   <PaymentsTable />
                 </Stack>
-                <Flex justifyContent={"flex-end"} alignItems={"flex-end"}>
-                  <NewTransactionDrawer creditAccountId={account.Id} />
-                </Flex>
               </Flex>
             </Show>
             <Flex
@@ -90,18 +96,21 @@ const AccountDetailsPage = () => {
               justifyContent={"space-between"}
             >
               <Stack>
-                <Heading size="md" color={"teal.700"}>
-                  Transactions
-                </Heading>
+                <HStack justifyContent={"space-between"}>
+                  <Heading size="md" color={"teal.700"}>
+                    Transactions
+                  </Heading>
+                  <Flex justifyContent={"flex-end"} alignItems={"flex-end"}>
+                    <NewTransactionDrawer accountId={account.Id} />
+                  </Flex>
+                </HStack>
+
                 <TransactionTable
                   data={account.Transactions}
                   fromAccount
                   size={10}
                 />
               </Stack>
-              <Flex justifyContent={"flex-end"} alignItems={"flex-end"}>
-                <NewTransactionDrawer accountId={account.Id} />
-              </Flex>
             </Flex>
           </Flex>
         </Flex>
