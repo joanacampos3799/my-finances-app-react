@@ -36,7 +36,14 @@ const CheckBoxMenu = <T extends TObj>({ name, items, setItems }: Props<T>) => {
           <LuChevronDown />
         </Button>
       </MenuTrigger>
-      <MenuContent minW="25rem" portalled={false} width={"full"}>
+      <MenuContent
+        minW="25rem"
+        zIndex="dropdown"
+        maxHeight={"30vh"}
+        overflowY={"auto"}
+        portalled={false}
+        width={"full"}
+      >
         {items.map((item) => (
           <MenuCheckboxItem
             justifyContent={"space-between"}
