@@ -6,7 +6,7 @@ export default interface FixedTransaction {
   Amount: number;
   PaymentDay: number;
   Icon: string;
-  categories: number[];
+  category: number;
   Periodicity: number;
   userId: UUID;
   transactionType: number;

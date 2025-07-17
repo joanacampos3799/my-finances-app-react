@@ -9,9 +9,13 @@ import {
 } from "@chakra-ui/react";
 import CategoryTag from "../../common/components/CategoryTag";
 import useDateFilter from "../../common/hooks/useDateFilter";
-import TransactionDetails from "./TransactionDetails";
 import NewTransactionDrawer from "./NewTransactionDrawer";
-import { LuArrowDownToLine, LuArrowUpFromLine, LuTrash2 } from "react-icons/lu";
+import {
+  LuArrowDownToLine,
+  LuArrowDownUp,
+  LuArrowUpFromLine,
+  LuTrash2,
+} from "react-icons/lu";
 
 interface Props {
   transaction: Transaction;
@@ -33,9 +37,13 @@ const TransactionRow = ({
           <Icon color={"red.500"}>
             <LuArrowUpFromLine />
           </Icon>
-        ) : (
+        ) : transaction.transactionType === 1 ? (
           <Icon color={"green.500"}>
             <LuArrowDownToLine />
+          </Icon>
+        ) : (
+          <Icon color={"gray.500"}>
+            <LuArrowDownUp />
           </Icon>
         )}
       </Table.Cell>
@@ -54,14 +62,16 @@ const TransactionRow = ({
       </Show>
       <Show when={!fromCategory}>
         <Table.Cell>
-          {transaction.categories.map((val) => (
-            <CategoryTag category={val} key={val.Id + "-cat_tag"} />
-          ))}
+          {transaction.category && (
+            <CategoryTag
+              category={transaction.category}
+              key={transaction.category.Id + "-cat_tag"}
+            />
+          )}
         </Table.Cell>
       </Show>
       <Table.Cell textAlign={"end"}>
         <HStack justifyContent={"flex-end"}>
-          <TransactionDetails transaction={transaction} />
           <NewTransactionDrawer transaction={transaction} />
           <Button
             h="40px"

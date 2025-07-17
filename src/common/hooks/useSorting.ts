@@ -96,10 +96,11 @@ const useSorting = () => {
     property: keyof T,
     header: string,
     id: keyof T,
+    state?: "asc" | "desc" | null,
     subProperty?: keyof V,
     reverse?: boolean
   ) => {
-    const state = getNextState(header);
+    if (state === undefined) state = getNextState(header);
     setSorting({ column: header, state: state });
     if (state !== null) {
       return array.sort((a, b) => {

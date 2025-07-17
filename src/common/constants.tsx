@@ -16,6 +16,9 @@ export const queryKeys = {
   token: "token",
   user: "user",
   question: "question",
+  months: "months",
+  balancesMap: "balances-map",
+  salaryExpensesSummay: "salary-expense-summary",
 };
 
 export const mutationKeys = {
@@ -53,7 +56,7 @@ export const movementTypes: MovType[] = [
   },
   {
     id: 2,
-    name: "Mixed",
+    name: "Transfer",
     MovementIcon: <LuArrowDownUp />,
   },
 ];

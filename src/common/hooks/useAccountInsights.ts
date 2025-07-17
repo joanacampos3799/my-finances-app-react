@@ -10,7 +10,6 @@ import {
 import AccountList from "../../accounts/models/AccountList";
 import { accountTypes } from "../constants";
 import useDateFilter from "./useDateFilter";
-import Transaction from "../../transactions/model/Transaction";
 import Account, { DailyBalance } from "../../account/Model/Account";
 import DateObj from "../date";
 
@@ -22,7 +21,7 @@ const useAccountInsights = () => {
     const assetTypes = [
       "Savings",
       "Debit",
-      "Investment, ",
+      "Investment",
       "Food",
       "MultiCurrency",
       "Gift Card",
@@ -40,6 +39,7 @@ const useAccountInsights = () => {
   const calculateAssetsAndDebts = (
     accounts: AccountList[],
     period?: string,
+    month?: string,
     previous?: boolean
   ) => {
     let totalAssets = 0;
@@ -56,7 +56,8 @@ const useAccountInsights = () => {
         }
       });
     else {
-      const dates = getStartEndDates(period, previous);
+      if (month === undefined) month = format(new Date(), "MMMM yyyy");
+      const dates = getStartEndDates(period, month, previous);
       if (!dates || !dates.startDate || !dates.endDate) {
         totalAssets = 0;
         totalDebts = 0;
@@ -82,12 +83,16 @@ const useAccountInsights = () => {
 
     return { totalAssets, totalDebts };
   };
-  const calculateNetWorthChange = (accounts: AccountList[], period: string) => {
+  const calculateNetWorthChange = (
+    accounts: AccountList[],
+    period: string,
+    month: string
+  ) => {
     const { totalAssets: currentAssets, totalDebts: currentDebts } =
-      calculateAssetsAndDebts(accounts, period);
+      calculateAssetsAndDebts(accounts, period, month);
     const netWorth = currentAssets - currentDebts;
     const { totalAssets: previousAssets, totalDebts: previousDebts } =
-      calculateAssetsAndDebts(accounts, period, true);
+      calculateAssetsAndDebts(accounts, period, month, true);
 
     const previousNetWorth = previousAssets - previousDebts;
     if (previousNetWorth === 0) return "No previous data to compare.";
@@ -103,11 +108,15 @@ const useAccountInsights = () => {
     }
   };
 
-  function spendingTrend(accounts: AccountList[], period: string) {
+  function spendingTrend(
+    accounts: AccountList[],
+    period: string,
+    month: string
+  ) {
     let currentTotal = 0;
     let previousTotal = 0;
-    const dates = getStartEndDates(period);
-    const previousDates = getStartEndDates(period, true);
+    const dates = getStartEndDates(period, month);
+    const previousDates = getStartEndDates(period, month, true);
     accounts.forEach((account) => {
       const currentPeriodTransactions = account.Transactions.filter((f) => {
         const itemDate = parseDate(f.Date);
@@ -144,10 +153,14 @@ const useAccountInsights = () => {
     }
   }
 
-  const getProjectedSavings = (accounts: AccountList[], period: string) => {
+  const getProjectedSavings = (
+    accounts: AccountList[],
+    period: string,
+    month: string
+  ) => {
     let totalIncome = 0;
     let totalExpenses = 0;
-    const dates = getStartEndDates(period);
+    const dates = getStartEndDates(period, month);
     accounts.forEach((account) =>
       account.Transactions.filter((f) => {
         const itemDate = parseDate(f.Date);
@@ -187,9 +200,10 @@ const useAccountInsights = () => {
   function calculateDailyBalances(
     dailyBalances: DailyBalance[],
     period: string,
+    month: string,
     account: Account
   ): DailyBalance[] {
-    const dates = getStartEndDates(period);
+    const dates = getStartEndDates(period, month);
 
     let statementStartDate: Date | null = null;
     let statementEndDate: Date = new Date();
@@ -255,77 +269,6 @@ const useAccountInsights = () => {
    * @param period - The period string used to determine the date range.
    * @returns An array of DailyBalance objects representing the total balance across all accounts per day.
    */
-  function calculateMergedDailyBalances(
-    accounts: AccountList[], // Array of accounts, each containing a list of daily balances
-    period: string // Period in which to merge the daily balances
-  ): { date: string; balance: number }[] {
-    const dates = getStartEndDates(period);
-
-    // Create a map to store the combined balance for each day
-    const dailyBalancesMap: { [date: string]: number } = {};
-
-    // Iterate over each account
-    accounts.forEach((account) => {
-      const {
-        DailyBalances: dailyBalances,
-        Type: accountType,
-        StatementDate: statementDate,
-      } = account;
-
-      let statementStartDate: Date | null = null;
-      dates.endDate = new Date(); // The end date will always be the current date
-
-      if (accountType === 1 && statementDate) {
-        const parsedStatementDate = parseDate(statementDate);
-
-        // The current statement period starts from the last occurrence of statementDate
-        if (new Date() >= parsedStatementDate) {
-          statementStartDate = parsedStatementDate;
-        } else {
-          statementStartDate = subMonths(parsedStatementDate, 1);
-        }
-
-        // Set the end date to the next month's start
-        dates.endDate = addMonths(statementStartDate, 1);
-      }
-
-      // Set the start date based on the account-specific statement start date or the calculated period's start
-      const startDate =
-        accountType === 1 && statementStartDate
-          ? statementStartDate
-          : dates.startDate;
-
-      // Process daily balances for this account
-      dailyBalances.forEach((db) => {
-        const parsedDate = parseDate(db.date);
-        const formattedDate = format(parsedDate, "dd/MM/yyyy"); // Use date-fns format function
-
-        // If the date is within the specified range, sum the balance
-        if (parsedDate >= startDate && parsedDate <= dates.endDate) {
-          if (!dailyBalancesMap[formattedDate]) {
-            dailyBalancesMap[formattedDate] = 0;
-          }
-          dailyBalancesMap[formattedDate] += db.balance;
-        }
-      });
-    });
-
-    // Generate the final result, which will be an array of objects { date, balance }
-    const result: { date: string; balance: number }[] = [];
-
-    // Loop through each date in the period and ensure every date is represented
-    let currentDate = new Date(dates.startDate);
-    while (currentDate <= dates.endDate) {
-      const formattedDate = format(currentDate, "dd/MM/yyyy"); // Format as dd/MM/yyyy
-      result.push({
-        date: formattedDate,
-        balance: dailyBalancesMap[formattedDate] || 0, // If no balance for the date, set it to 0
-      });
-      currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
-    }
-
-    return result;
-  }
 
   return {
     getProjectedSavings,
@@ -335,7 +278,6 @@ const useAccountInsights = () => {
     calculateAssetsAndDebts,
     isAsset,
     isDebt,
-    calculateMergedDailyBalances,
   };
 };
 

@@ -10,19 +10,28 @@ import {
 import DonutChart from "../../common/components/DonutChart";
 import useInsights from "../../common/hooks/useInsights";
 import AccountList from "../models/AccountList";
-import GaugeChart from "../../common/components/GaugeChart";
-import { LuWalletCards } from "react-icons/lu";
+import {
+  LuArrowDownFromLine,
+  LuArrowUpFromLine,
+  LuLineChart,
+  LuPiggyBank,
+  LuWallet,
+  LuWalletCards,
+} from "react-icons/lu";
 import { TbCoins } from "react-icons/tb";
 import useAccountInsights from "../../common/hooks/useAccountInsights";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
+import useMonthStore from "../../common/hooks/useMonthStore";
+import ValueKPIComponent from "../../common/components/ValueKPIComponent";
 
 interface Props {
   accounts: AccountList[];
 }
 const AccountsKPIs = ({ accounts }: Props) => {
   const { period } = usePeriodStore();
+  const { month } = useMonthStore();
   const { calculateAccountTypeBalances } = useInsights();
-  const { calculateAssetsAndDebts, getProjectedSavings } = useAccountInsights();
+  const { getProjectedSavings } = useAccountInsights();
   const accountTypeBalances = calculateAccountTypeBalances(accounts);
   const donutData = Object.entries(accountTypeBalances).map(
     ([type, balance]) => ({
@@ -31,11 +40,34 @@ const AccountsKPIs = ({ accounts }: Props) => {
     })
   );
 
-  const { totalAssets, totalDebts } = calculateAssetsAndDebts(accounts, period);
-  const chartData = [
-    { label: "Assets", value: totalAssets },
-    { label: "Debts", value: totalDebts },
-  ];
+  const totalBalance = accounts.reduce((totalBalance, account) => {
+    if (account.Type !== 1) return (totalBalance += account.Balance);
+    else return totalBalance;
+  }, 0);
+
+  const totalSavings = accounts.reduce((totalSavings, account) => {
+    if (account.Type === 2) return (totalSavings += account.Balance);
+    else return totalSavings;
+  }, 0);
+
+  const totalInvestements = accounts.reduce((totalInv, account) => {
+    if (account.Type === 4) return (totalInv += account.Balance);
+    else return totalInv;
+  }, 0);
+
+  const totalExpenses = accounts.reduce((totalExpenses, account) => {
+    return (totalExpenses += account.Transactions.reduce((acc, transaction) => {
+      if (transaction.transactionType === 0) return acc + transaction.Amount;
+      else return acc;
+    }, 0));
+  }, 0);
+
+  const totalIncome = accounts.reduce((totalIncome, account) => {
+    return (totalIncome += account.Transactions.reduce((acc, transaction) => {
+      if (transaction.transactionType === 1) return acc + transaction.Amount;
+      else return acc;
+    }, 0));
+  }, 0);
 
   const topAccounts = accounts
     .sort((a, b) => b.Balance - a.Balance)
@@ -45,53 +77,41 @@ const AccountsKPIs = ({ accounts }: Props) => {
     <Flex flexDir={"row"} gap={2} p={"10px"} w="100%">
       <DonutChart data={donutData} caption={"Accounts Distribution"} />
 
-      <GaugeChart data={chartData} caption={"Assets vs Debts"} />
+      <Flex flexDir={"column"} gap={2} w="25%">
+        <ValueKPIComponent
+          title="Savings"
+          IconEl={LuPiggyBank}
+          value={totalSavings}
+        />
+        <ValueKPIComponent
+          title="Investements"
+          IconEl={LuLineChart}
+          value={totalInvestements}
+        />
+        <ValueKPIComponent
+          title="Total Expenses"
+          IconEl={LuArrowUpFromLine}
+          value={totalExpenses}
+        />
+
+        <ValueKPIComponent
+          title="Total Income"
+          IconEl={LuArrowDownFromLine}
+          value={totalIncome}
+        />
+      </Flex>
 
       <Flex flexDir={"column"} gap={2} w="25%">
-        <Flex
-          h={"full"}
-          bgColor={"white"}
-          direction={"row"}
-          borderRadius={"md"}
-          gap={2}
-          p={4}
-        >
-          <Flex alignItems={"center"}>
-            <Box
-              borderRadius={"full"}
-              bgColor={"teal.100"}
-              boxSize={10}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Icon
-                alignItems={"center"}
-                justifyContent={"center"}
-                color={"teal.700"}
-                boxSize={6}
-              >
-                <TbCoins />
-              </Icon>
-            </Box>
-          </Flex>
-
-          {/* Vertically center text and heading */}
-          <Flex direction={"column"} justifyContent={"center"}>
-            <Box>
-              <Text fontSize={"sm"} color={"gray.500"}>
-                Projected {period} Savings
-              </Text>
-              <Heading size={"2xl"}>
-                <FormatNumber
-                  value={getProjectedSavings(accounts, period)}
-                  style="currency"
-                  currency="eur"
-                />
-              </Heading>
-            </Box>
-          </Flex>
-        </Flex>
+        <ValueKPIComponent
+          title="Total Balance"
+          IconEl={LuWallet}
+          value={totalBalance}
+        />
+        <ValueKPIComponent
+          title={`Projected ${period} Savings`}
+          IconEl={TbCoins}
+          value={getProjectedSavings(accounts, period, month)}
+        />
 
         <Flex
           h={"full"}

@@ -27,7 +27,7 @@ const RecentTransactionsTable = ({ transactions }: Props) => {
       direction={"column"}
       w="full"
     >
-      <Flex direction={"row"} justifyContent={"space-between"} py={2}>
+      <Flex direction={"row"} justifyContent={"space-between"} mt={3}>
         <Heading color="teal.700">Recent Transactions</Heading>
         <Link href="/s/transactions" color={"teal.700"}>
           See all
@@ -36,13 +36,14 @@ const RecentTransactionsTable = ({ transactions }: Props) => {
 
       <Table.Root stickyHeader colorPalette={"teal"}>
         <Table.Header>
-          <Table.Row></Table.Row>
-          <Table.ColumnHeader w={"30px"}></Table.ColumnHeader>
-          <Table.ColumnHeader w={"100px"}>Name</Table.ColumnHeader>
-          <Table.ColumnHeader w={"100px"}>Amount</Table.ColumnHeader>
-          <Table.ColumnHeader w={"100px"}>Date</Table.ColumnHeader>
-          <Table.ColumnHeader w={"100px"}>Account</Table.ColumnHeader>
-          <Table.ColumnHeader w={"100px"}>Categories</Table.ColumnHeader>
+          <Table.Row>
+            <Table.ColumnHeader w={"30px"}></Table.ColumnHeader>
+            <Table.ColumnHeader w={"100px"}>Name</Table.ColumnHeader>
+            <Table.ColumnHeader w={"100px"}>Amount</Table.ColumnHeader>
+            <Table.ColumnHeader w={"100px"}>Date</Table.ColumnHeader>
+            <Table.ColumnHeader w={"100px"}>Account</Table.ColumnHeader>
+            <Table.ColumnHeader w={"100px"}>Categories</Table.ColumnHeader>
+          </Table.Row>
         </Table.Header>
         <Table.Body>
           {transactions.map((t) => (

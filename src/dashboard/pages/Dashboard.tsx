@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, HStack, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, HStack, Show, Text } from "@chakra-ui/react";
 
 import TimePeriodMenu from "../../common/components/TimePeriodMenu";
 import NewTransactionDrawer from "../../transactions/components/NewTransactionDrawer";
@@ -14,7 +14,7 @@ import RecentTransactionsTable from "../components/RecentTransactionsTable";
 import AccountList from "../../accounts/models/AccountList";
 import useAccounts from "../../accounts/hooks/useAccounts";
 import useAccountInsights from "../../common/hooks/useAccountInsights";
-import ValueKPIComponent from "../components/ValueKPIComponent";
+import ValueKPIComponent from "../../common/components/ValueKPIComponent";
 import {
   LuArrowDownFromLine,
   LuArrowUpFromLine,
@@ -25,9 +25,18 @@ import {
 import { useMemo } from "react";
 import HorizontalBarChart from "../../common/components/HorizontalBarChart";
 import LoadingPage from "../../common/components/LoadingPage";
+import MonthlyMenu from "../../common/components/MonthlyMenu";
+import useMonthStore from "../../common/hooks/useMonthStore";
+import useBalancesMap from "../hooks/useBalancesMap";
+import useDateFilter from "../../common/hooks/useDateFilter";
+import { format } from "date-fns";
+import DonutChart from "../../common/components/DonutChart";
+import useSalaryExpensesSummary from "../hooks/useSalaryExpensesSummary";
 
 export default function DashboardPage() {
   const { period, setPeriod } = usePeriodStore();
+  const { month, setMonth } = useMonthStore();
+  const { getStartEndDates } = useDateFilter();
   const { user } = useAuthStore();
   const { transactions, isLoading: loadingTrans } = useTransactions();
   const pendingData = useMutationState({
@@ -45,12 +54,11 @@ export default function DashboardPage() {
 
   const helper = new HelperEntity<Transaction>();
   if (pendingTransaction) {
-    pendingTransaction.categories = [];
     const { tData } = helper.getPendingData(transactions, pendingTransaction);
     transData = tData;
   }
   const recentTransaction = transData?.slice(-5).reverse();
-  const { isAsset, calculateMergedDailyBalances } = useAccountInsights();
+  const { isAsset } = useAccountInsights();
   const { accounts, isLoading: loadingAcc } = useAccounts((accounts) =>
     accounts.filter((acc) => isAsset(acc.Type))
   );
@@ -73,10 +81,13 @@ export default function DashboardPage() {
     accountData = tData;
   }
 
-  const balanceHistoryData = calculateMergedDailyBalances(
-    accountData,
-    period
-  ).map((entry) => ({
+  const { startDate, endDate } = getStartEndDates(period, month);
+  const balancesMap = useBalancesMap(
+    format(startDate, "dd/MM/yyyy"),
+    format(endDate, "dd/MM/yyyy")
+  ).balances;
+  const balancesMapMemo = useMemo(() => balancesMap?.data, [balancesMap]);
+  const balanceHistoryData = balancesMapMemo?.map((entry) => ({
     x: entry.date,
     y: entry.balance,
   }));
@@ -85,44 +96,17 @@ export default function DashboardPage() {
     return (totalBalance += account.Balance);
   }, 0);
 
-  const totalSavings = accountData.reduce((totalSavings, account) => {
-    if (account.Type === 2) return (totalSavings += account.Balance);
-    else return totalSavings;
-  }, 0);
-
-  const totalInvestements = accountData.reduce((totalInv, account) => {
-    if (account.Type === 4) return (totalInv += account.Balance);
-    else return totalInv;
-  }, 0);
-
-  const totalExpenses = accountData.reduce((totalExpenses, account) => {
-    return (totalExpenses += account.Transactions.reduce((acc, transaction) => {
-      if (transaction.transactionType === 0) return acc + transaction.Amount;
-      else return acc;
-    }, 0));
-  }, 0);
-
-  const totalIncome = accountData.reduce((totalIncome, account) => {
-    return (totalIncome += account.Transactions.reduce((acc, transaction) => {
-      if (transaction.transactionType === 1) return acc + transaction.Amount;
-      else return acc;
-    }, 0));
-  }, 0);
-
   const categorySpending = useMemo(() => {
     const categoryMap: Record<string, { amount: number; color: string }> = {};
     transData.forEach((transaction) => {
-      const categories = transaction.categories.filter(
-        (cat) => cat.CategoryType == 0
-      );
-      if (categories.length > 0) {
-        const splitAmount = transaction.Amount / categories.length;
-        categories.forEach((category) => {
-          if (!categoryMap[category.Name]) {
-            categoryMap[category.Name] = { amount: 0, color: category.Color };
-          }
-          categoryMap[category.Name].amount += splitAmount;
-        });
+      if (transaction.category.CategoryType === 0) {
+        if (!categoryMap[transaction.category.Name]) {
+          categoryMap[transaction.category.Name] = {
+            amount: 0,
+            color: transaction.category.Color,
+          };
+        }
+        categoryMap[transaction.category.Name].amount += transaction.Amount;
       }
     });
     return Object.entries(categoryMap)
@@ -130,6 +114,16 @@ export default function DashboardPage() {
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 3);
   }, [transData]);
+
+  const { summary } = useSalaryExpensesSummary(
+    format(startDate, "dd/MM/yyyy"),
+    format(endDate, "dd/MM/yyyy")
+  );
+
+  const data = [
+    { value: summary?.totalExpenses, label: "Spent", color: "#f44336" }, // red
+    { value: summary?.remaining, label: "Remaining", color: "#e0e0e0" }, // light gray as "background"
+  ];
   if (
     loadingAcc ||
     !accounts.isValueSet ||
@@ -160,7 +154,9 @@ export default function DashboardPage() {
             justifyItems={"flex-end"}
           >
             <TimePeriodMenu period={period} setPeriod={setPeriod} />
-
+            <Show when={period === "Monthly"}>
+              <MonthlyMenu month={month} setMonth={setMonth} />
+            </Show>
             <NewTransactionDrawer />
           </Flex>
         </HStack>
@@ -169,7 +165,7 @@ export default function DashboardPage() {
         <Flex direction={"column"} w={"70%"} gap={"3"}>
           <Flex h={"50%"}>
             <LineChartComponent
-              data={balanceHistoryData}
+              data={balanceHistoryData ?? []}
               caption={"Balances overview"}
               width={600}
             />
@@ -184,26 +180,10 @@ export default function DashboardPage() {
             IconEl={LuWallet}
             value={totalBalance}
           />
-          <ValueKPIComponent
-            title="Savings"
-            IconEl={LuPiggyBank}
-            value={totalSavings}
-          />
-          <ValueKPIComponent
-            title="Investements"
-            IconEl={LuLineChart}
-            value={totalInvestements}
-          />
-          <ValueKPIComponent
-            title="Total Expenses"
-            IconEl={LuArrowUpFromLine}
-            value={totalExpenses}
-          />
-
-          <ValueKPIComponent
-            title="Total Income"
-            IconEl={LuArrowDownFromLine}
-            value={totalIncome}
+          <DonutChart
+            key={"Availablekpi"}
+            data={data}
+            caption={"Available Funds"}
           />
           <HorizontalBarChart
             width={300}

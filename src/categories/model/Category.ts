@@ -12,4 +12,5 @@ export default interface Category {
   Transactions: Transaction[];
   Notes?: string;
   deleted?: boolean;
+  isSalary: boolean;
 }

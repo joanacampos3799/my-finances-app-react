@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLoginData } from "../../auth/contexts/AuthContext";
 import useCategories from "../../categories/hooks/useCategories";
-import { EntitySelected, HelperEntity } from "../../common/helper";
+import { HelperEntity } from "../../common/helper";
 import Category from "../../categories/model/Category";
 import useAddTransaction from "../hooks/useAddTransaction";
 import DrawerComponent from "../../common/components/DrawerComponent";
@@ -10,7 +10,6 @@ import { Box, Input, Show, Stack, Textarea } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field";
 import NumberInput from "../../common/components/NumberInput";
 import RadioMenu from "../../common/components/RadioMenu";
-import CheckBoxMenu from "../../common/components/CheckBoxMenu";
 import { Switch } from "../../components/ui/switch";
 import { LuCheck, LuX } from "react-icons/lu";
 import useForm from "../../common/hooks/useForm";
@@ -26,26 +25,20 @@ import useDateFilter from "../../common/hooks/useDateFilter";
 interface Props {
   transaction?: Transaction;
   accountId?: number;
-  categoriesId?: number[];
+  categoryId?: number;
   creditAccountId?: number;
 }
 
 const NewTransactionDrawer = ({
   transaction,
   accountId,
-  categoriesId,
+  categoryId,
   creditAccountId,
 }: Props) => {
   const { userId } = useLoginData();
   const { categories } = useCategories();
   const { accounts } = useAccounts();
   const { parseDate } = useDateFilter();
-  const [initialState, setInitialState] = useState<EntitySelected<Category>[]>(
-    []
-  );
-  const [allCategories, setAllCategories] = useState<
-    EntitySelected<Category>[]
-  >([]);
 
   const ref = useRef(null);
 
@@ -62,7 +55,11 @@ const NewTransactionDrawer = ({
         ? "" + transaction.accountId
         : "",
     Name: transaction?.Name ?? "",
-    selectedCategories: initialState ?? [],
+    selectedCategory: transaction?.category?.Id
+      ? "" + transaction?.category?.Id
+      : categoryId
+        ? "" + categoryId
+        : "",
     isCreditCardPayment:
       transaction != null
         ? transaction.isCreditCardPayment
@@ -73,34 +70,17 @@ const NewTransactionDrawer = ({
         : creditAccountId
           ? "" + creditAccountId
           : undefined,
+    selectedTransferAccount:
+      transaction != null && transaction.transferAccountId
+        ? "" + transaction.transferAccountId
+        : undefined,
   });
 
-  const [hasInitializedCategories, setHasInitializedCategories] =
-    useState(false);
   const accountList = useMemo(() => accounts.data ?? [], [accounts]);
+  const categoryList = useMemo(() => categories.data ?? [], [categories]);
+  const [categoriesData, setCategoriesData] =
+    useState<Category[]>(categoryList);
 
-  useEffect(() => {
-    if (!categories?.data.length || hasInitializedCategories) return;
-
-    const helper = new HelperEntity<Category>();
-    let init;
-
-    if (transaction) {
-      init = helper.getMappedCheckboxEntity(
-        categories.data,
-        transaction.categories.map((cat) => cat.Id!)
-      );
-    } else if (categoriesId) {
-      init = helper.getMappedCheckboxEntity(categories.data, categoriesId);
-    } else {
-      init = helper.getMappedCheckboxEntity(categories.data);
-    }
-
-    setInitialState(init);
-    setAllCategories(init);
-    handleChange("selectedCategories", init);
-    setHasInitializedCategories(true);
-  }, [categories, transaction, categoriesId, hasInitializedCategories]);
   const memoizedAccountId = useMemo(() => accountId, [accountId]);
   useEffect(() => {
     if (memoizedAccountId !== undefined) {
@@ -110,21 +90,18 @@ const NewTransactionDrawer = ({
 
   useEffect(() => {
     if (
-      !allCategories.length ||
+      !categoryList.length ||
       +values.selectedTT < 0 ||
       +values.selectedTT > 1
     )
       return;
 
-    const filtered = allCategories.filter(
-      (cat) =>
-        cat.data.CategoryType === +values.selectedTT ||
-        cat.data.CategoryType === 2
+    const filtered = categoryList.filter(
+      (cat) => cat.CategoryType === +values.selectedTT
     );
+    setCategoriesData(filtered);
+  }, [values.selectedTT, categoryList]);
 
-    setInitialState(filtered);
-    handleChange("selectedCategories", filtered);
-  }, [values.selectedTT, allCategories]);
   const addTransaction = useAddTransaction(() => resetForm());
   const updateTransaction = useUpdateTransaction(() => resetForm());
 
@@ -133,6 +110,10 @@ const NewTransactionDrawer = ({
   );
   const creditSelect = new HelperEntity<AccountList>().getMappedRadioEntity(
     accountList.filter((acc) => acc.Type === 1) ?? []
+  );
+
+  const categoriesSelect = new HelperEntity<Category>().getMappedRadioEntity(
+    categoriesData
   );
 
   const isGiftCard =
@@ -163,12 +144,13 @@ const NewTransactionDrawer = ({
             Date: format(values.date, "dd/MM/yyyy"),
             Description: values.description,
             accountId: +values.selectedAccount,
-            categories: values.selectedCategories
-              .filter((cat) => cat.checked)
-              .map((cat) => cat.data.Id!!),
+            category: +values.selectedCategory,
             isCreditCardPayment: values.isCreditCardPayment,
             creditCardId: values.selectedCreditCard
               ? +values.selectedCreditCard
+              : undefined,
+            transferAccountId: values.selectedTransferAccount
+              ? +values.selectedTransferAccount
               : undefined,
           };
 
@@ -209,25 +191,46 @@ const NewTransactionDrawer = ({
           <Box paddingTop="5px">
             <RadioMenu
               hasArrow
-              data={movementTypes.filter((m) =>
-                isGiftCard ? m.id === 0 : m.id !== 2
-              )}
+              data={movementTypes.filter((m) => {
+                if (isGiftCard) return m.id === 0;
+                else return m;
+              })}
               placeholder="Transaction Type"
               selectedId={values.selectedTT}
               setSelectedId={(val) => handleChange("selectedTT", val)}
               variant={"outline"}
             />
           </Box>
-
-          <Box>
-            <Field label="Choose the categories">
-              <CheckBoxMenu
-                name={"Category"}
-                items={values.selectedCategories ?? []}
-                setItems={(val) => handleChange("selectedCategories", val)}
-              />
-            </Field>
-          </Box>
+          <Show when={+values.selectedTT !== 2}>
+            <Box>
+              <Field label="Choose the Category">
+                <RadioMenu
+                  placeholder={"Category"}
+                  data={categoriesSelect}
+                  selectedId={values.selectedCategory}
+                  setSelectedId={(val) => handleChange("selectedCategory", val)}
+                  hasArrow
+                  variant={"outline"}
+                />
+              </Field>
+            </Box>
+          </Show>
+          <Show when={+values.selectedTT === 2}>
+            <Box>
+              <Field label="Transfer Account">
+                <RadioMenu
+                  hasArrow
+                  placeholder="Transfer account"
+                  data={accountsSelect}
+                  selectedId={values.selectedTransferAccount ?? ""}
+                  setSelectedId={(value) =>
+                    handleChange("selectedTransferAccount", value)
+                  }
+                  variant="outline"
+                />
+              </Field>
+            </Box>
+          </Show>
         </Stack>
 
         <Stack>

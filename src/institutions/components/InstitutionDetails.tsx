@@ -14,18 +14,21 @@ import NewAccountDrawer from "../../accounts/components/NewAccountDrawer";
 import useAccountInsights from "../../common/hooks/useAccountInsights";
 import { institutionTypes } from "../../common/constants";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
+import useMonthStore from "../../common/hooks/useMonthStore";
 
 interface Props {
   institution: InstitutionList;
 }
 const InstitutionDetails = ({ institution }: Props) => {
   const { period } = usePeriodStore();
+  const { month } = useMonthStore();
   const { calculateNetWorthChange, spendingTrend } = useAccountInsights();
   const { getTransactionsTotalAmount } = useInsights();
 
   const totalSpent = institution.Accounts.reduce(
     (total, acc) =>
-      total + getTransactionsTotalAmount(acc.Transactions, undefined, 0),
+      total +
+      getTransactionsTotalAmount(acc.Transactions, undefined, undefined, 0),
     0
   );
   const initialBalance = institution.Accounts.reduce(
@@ -34,7 +37,8 @@ const InstitutionDetails = ({ institution }: Props) => {
   );
   const totalIncome = institution.Accounts.reduce(
     (total, acc) =>
-      total + getTransactionsTotalAmount(acc.Transactions, undefined, 1),
+      total +
+      getTransactionsTotalAmount(acc.Transactions, undefined, undefined, 1),
     0
   );
   return (
@@ -109,9 +113,11 @@ const InstitutionDetails = ({ institution }: Props) => {
 
       <Separator />
       <Flex direction={"column"} mt={3} gap={3}>
-        <Text>{calculateNetWorthChange(institution.Accounts, period)}</Text>
+        <Text>
+          {calculateNetWorthChange(institution.Accounts, period, month)}
+        </Text>
 
-        <Text>{spendingTrend(institution.Accounts, period)}</Text>
+        <Text>{spendingTrend(institution.Accounts, period, month)}</Text>
       </Flex>
       <AccountsTable fromInstitution accounts={institution.Accounts} />
     </DialogComponent>

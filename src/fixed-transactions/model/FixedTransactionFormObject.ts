@@ -9,5 +9,5 @@ export default interface FixedTransactionFormObject {
   selectedAccount: string;
   paymentDay: number;
   periodicity: number;
-  selectedCategories: EntitySelected<Category>[];
+  selectedCategoryId: string;
 }

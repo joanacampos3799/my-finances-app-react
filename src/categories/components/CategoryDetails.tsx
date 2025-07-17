@@ -18,6 +18,7 @@ import { useUpdateCategory } from "../hooks/useUpdateCategory";
 import useInsights from "../../common/hooks/useInsights";
 import { Tag } from "../../components/ui/tag";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
+import useMonthStore from "../../common/hooks/useMonthStore";
 
 interface Props {
   category: Category;
@@ -28,6 +29,7 @@ interface Props {
 
 const CategoryDetails = ({ category, total }: Props) => {
   const { period } = usePeriodStore();
+  const { month } = useMonthStore();
   const [notes, setNotes] = useState(category.Notes ?? undefined);
   const { getTransactionsAverageAmount, budgetInsight, spendingTrendInsight } =
     useInsights();
@@ -43,7 +45,7 @@ const CategoryDetails = ({ category, total }: Props) => {
         category.Name +
         `'${category.Name.endsWith("s") ? "" : "s"} Transactions`
       }
-      footer={<NewTransactionDrawer categoriesId={[category.Id!!]} />}
+      footer={<NewTransactionDrawer categoryId={category.Id} />}
     >
       <Flex direction={"column"} gap={5} mb={3}>
         <Flex direction={"row"} gap={10}>
@@ -124,7 +126,9 @@ const CategoryDetails = ({ category, total }: Props) => {
         <Show when={category.Budget}>
           <Text>{budgetInsight(total, category.Budget!!)}</Text>
         </Show>
-        <Text>{spendingTrendInsight(category.Transactions, period)}</Text>
+        <Text>
+          {spendingTrendInsight(category.Transactions, period, month)}
+        </Text>
       </Flex>
       <Editable.Root
         mt={3}

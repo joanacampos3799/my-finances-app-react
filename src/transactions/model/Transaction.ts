@@ -10,10 +10,11 @@ export default interface Transaction {
   accountId: number;
   accountName: string;
   Amount: number;
-  categories: Category[];
+  category: Category;
   userId: UUID;
   transactionType: number;
   isCreditCardPayment: boolean;
   creditCardId?: number;
   deleted?: boolean;
+  transferAccountId?: number;
 }

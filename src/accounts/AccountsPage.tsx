@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Tabs } from "@chakra-ui/react";
+import { Box, Flex, HStack, Show, Tabs } from "@chakra-ui/react";
 import { queryKeys } from "../common/constants";
 import { useMutationState } from "@tanstack/react-query";
 import { HelperEntity } from "../common/helper";
@@ -14,9 +14,12 @@ import usePeriodStore from "../common/hooks/usePeriodStore";
 import TimePeriodMenu from "../common/components/TimePeriodMenu";
 import React from "react";
 import LoadingPage from "../common/components/LoadingPage";
+import MonthlyMenu from "../common/components/MonthlyMenu";
+import useMonthStore from "../common/hooks/useMonthStore";
 
 const AccountsPage = React.memo(() => {
   const { period, setPeriod } = usePeriodStore();
+  const { month, setMonth } = useMonthStore();
   const { accounts, isLoading } = useAccounts();
 
   const pendingAccountData = useMutationState({
@@ -65,6 +68,9 @@ const AccountsPage = React.memo(() => {
             justifyItems={"flex-end"}
           >
             <TimePeriodMenu period={period} setPeriod={setPeriod} />
+            <Show when={period === "Monthly"}>
+              <MonthlyMenu month={month} setMonth={setMonth} />
+            </Show>
             <NewAccountDrawer />
           </Flex>
         </HStack>

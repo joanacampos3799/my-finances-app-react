@@ -17,13 +17,15 @@ import StackedBarChart from "../../common/components/StackedBarChart";
 import useAccountStore from "../hooks/useAccountStore";
 import Category from "../../categories/model/Category";
 import DateObj from "../../common/date";
+import useMonthStore from "../../common/hooks/useMonthStore";
 
 const ExpensesChart = () => {
   const { period } = usePeriodStore();
+  const { month } = useMonthStore();
   const { account } = useAccountStore();
   const { getStartEndDates, parseDate } = useDateFilter();
 
-  const dates = getStartEndDates(period);
+  const dates = getStartEndDates(period, month);
   let statementStartDate: Date | null = null;
   if (account.Type === 1 && account.StatementDate) {
     const statementDate = parseDate(account.StatementDate);
@@ -42,9 +44,10 @@ const ExpensesChart = () => {
     }
     return txDate >= dates.startDate && txDate <= dates.endDate;
   });
-  const categories = transactions.flatMap((t) => t.categories || []);
+  const categories = transactions
+    .map((t) => t.category)
+    .filter((t) => t != null);
   const uniqueMap = new Map();
-
   for (const category of categories) {
     const key = category.Name.trim().toLowerCase();
     if (!uniqueMap.has(key)) {
@@ -153,14 +156,14 @@ const groupTransactionsByWeek = (
       groupedData[weekKey] = {};
     }
 
-    transaction.categories
-      .filter((cat) => cat.CategoryType !== 1)
-      .forEach((category) => {
-        if (!groupedData[weekKey][category.Name]) {
-          groupedData[weekKey][category.Name] = 0;
-        }
-        groupedData[weekKey][category.Name] += Math.abs(transaction.Amount);
-      });
+    if (transaction.category && transaction.category.CategoryType === 0) {
+      if (!groupedData[weekKey][transaction.category.Name]) {
+        groupedData[weekKey][transaction.category.Name] = 0;
+      }
+      groupedData[weekKey][transaction.category.Name] += Math.abs(
+        transaction.Amount
+      );
+    }
   });
 
   // Ensure all weeks in the range are initialized
@@ -176,9 +179,9 @@ const groupTransactionsByWeek = (
 
     // Initialize missing categories to 0
     uniqueCategories
-      .filter((cat) => cat.CategoryType !== 1)
+      .filter((cat) => cat.CategoryType === 0)
       .forEach((category) => {
-        if (category.CategoryType !== 1)
+        if (category.CategoryType === 0)
           if (!groupedWeeks[weekKey][category.Name]) {
             groupedWeeks[weekKey][category.Name] = 0;
           }
@@ -220,13 +223,11 @@ const groupTransactionsByDay = (
       groupedData[dayKey] = {};
     }
 
-    transaction.categories
-      .filter((cat) => cat.CategoryType !== 1)
-      .forEach((category) => {
-        groupedData[dayKey][category.Name] =
-          (groupedData[dayKey][category.Name] || 0) +
-          Math.abs(transaction.Amount);
-      });
+    if (transaction.category && transaction.category.CategoryType === 0) {
+      groupedData[dayKey][transaction.category.Name] =
+        (groupedData[dayKey][transaction.category.Name] || 0) +
+        Math.abs(transaction.Amount);
+    }
   });
 
   const daysInRange = eachDayOfInterval({ start: startDate, end: endDate });
@@ -280,13 +281,11 @@ const groupTransactionsByMonth = (
       groupedData[monthKey] = {};
     }
 
-    transaction.categories
-      .filter((cat) => cat.CategoryType !== 1)
-      .forEach((category) => {
-        groupedData[monthKey][category.Name] =
-          (groupedData[monthKey][category.Name] || 0) +
-          Math.abs(transaction.Amount);
-      });
+    if (transaction.category && transaction.category.CategoryType === 0) {
+      groupedData[monthKey][transaction.category.Name] =
+        (groupedData[monthKey][transaction.category.Name] || 0) +
+        Math.abs(transaction.Amount);
+    }
   });
 
   const monthsInRange = eachMonthOfInterval({ start: startDate, end: endDate });

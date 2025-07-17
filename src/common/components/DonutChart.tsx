@@ -2,7 +2,6 @@ import { Center, Flex, FormatNumber, Heading } from "@chakra-ui/react";
 import { PieChart } from "@mui/x-charts/PieChart";
 export interface PieObject {
   label: string;
-
   value: number;
   color?: string;
 }
@@ -18,7 +17,7 @@ const DonutChart = ({ data, caption, heading }: Props) => {
 
   return (
     <>
-      {data.length > 0 && total > 0 && (
+      {data.length > 0 && (
         <Flex
           direction={"column"}
           justifyContent={"center"}

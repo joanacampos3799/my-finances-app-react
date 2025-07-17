@@ -28,11 +28,6 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
   const ref = useRef<HTMLInputElement>(null);
   const { categories } = useCategories();
   const { accounts } = useAccounts();
-  const [initialState, setInitialState] =
-    useState<EntitySelected<Category>[]>();
-  const [allCategories, setAllCategories] = useState<
-    EntitySelected<Category>[]
-  >([]);
   const { values, handleChange, resetForm } =
     useForm<FixedTransactionFormObject>({
       Name: fixedTransaction ? fixedTransaction.Name : "",
@@ -44,7 +39,9 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
       selectedTT: fixedTransaction
         ? "" + movementTypes[fixedTransaction.transactionType].id
         : "-1",
-      selectedCategories: initialState ?? [],
+      selectedCategoryId: fixedTransaction
+        ? "" + fixedTransaction.category.Id
+        : "",
     });
 
   const accountList = useMemo(() => accounts.data ?? [], [accounts]);
@@ -52,37 +49,26 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
     accountList
   );
 
+  const categoryList = useMemo(() => categories.data ?? [], [categories]);
+  const [categoriesData, setCategoriesData] =
+    useState<Category[]>(categoryList);
   useEffect(() => {
-    if (categories?.data.length && allCategories.length === 0) {
-      const helper = new HelperEntity<Category>();
-      let init;
+    if (
+      !categoryList.length ||
+      +values.selectedTT < 0 ||
+      +values.selectedTT > 1
+    )
+      return;
 
-      if (fixedTransaction) {
-        init = helper.getMappedCheckboxEntity(
-          categories.data,
-          fixedTransaction.categories.map((cat) => cat.Id!)
-        );
-      } else {
-        init = helper.getMappedCheckboxEntity(categories.data);
-      }
+    const filtered = categoryList.filter(
+      (cat) => cat.CategoryType === +values.selectedTT
+    );
+    setCategoriesData(filtered);
+  }, [values.selectedTT, categoryList]);
 
-      setInitialState(init);
-      setAllCategories(init);
-      handleChange("selectedCategories", init);
-    }
-  }, [accounts, categories]);
-
-  useEffect(() => {
-    if (+values.selectedTT >= 0 && +values.selectedTT < 2) {
-      const filtered = allCategories.filter(
-        (cat) =>
-          cat.data.CategoryType === +values.selectedTT ||
-          cat.data.CategoryType === 2
-      );
-      setInitialState(filtered);
-      handleChange("selectedCategories", filtered);
-    }
-  }, [values.selectedTT, allCategories]);
+  const categoriesSelect = new HelperEntity<Category>().getMappedRadioEntity(
+    categoriesData
+  );
 
   const addFixedTransaction = useAddFixedTransaction(() => resetForm());
   const updateFixedTransaction = useUpdateFixedTransaction();
@@ -112,9 +98,7 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
               PaymentDay: values.paymentDay,
               Periodicity: values.periodicity,
               active: fixedTransaction.active,
-              categories: values.selectedCategories
-                .filter((cat) => cat.checked)
-                .map((cat) => cat.data.Id!!),
+              category: +values.selectedCategoryId,
               account: +values.selectedAccount,
             });
           } else {
@@ -127,9 +111,7 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
               PaymentDay: values.paymentDay,
               Periodicity: values.periodicity,
               active: true,
-              categories: values.selectedCategories
-                .filter((cat) => cat.checked)
-                .map((cat) => cat.data.Id!!),
+              category: +values.selectedCategoryId,
               account: +values.selectedAccount,
             });
           }
@@ -178,13 +160,14 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
             variant={"outline"}
           />
 
-          <Field label="Choose the categories">
-            <CheckBoxMenu
-              name={"Category"}
-              items={values.selectedCategories ?? []}
-              setItems={(val) => handleChange("selectedCategories", val)}
-            />
-          </Field>
+          <RadioMenu
+            hasArrow
+            data={categoriesSelect}
+            placeholder="Category"
+            selectedId={values.selectedCategoryId}
+            setSelectedId={(v) => handleChange("selectedCategoryId", v)}
+            variant={"outline"}
+          />
 
           <HStack>
             <NumberInput

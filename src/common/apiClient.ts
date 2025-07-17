@@ -39,9 +39,33 @@ class APIClient<T> {
       .then((res) => res.data);
   };
 
+  getBalances = async (
+    userId: UUID,
+    userToken: string,
+    startDate: string,
+    endDate: string
+  ) => {
+    return await axiosInstance
+      .get<FetchResponse<T>>(
+        this.endpoint + "?startDate=" + startDate + "&endDate=" + endDate,
+        {
+          headers: getHeaders(userId, userToken),
+        }
+      )
+      .then((res) => res.data);
+  };
+
   get = (id: number | string, userId: UUID, userToken: string) => {
     return axiosInstance
       .get<T>(this.endpoint + "/" + id, {
+        headers: getHeaders(userId, userToken),
+      })
+      .then((res) => res.data);
+  };
+
+  getQuery = (userId: UUID, userToken: string, query: string) => {
+    return axiosInstance
+      .get<T>(this.endpoint + query, {
         headers: getHeaders(userId, userToken),
       })
       .then((res) => res.data);
@@ -54,6 +78,7 @@ class APIClient<T> {
   };
 
   post = (data: T, userId: UUID, userToken: string) => {
+    console.log(data);
     return axiosInstance
       .post<T>(this.endpoint, data, {
         headers: getHeaders(userId, userToken),

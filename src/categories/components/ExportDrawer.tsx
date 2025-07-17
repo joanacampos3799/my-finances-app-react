@@ -18,11 +18,13 @@ import DatePicker from "../../common/components/DatePicker";
 import RadioMenu from "../../common/components/RadioMenu";
 import { movementTypes } from "../../common/constants";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
+import useMonthStore from "../../common/hooks/useMonthStore";
 
 const ExportDrawer = () => {
   const { period } = usePeriodStore();
+  const { month } = useMonthStore();
   const { getStartEndDates } = useDateFilter();
-  const { startDate: start, endDate: end } = getStartEndDates(period);
+  const { startDate: start, endDate: end } = getStartEndDates(period, month);
 
   const [startDate, setStartDate] = useState<Date>(start);
   const [endDate, setEndDate] = useState<Date>(end);
@@ -59,7 +61,10 @@ const ExportDrawer = () => {
             <RadioMenu
               width="30%"
               minW="10rem"
-              data={[...movementTypes, { id: -1, name: "All" }]}
+              data={[
+                ...movementTypes.filter((cat) => cat.id !== 2),
+                { id: -1, name: "All" },
+              ]}
               selectedId={type}
               setSelectedId={setType}
               hasArrow
