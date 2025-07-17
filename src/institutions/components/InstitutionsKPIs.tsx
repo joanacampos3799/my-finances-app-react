@@ -14,11 +14,13 @@ import BarChartComponent from "../../common/components/BarChartComponent";
 import { TbCoins, TbReceipt } from "react-icons/tb";
 import useAccountInsights from "../../common/hooks/useAccountInsights";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
+import useMonthStore from "../../common/hooks/useMonthStore";
 interface Props {
   institutions: InstitutionList[];
 }
 const InstitutionsKPIs = ({ institutions }: Props) => {
   const { period } = usePeriodStore();
+  const { month } = useMonthStore();
   const { getTransactionsTotalAmount } = useInsights();
   const { isAsset, calculateAssetsAndDebts } = useAccountInsights();
   const topInstitutions = [...institutions]
@@ -28,12 +30,12 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
   const chartData = institutions.map((institution) => {
     const totalSpent = institution.Accounts.reduce(
       (total, acc) =>
-        total + getTransactionsTotalAmount(acc.Transactions, period, 0),
+        total + getTransactionsTotalAmount(acc.Transactions, period, month, 0),
       0
     );
     const totalIncome = institution.Accounts.reduce(
       (total, acc) =>
-        total + getTransactionsTotalAmount(acc.Transactions, period, 1),
+        total + getTransactionsTotalAmount(acc.Transactions, period, month, 1),
       0
     );
 

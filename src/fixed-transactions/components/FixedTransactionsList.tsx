@@ -39,7 +39,7 @@ const FixedTransactionsList = ({ fixedTransactions }: Props) => {
       PaymentDay: element.PaymentDay,
       Periodicity: element.Periodicity,
       active: !element.active,
-      categories: element.categories.map((cat) => cat.Id!!),
+      category: element.category.Id!!,
       account: element.Account,
     });
   };
@@ -104,19 +104,19 @@ const FixedTransactionsList = ({ fixedTransactions }: Props) => {
                   sortingState={getSortingState()}
                 />
                 <TableHeader
-                  label="Categories"
+                  label="Category"
                   w={"100px"}
                   sortFn={() => {
                     setSortedFx(
                       sortString(
                         fixedTransactions,
-                        "categories",
-                        "Categories",
+                        "category",
+                        "Category",
                         "Id"
                       )
                     );
                   }}
-                  isSorting={isSorting("categories")}
+                  isSorting={isSorting("category")}
                   sortingState={getSortingState()}
                 />
                 <Table.ColumnHeader w="80px" textAlign={"end"}>

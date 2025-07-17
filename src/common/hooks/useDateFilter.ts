@@ -1,4 +1,4 @@
-import { endOfWeek, startOfWeek } from "date-fns";
+import { endOfWeek, parse, startOfWeek } from "date-fns";
 import DateObj from "../date";
 
 const useDateFilter = () => {
@@ -6,7 +6,11 @@ const useDateFilter = () => {
     return new Date(date.year, date.month - 1, date.day);
   };
 
-  const getStartEndDates = (period: string, previous?: boolean) => {
+  const getStartEndDates = (
+    period: string,
+    month: string,
+    previous?: boolean
+  ) => {
     const currentDate = new Date();
 
     switch (period.toLowerCase()) {
@@ -16,15 +20,18 @@ const useDateFilter = () => {
           endDate: endOfWeek(currentDate),
         };
       case "monthly":
+        const monthSplit = month.split(" ");
+        const parsedDate = parse(monthSplit[0], "MMMM", new Date());
+        const monthNumber = parsedDate.getMonth();
         return {
           startDate: new Date(
-            currentDate.getFullYear(),
-            previous ? currentDate.getMonth() - 1 : currentDate.getMonth(),
+            +monthSplit[1],
+            previous ? monthNumber - 1 : monthNumber,
             1
           ),
           endDate: new Date(
-            currentDate.getFullYear(),
-            previous ? currentDate.getMonth() : currentDate.getMonth() + 1,
+            +monthSplit[1],
+            previous ? monthNumber : monthNumber + 1,
             0
           ),
         };

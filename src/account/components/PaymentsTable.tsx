@@ -23,7 +23,6 @@ const PaymentsTable = () => {
   );
   const [page, setPage] = useState(1);
   const [payCount, setPayCount] = useState(account.CreditCardPayments?.length);
-  console.log(account);
   useEffect(() => {
     setPayCount(account.CreditCardPayments?.length);
     setSortedPayments(

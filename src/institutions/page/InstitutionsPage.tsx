@@ -1,4 +1,4 @@
-import { Box, Flex, HStack } from "@chakra-ui/react";
+import { Box, Flex, HStack, Show } from "@chakra-ui/react";
 import InstitutionsKPIs from "../components/InstitutionsKPIs";
 import InstitutionsList from "../components/InstitutionsList";
 import useInstitutions from "../hooks/useInstitutions";
@@ -13,9 +13,12 @@ import { LuLandmark } from "react-icons/lu";
 import TimePeriodMenu from "../../common/components/TimePeriodMenu";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
 import LoadingPage from "../../common/components/LoadingPage";
+import useMonthStore from "../../common/hooks/useMonthStore";
+import MonthlyMenu from "../../common/components/MonthlyMenu";
 
 const InstitutionsPage = () => {
   const { period, setPeriod } = usePeriodStore();
+  const { month, setMonth } = useMonthStore();
   const { institutions, isLoading } = useInstitutions();
   const pendingInstiutionData = useMutationState({
     filters: {
@@ -63,6 +66,9 @@ const InstitutionsPage = () => {
           justifyItems={"flex-end"}
         >
           <TimePeriodMenu period={period} setPeriod={setPeriod} />
+          <Show when={period === "Monthly"}>
+            <MonthlyMenu month={month} setMonth={setMonth} />
+          </Show>
           <NewInstitutionModal />
         </Flex>
       </HStack>

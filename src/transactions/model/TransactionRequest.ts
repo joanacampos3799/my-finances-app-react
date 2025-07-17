@@ -7,9 +7,10 @@ export default interface Transaction {
   Date: string;
   accountId: number;
   Amount: number;
-  categories: number[];
+  category: number;
   userId: UUID;
   transactionType: number;
   isCreditCardPayment: boolean;
   creditCardId?: number;
+  transferAccountId?: number;
 }

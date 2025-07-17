@@ -16,12 +16,14 @@ import {
 } from "date-fns";
 import Transaction from "../../transactions/model/Transaction";
 import DateObj from "../../common/date";
+import useMonthStore from "../../common/hooks/useMonthStore";
 
 const Revenue = () => {
   const { period } = usePeriodStore();
+  const { month } = useMonthStore();
   const { account } = useAccountStore();
   const { getStartEndDates, parseDate } = useDateFilter();
-  const dates = getStartEndDates(period);
+  const dates = getStartEndDates(period, month);
   const chartProps = prepareIncomeVsExpensesData(
     account.Transactions,
     period,

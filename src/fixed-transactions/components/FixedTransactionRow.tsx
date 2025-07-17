@@ -36,9 +36,10 @@ const FixedTransactionRow = ({ fixed, onDelete }: Props) => {
         </HStack>
       </Table.Cell>
       <Table.Cell>
-        {fixed.categories.map((val) => (
-          <CategoryTag category={val} key={val.Id + "-cat_tag"} />
-        ))}
+        <CategoryTag
+          category={fixed.category}
+          key={fixed.category.Id + "-cat_tag"}
+        />
       </Table.Cell>
       <Table.Cell textAlign={"end"}>
         <HStack justifyContent={"flex-end"}>

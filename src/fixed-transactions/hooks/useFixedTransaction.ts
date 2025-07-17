@@ -9,21 +9,7 @@ const apiClient = new APIClient<FixedTransactionDetails>("/fixed-transactions");
 const useFixedTransaction = (id: number) => {
   const { userId, userToken } = useLoginData();
 
-  const fallback: FixedTransactionDetails = {
-    Name: "Fixed Transaction",
-    Amount: 0,
-    PaymentDay: 1,
-    Icon: "FaMoney",
-    categories: [],
-    Periodicity: 1,
-    userId: userId!!,
-    transactionType: 1,
-    TotalSpent: 0,
-    active: false,
-    Transactions: [],
-    Account: "",
-  };
-  const { data: fixedTransaction = fallback, isLoading } = useQuery({
+  const { data: fixedTransaction, isLoading } = useQuery({
     enabled: !!userToken,
     queryKey: [queryKeys.fixedTransaction, id],
     queryFn: () => apiClient.get(id, userId!!, userToken!!),

@@ -67,6 +67,7 @@ const NewCategoryDrawer = ({ category }: Props) => {
                 : undefined,
               Color: values.color,
               Transactions: category.Transactions,
+              isSalary: false,
             });
           } else {
             addCategory({
@@ -79,6 +80,7 @@ const NewCategoryDrawer = ({ category }: Props) => {
               userId: userId!!,
               Color: values.color,
               Transactions: [],
+              isSalary: false,
             });
           }
           setOpen(false);
@@ -120,7 +122,7 @@ const NewCategoryDrawer = ({ category }: Props) => {
             <RadioMenu
               hasArrow
               minW="17rem"
-              data={movementTypes}
+              data={movementTypes.filter((ct) => ct.id !== 2)}
               selectedId={values.selectedTT}
               setSelectedId={(val) => handleChange("selectedTT", val)}
               placeholder="a category type"

@@ -11,6 +11,7 @@ import CategoryDetails from "./CategoryDetails";
 import useInsights from "../../common/hooks/useInsights";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
 import { FaPen } from "react-icons/fa6";
+import useMonthStore from "../../common/hooks/useMonthStore";
 
 interface CategoryRowProps {
   category: Category;
@@ -20,6 +21,7 @@ interface CategoryRowProps {
 
 const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
   const { period } = usePeriodStore();
+  const { month } = useMonthStore();
   const iconPack = useIconPack();
   const { getTransactionsTotalAmount, getTransactionsTotal } = useInsights();
   const totalAmount = getTransactionsTotalAmount(category.Transactions, period);
@@ -27,11 +29,13 @@ const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
   const totalExpense = getTransactionsTotalAmount(
     category.Transactions,
     period,
+    month,
     0
   );
   const totalIncome = getTransactionsTotalAmount(
     category.Transactions,
     period,
+    month,
     1
   );
   const budgetValue = category.Budget
@@ -39,8 +43,6 @@ const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
     : 0;
   const CatIcon =
     iconPack?.find((i) => i.name === category.Icon)?.icon ?? FaPen;
-  console.log(iconPack);
-  console.log(iconPack?.find((i) => i.name === category.Icon));
 
   return (
     <Table.Row key={category.Id + "-row"}>
@@ -73,7 +75,7 @@ const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
         </Table.Cell>
       </Show>
       <Table.Cell>
-        {getTransactionsTotal(category.Transactions, period)}
+        {getTransactionsTotal(category.Transactions, period, month)}
       </Table.Cell>
       <Show when={category.CategoryType === 0}>
         <Table.Cell>
@@ -109,6 +111,7 @@ const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
             h="40px"
             w="40px"
             bgColor="red.500"
+            disabled={category.isSalary}
             onClick={() => onDelete(category)}
           >
             <LuTrash2 />

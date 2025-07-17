@@ -9,8 +9,6 @@ export default interface TransactionFormObject {
   Name: string;
   isCreditCardPayment: boolean;
   selectedCreditCard?: string;
-  selectedCategories: {
-    data: Category;
-    checked: boolean;
-  }[];
+  selectedCategory: string;
+  selectedTransferAccount?: string;
 }

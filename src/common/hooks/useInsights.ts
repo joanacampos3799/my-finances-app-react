@@ -1,4 +1,4 @@
-import { isAfter } from "date-fns";
+import { format, isAfter } from "date-fns";
 import Transaction from "../../transactions/model/Transaction";
 import useDateFilter from "./useDateFilter";
 import AccountList from "../../accounts/models/AccountList";
@@ -10,10 +10,11 @@ const useInsights = () => {
   const getTransactionsTotal = (
     transactions: Transaction[],
     period: string,
+    month: string,
     type?: number,
     previous?: boolean
   ) => {
-    const dates = getStartEndDates(period, previous);
+    const dates = getStartEndDates(period, month, previous);
     // Filter by transaction type if necessary
     if (type !== undefined && type !== 2) {
       transactions = transactions.filter((f) => f.transactionType === type);
@@ -37,6 +38,7 @@ const useInsights = () => {
   const getTransactionsTotalAmount = (
     transactions: Transaction[],
     period?: string,
+    month?: string,
     type?: number,
     previous?: boolean
   ) => {
@@ -49,7 +51,10 @@ const useInsights = () => {
         .map((x) => x.Amount)
         .reduce((acc, val) => acc + val, 0);
     } else {
-      const dates = getStartEndDates(period, previous);
+      if (month === undefined) {
+        month = format(new Date(), "MMMM yyyy");
+      }
+      const dates = getStartEndDates(period, month, previous);
       // Filter by transaction type if necessary
       if (type !== undefined && type !== 2) {
         transactions = transactions.filter((f) => f.transactionType === type);
@@ -126,15 +131,18 @@ const useInsights = () => {
    */
   function spendingTrendInsight(
     currentTransactions: Transaction[],
-    period: string
+    period: string,
+    month: string
   ) {
     const currentTotal = getTransactionsTotalAmount(
       currentTransactions,
-      period
+      period,
+      month
     );
     const previousTotal = getTransactionsTotalAmount(
       currentTransactions,
       period,
+      month,
       undefined,
       true
     );

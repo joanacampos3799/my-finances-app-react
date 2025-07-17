@@ -8,7 +8,7 @@ export default interface FixedTransactionDetails {
   Amount: number;
   PaymentDay: number;
   Icon: string;
-  categories: Category[];
+  category: Category;
   Periodicity: number;
   userId: UUID;
   transactionType: number;

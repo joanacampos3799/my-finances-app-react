@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Icon, Tabs } from "@chakra-ui/react";
+import { Box, Flex, HStack, Icon, Show, Tabs } from "@chakra-ui/react";
 import CategoriesList from "../components/CategoriesList";
 import NewCategoryDrawer from "../components/NewCategoryDrawer";
 import useCategories from "../hooks/useCategories";
@@ -14,11 +14,13 @@ import TimePeriodMenu from "../../common/components/TimePeriodMenu";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
 import React from "react";
 import LoadingPage from "../../common/components/LoadingPage";
+import useMonthStore from "../../common/hooks/useMonthStore";
+import MonthlyMenu from "../../common/components/MonthlyMenu";
 
 const CategoriesPage = React.memo(() => {
   const { categories, isLoading } = useCategories();
   const { period, setPeriod } = usePeriodStore();
-
+  const { month, setMonth } = useMonthStore();
   const pendingData = useMutationState({
     filters: {
       mutationKey: [queryKeys.categories],
@@ -60,7 +62,9 @@ const CategoriesPage = React.memo(() => {
             justifyItems={"flex-end"}
           >
             <TimePeriodMenu period={period} setPeriod={setPeriod} />
-
+            <Show when={period === "Monthly"}>
+              <MonthlyMenu month={month} setMonth={setMonth} />
+            </Show>
             <NewCategoryDrawer />
           </Flex>
         </HStack>
@@ -81,27 +85,29 @@ const CategoriesPage = React.memo(() => {
             <Flex justify="space-between" mt={2}>
               <ExportDrawer />
               <Tabs.List width={"full"} border={0}>
-                {movementTypes.map((ct) => (
-                  <Tabs.Trigger key={ct.id + "-movTypesTab"} value={ct.name}>
-                    <Icon color={"teal.500"}>{ct.MovementIcon}</Icon>
-                    {ct.name}
-                  </Tabs.Trigger>
-                ))}
+                {movementTypes
+                  .filter((mt) => mt.id !== 2)
+                  .map((ct) => (
+                    <Tabs.Trigger key={ct.id + "-movTypesTab"} value={ct.name}>
+                      <Icon color={"teal.500"}>{ct.MovementIcon}</Icon>
+                      {ct.name}
+                    </Tabs.Trigger>
+                  ))}
               </Tabs.List>
-
-              {/* Align the ExportDrawer button trigger here */}
             </Flex>
 
             {/* Render Tabs content */}
-            {movementTypes.map((ct) => (
-              <Tabs.Content key={ct.name + "-contentTab"} value={ct.name}>
-                <CategoriesList
-                  key={ct.name + "-grid"}
-                  categories={catData.filter((c) => c.CategoryType === ct.id)}
-                  categoryTypeId={ct.id}
-                />
-              </Tabs.Content>
-            ))}
+            {movementTypes
+              .filter((mt) => mt.id !== 2)
+              .map((ct) => (
+                <Tabs.Content key={ct.name + "-contentTab"} value={ct.name}>
+                  <CategoriesList
+                    key={ct.name + "-grid"}
+                    categories={catData.filter((c) => c.CategoryType === ct.id)}
+                    categoryTypeId={ct.id}
+                  />
+                </Tabs.Content>
+              ))}
           </Tabs.Root>
         </Box>
       )}

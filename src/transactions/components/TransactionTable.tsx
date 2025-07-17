@@ -36,43 +36,29 @@ const TransactionTable = ({
     useState<Transaction[]>(data);
   const [page, setPage] = useState(1);
   const [transCount, setTransCount] = useState(data.length);
-  const { period } = usePeriodStore();
-  const { getStartEndDates, parseDate } = useDateFilter();
-  const { startDate, endDate } = getStartEndDates(period);
 
   useEffect(() => {
     setTransCount(data.length);
-
-    if (fromAccount || fromCategory) {
-      setSortedTransactions(
-        data
-          .filter(
-            (transaction) =>
-              parseDate(transaction.Date) >= startDate &&
-              parseDate(transaction.Date) > endDate
-          )
-          .reverse()
-      );
-    } else {
-      setSortedTransactions(data.reverse());
-    }
-  }, [setSortedTransactions, data]);
-  useEffect(() => {
     if (size)
       setSortedTransactions(
-        sortedTransactions.slice((page - 1) * size, page * size).reverse()
+        sortDate(
+          data.slice((page - 1) * size, page * size),
+          "Date",
+          "Date",
+          "Id",
+          "desc"
+        )
       );
-  }, [setSortedTransactions, page, size]);
+    else setSortedTransactions(sortDate(data, "Date", "Date", "Id", "asc"));
+  }, [setSortedTransactions, data, page, size]);
+
   const handleDelete = (element: Transaction) => {
     element.deleted = true;
     deleteTransaction(element);
   };
   const handlePageChange = (page: number) => {
     setPage(page);
-    if (size)
-      setSortedTransactions(
-        sortedTransactions.slice((page - 1) * size, page * size)
-      );
+    if (size) setSortedTransactions(data.slice((page - 1) * size, page * size));
   };
   return (
     <Flex
@@ -170,13 +156,14 @@ const TransactionTable = ({
               <Table.Footer>
                 <Table.Row>
                   <Table.Cell></Table.Cell>
-                  <Table.Cell></Table.Cell>
-                  <Table.Cell></Table.Cell>
-                  <Table.Cell>Total</Table.Cell>
+                  <Table.Cell>Total Spent</Table.Cell>
                   <Table.Cell>
                     <FormatNumber
                       value={data.reduce(
-                        (total, { Amount }) => (total += Amount),
+                        (total, { transactionType, Amount }) => {
+                          if (transactionType === 0) return total + Amount;
+                          else return total;
+                        },
                         0
                       )}
                       style={"currency"}
@@ -184,6 +171,21 @@ const TransactionTable = ({
                     />
                   </Table.Cell>
                   <Table.Cell></Table.Cell>
+                  <Table.Cell>Total Earned</Table.Cell>
+                  <Table.Cell>
+                    {" "}
+                    <FormatNumber
+                      value={data.reduce(
+                        (total, { transactionType, Amount }) => {
+                          if (transactionType === 1) return total + Amount;
+                          else return total;
+                        },
+                        0
+                      )}
+                      style={"currency"}
+                      currency="EUR"
+                    />
+                  </Table.Cell>
                   <Table.Cell></Table.Cell>
                   <Table.Cell></Table.Cell>
                 </Table.Row>

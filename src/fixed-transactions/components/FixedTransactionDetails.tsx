@@ -19,7 +19,7 @@ interface Props {
 
 const FixedTransactionDetails = ({ id }: Props) => {
   const { fixedTransaction } = useFixedTransaction(id);
-
+  if (fixedTransaction === undefined) return;
   function getNextDate(day: number) {
     const today = new Date();
     let targetDate = setDate(new Date(), day);
@@ -97,9 +97,11 @@ const FixedTransactionDetails = ({ id }: Props) => {
               {" "}
               Categories
             </Heading>
-            {fixedTransaction.categories.map((i) => (
-              <CategoryTag key={i.Id} category={i} />
-            ))}
+
+            <CategoryTag
+              key={fixedTransaction.category.Id}
+              category={fixedTransaction.category}
+            />
           </HStack>
         </Flex>
       </Flex>

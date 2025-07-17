@@ -10,7 +10,7 @@ export default interface FixedTransactionList {
   deleted?: boolean;
   active: boolean;
   transactionType: number;
-  categories: Category[];
+  category: Category;
   Periodicity: number;
   PaymentDay: number;
   Account: number;

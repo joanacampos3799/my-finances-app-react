@@ -28,7 +28,6 @@ const TransactionsPage = () => {
 
   const helper = new HelperEntity<Transaction>();
   if (pendingTransaction) {
-    pendingTransaction.categories = [];
     const now = new Date();
     pendingTransaction.Date = {
       year: now.getFullYear(),

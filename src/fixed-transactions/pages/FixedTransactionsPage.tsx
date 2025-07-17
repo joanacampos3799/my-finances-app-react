@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Tabs } from "@chakra-ui/react";
+import { Box, Flex, HStack, Show, Tabs } from "@chakra-ui/react";
 import useFixedTransactions from "../hooks/useFixedTransactions";
 import { useMutationState } from "@tanstack/react-query";
 import { queryKeys } from "../../common/constants";
@@ -12,10 +12,13 @@ import TimePeriodMenu from "../../common/components/TimePeriodMenu";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
 import FixedTransactionList from "../model/FixedTransactionsList";
 import LoadingPage from "../../common/components/LoadingPage";
+import useMonthStore from "../../common/hooks/useMonthStore";
+import MonthlyMenu from "../../common/components/MonthlyMenu";
 
 const FixedTransactionsPage = () => {
   const { fixedTransactions, isLoading } = useFixedTransactions();
   const { period, setPeriod } = usePeriodStore();
+  const { month, setMonth } = useMonthStore();
   const pendingData = useMutationState({
     filters: {
       mutationKey: [queryKeys.fixedTransactions],
@@ -58,7 +61,9 @@ const FixedTransactionsPage = () => {
             justifyItems={"flex-end"}
           >
             <TimePeriodMenu period={period} setPeriod={setPeriod} />
-
+            <Show when={period === "Monthly"}>
+              <MonthlyMenu month={month} setMonth={setMonth} />
+            </Show>
             <NewFixedTransactionDrawer />
           </Flex>
         </HStack>

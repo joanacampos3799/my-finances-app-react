@@ -21,8 +21,6 @@ import { accountTypes } from "../../common/constants";
 import CreditKPIs from "../components/CreditKPIs";
 import PaymentsTable from "../components/PaymentsTable";
 import LoadingPage from "../../common/components/LoadingPage";
-import usePeriodStore from "../../common/hooks/usePeriodStore";
-import useDateFilter from "../../common/hooks/useDateFilter";
 
 const AccountDetailsPage = () => {
   const { id } = useParams();

@@ -4,12 +4,14 @@ import useDateFilter from "../../common/hooks/useDateFilter";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
 import { timePeriods } from "../../common/constants";
 import BudgetProgress from "../../categories/components/BudgetProgress";
+import useMonthStore from "../../common/hooks/useMonthStore";
 
 const SpendingLimit = () => {
   const { account } = useAccountStore();
   const { period } = usePeriodStore();
+  const { month } = useMonthStore();
   const { parseDate, getStartEndDates } = useDateFilter();
-  const { startDate, endDate } = getStartEndDates(period);
+  const { startDate, endDate } = getStartEndDates(period, month);
   const spent = account.Transactions.filter((f) => {
     const itemDate = parseDate(f.Date);
 
