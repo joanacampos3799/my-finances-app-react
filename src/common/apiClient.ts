@@ -18,7 +18,8 @@ export function getHeaders(
 }
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/",
+  baseURL: "https://my-finances-app-quarkus-production.up.railway.app",
+  //baseURL: "http://localhost:8080",
   headers: {
     "Content-Type": "application/json",
   },
