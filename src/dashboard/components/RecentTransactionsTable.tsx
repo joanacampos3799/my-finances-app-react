@@ -71,9 +71,12 @@ const RecentTransactionsTable = ({ transactions }: Props) => {
               <Table.Cell>{t.accountName}</Table.Cell>
 
               <Table.Cell>
-                {t.categories.map((val) => (
-                  <CategoryTag category={val} key={val.Id + "-cat_tag"} />
-                ))}
+                {t.category && (
+                  <CategoryTag
+                    category={t.category}
+                    key={t.category.Id + "-cat_tag"}
+                  />
+                )}
               </Table.Cell>
             </Table.Row>
           ))}
