@@ -99,7 +99,7 @@ export default function DashboardPage() {
   const categorySpending = useMemo(() => {
     const categoryMap: Record<string, { amount: number; color: string }> = {};
     transData.forEach((transaction) => {
-      if (transaction.category.CategoryType === 0) {
+      if (transaction.category && transaction.category.CategoryType === 0) {
         if (!categoryMap[transaction.category.Name]) {
           categoryMap[transaction.category.Name] = {
             amount: 0,
