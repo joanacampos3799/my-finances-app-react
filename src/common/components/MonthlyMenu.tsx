@@ -21,8 +21,8 @@ const MonthlyMenu = ({ month, setMonth }: Props) => {
         data={memoMonths}
         selectedId={"" + memoMonths.find((p) => p.name === month)?.id}
         setSelectedId={(p) => {
-          console.log(p);
-          console.log(memoMonths[+p]);
+          console.log(+p);
+
           console.log(memoMonths);
           setMonth(memoMonths[+p].name);
         }}
