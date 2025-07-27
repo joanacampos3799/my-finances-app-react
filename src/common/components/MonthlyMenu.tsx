@@ -22,6 +22,8 @@ const MonthlyMenu = ({ month, setMonth }: Props) => {
         selectedId={"" + memoMonths.find((p) => p.name === month)?.id}
         setSelectedId={(p) => {
           console.log(p);
+          console.log(memoMonths[+p]);
+          console.log(memoMonths);
           setMonth(memoMonths[+p].name);
         }}
         variant={"outline"}

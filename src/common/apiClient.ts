@@ -79,7 +79,6 @@ class APIClient<T> {
   };
 
   post = (data: T, userId: UUID, userToken: string) => {
-    console.log(data);
     return axiosInstance
       .post<T>(this.endpoint, data, {
         headers: getHeaders(userId, userToken),
