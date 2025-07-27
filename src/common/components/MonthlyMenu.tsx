@@ -20,7 +20,10 @@ const MonthlyMenu = ({ month, setMonth }: Props) => {
         width="fit-content"
         data={memoMonths}
         selectedId={"" + memoMonths.find((p) => p.name === month)?.id}
-        setSelectedId={(p) => setMonth(memoMonths[+p].name)}
+        setSelectedId={(p) => {
+          console.log(p);
+          setMonth(memoMonths[+p].name);
+        }}
         variant={"outline"}
         hasArrow
       />
