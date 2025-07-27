@@ -1,4 +1,11 @@
-import { Icon, Flex, Heading, Button } from "@chakra-ui/react";
+import {
+  Icon,
+  Flex,
+  Heading,
+  Button,
+  useBreakpointValue,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { SignedIn, UserButton, SignedOut } from "@clerk/clerk-react";
 import { GiReceiveMoney } from "react-icons/gi";
 import { useLocation } from "react-router-dom";
@@ -14,12 +21,13 @@ import {
   LuWalletCards,
 } from "react-icons/lu";
 import { useState } from "react";
-import { BiCategory, BiReceipt } from "react-icons/bi";
-import { LinkButton } from "../../components/ui/link-button";
+import { BiCategory } from "react-icons/bi";
 
 const NavBar = () => {
   const location = useLocation();
   const [sideBarOpen, setSideBarOpen] = useState(true);
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  const { open, onOpen, onClose } = useDisclosure();
   const activePage = location.pathname;
   return (
     <Flex
