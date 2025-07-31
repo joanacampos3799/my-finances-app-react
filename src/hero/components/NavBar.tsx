@@ -26,8 +26,6 @@ import { BiCategory } from "react-icons/bi";
 const NavBar = () => {
   const location = useLocation();
   const [sideBarOpen, setSideBarOpen] = useState(true);
-  const isMobile = useBreakpointValue({ base: true, md: false });
-  const { open, onOpen, onClose } = useDisclosure();
   const activePage = location.pathname;
   return (
     <Flex

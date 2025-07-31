@@ -1,4 +1,12 @@
-import { Box, Flex, Heading, HStack, Show, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Heading,
+  HStack,
+  Show,
+  Text,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 
 import TimePeriodMenu from "../../common/components/TimePeriodMenu";
 import NewTransactionDrawer from "../../transactions/components/NewTransactionDrawer";
@@ -32,6 +40,8 @@ import useDateFilter from "../../common/hooks/useDateFilter";
 import { format } from "date-fns";
 import DonutChart from "../../common/components/DonutChart";
 import useSalaryExpensesSummary from "../hooks/useSalaryExpensesSummary";
+import NavbarMobile from "../../hero/components/NavbarMobile";
+import HamburgerMenu from "../../common/components/HamburgerMenu";
 
 export default function DashboardPage() {
   const { period, setPeriod } = usePeriodStore();
@@ -124,6 +134,7 @@ export default function DashboardPage() {
     { value: summary?.totalExpenses, label: "Spent", color: "#f44336" }, // red
     { value: summary?.remaining, label: "Remaining", color: "#e0e0e0" }, // light gray as "background"
   ];
+  const isMobile = useBreakpointValue({ base: true, md: false });
   if (
     loadingAcc ||
     !accounts.isValueSet ||
@@ -132,49 +143,69 @@ export default function DashboardPage() {
   )
     return <LoadingPage />;
   return (
-    <Box padding={"15px"}>
+    <Box padding={{ base: "8px", md: "15px" }}>
       <Box>
         <HStack
-          justifyContent={"space-between"}
-          alignItems={"flex-start"}
-          justifyItems={"flex-end"}
+          flexDirection={"row"}
+          alignItems={{ base: "stretch", md: "flex-start" }}
+          justifyContent="space-between"
+          gap={{ base: 4, md: 0 }}
         >
-          <Flex direction={"column"}>
-            <Heading fontWeight={"bold"} size="3xl" color={"teal.700"}>
+          {isMobile && <NavbarMobile />}
+          <Flex direction="column">
+            <Heading
+              fontWeight="bold"
+              fontSize={{ base: "xl", md: "3xl" }}
+              color="teal.700"
+            >
               {"Welcome back " + user?.name}
             </Heading>
-            <Text mt={2} color={"gray.600"}>
+            <Text
+              mt={{ base: 0, md: 2 }}
+              color="gray.600"
+              fontSize={{ base: "sm", md: "lg" }}
+            >
               {"Here's an overview of all your balances"}
             </Text>
           </Flex>
-          <Flex
-            direction={"row"}
-            gap={2}
-            alignItems={"flex-start"}
-            justifyItems={"flex-end"}
-          >
-            <TimePeriodMenu period={period} setPeriod={setPeriod} />
-            <Show when={period === "Monthly"}>
-              <MonthlyMenu month={month} setMonth={setMonth} />
-            </Show>
-            <NewTransactionDrawer />
-          </Flex>
+          {isMobile ? (
+            <HamburgerMenu>
+              <Flex
+                direction={"column"}
+                gap={2}
+                alignItems={"flex-start"}
+                justifyItems={"flex-end"}
+              >
+                <TimePeriodMenu period={period} setPeriod={setPeriod} />
+                <Show when={period === "Monthly"}>
+                  <MonthlyMenu month={month} setMonth={setMonth} />
+                </Show>
+                <NewTransactionDrawer />
+              </Flex>
+            </HamburgerMenu>
+          ) : (
+            <Flex
+              direction={"row"}
+              gap={2}
+              alignItems={"flex-start"}
+              justifyItems={"flex-end"}
+            >
+              <TimePeriodMenu period={period} setPeriod={setPeriod} />
+              <Show when={period === "Monthly"}>
+                <MonthlyMenu month={month} setMonth={setMonth} />
+              </Show>
+              <NewTransactionDrawer />
+            </Flex>
+          )}
         </HStack>
       </Box>
-      <Flex direction={"row"} mt={2} gap={"3"}>
-        <Flex direction={"column"} w={"70%"} gap={"3"}>
-          <Flex h={"50%"}>
-            <LineChartComponent
-              data={balanceHistoryData ?? []}
-              caption={"Balances overview"}
-              width={600}
-            />
-          </Flex>
-          <Flex h={"50%"}>
-            <RecentTransactionsTable transactions={recentTransaction} />
-          </Flex>
-        </Flex>
-        <Flex direction={"column"} w={"30%"} gap={"3"}>
+      <Flex direction={{ base: "column", md: "row" }} mt={2} gap={"3"}>
+        <Flex
+          direction={"column"}
+          w={{ base: "100%", md: "30%" }}
+          gap={"3"}
+          order={{ base: 0, md: 1 }}
+        >
           <ValueKPIComponent
             title="Total Balance"
             IconEl={LuWallet}
@@ -191,6 +222,18 @@ export default function DashboardPage() {
             chartData={categorySpending}
             title={"Top Spending Categories"}
           />
+        </Flex>
+        <Flex direction={"column"} w={{ base: "100%", md: "70%" }} gap={"3"}>
+          <Flex h={{ base: "100%", md: "50%" }}>
+            <LineChartComponent
+              data={balanceHistoryData ?? []}
+              caption={"Balances overview"}
+              width={isMobile ? 300 : 600}
+            />
+          </Flex>
+          <Flex h={"50%"}>
+            <RecentTransactionsTable transactions={recentTransaction} />
+          </Flex>
         </Flex>
       </Flex>
     </Box>

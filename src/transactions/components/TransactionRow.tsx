@@ -42,7 +42,7 @@ const TransactionRow = ({
             <LuArrowDownToLine />
           </Icon>
         ) : (
-          <Icon color={"gray.500"}>
+          <Icon color={"blue.500"}>
             <LuArrowDownUp />
           </Icon>
         )}

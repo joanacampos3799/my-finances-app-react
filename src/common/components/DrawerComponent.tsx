@@ -52,7 +52,12 @@ const DrawerComponent = ({
             <LuPenLine />
           </Button>
         ) : (
-          <Button bgColor={"teal.500"}>Add {name}</Button>
+          <Button
+            width={{ base: "full", md: "fit-content" }}
+            bgColor={"teal.500"}
+          >
+            Add {name}
+          </Button>
         )}
       </DrawerTrigger>
       <DrawerContent offset="4" rounded="md">

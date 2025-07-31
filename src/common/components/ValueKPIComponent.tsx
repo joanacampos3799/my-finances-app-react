@@ -9,7 +9,7 @@ interface Props {
 const ValueKPIComponent = ({ value, title, IconEl }: Props) => {
   return (
     <Flex
-      h={"full"}
+      height={{ base: "full", md: "15%" }}
       bgColor={"white"}
       direction={"row"}
       borderRadius={"md"}
