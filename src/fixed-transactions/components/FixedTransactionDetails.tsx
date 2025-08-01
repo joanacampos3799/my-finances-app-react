@@ -33,65 +33,80 @@ const FixedTransactionDetails = ({ id }: Props) => {
 
   return (
     <DialogComponent
-      size="xl"
+      size={{ base: "full", md: "xl" }}
       icon={fixedTransaction.Icon}
       title={fixedTransaction.Name}
     >
       <Flex direction={"column"} gap={5} mb={3}>
-        <Flex direction={"row"} gap={10}>
-          <HStack>
-            <Heading color={"teal.700"} size={"sm"}>
-              {" "}
-              Amount
-            </Heading>
-            <FormatNumber
-              value={fixedTransaction.Amount}
-              style="currency"
-              currency="Eur"
-            />
-          </HStack>
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          gap={{ base: 4, md: 10 }}
+        >
+          <Flex justifyContent={"space-between"} w="100%">
+            <HStack>
+              <Heading color={"teal.700"} size={"sm"}>
+                {" "}
+                Amount
+              </Heading>
+              <FormatNumber
+                value={fixedTransaction.Amount}
+                style="currency"
+                currency="Eur"
+              />
+            </HStack>
 
-          <HStack>
-            <Heading color={"teal.700"} size={"sm"}>
-              {" "}
-              Next Payment
-            </Heading>
-            <Text>{getNextDate(fixedTransaction.PaymentDay)}</Text>
-          </HStack>
-          <HStack>
-            <Heading color={"teal.700"} size={"sm"}>
-              {" "}
-              Periodicity
-            </Heading>
-            <Text>{`Every ${fixedTransaction.Periodicity > 1 ? fixedTransaction.Periodicity : ""} month${fixedTransaction.Periodicity > 1 ? "s" : ""}`}</Text>
-          </HStack>
-          <HStack>
-            <Heading color={"teal.700"} size={"sm"}>
-              {" "}
-              Total Spent
-            </Heading>
-            <FormatNumber
-              value={fixedTransaction.TotalSpent}
-              style="currency"
-              currency="Eur"
-            />
-          </HStack>
+            <HStack>
+              <Heading color={"teal.700"} size={"sm"}>
+                {" "}
+                Next Payment
+              </Heading>
+              <Text>{getNextDate(fixedTransaction.PaymentDay)}</Text>
+            </HStack>
+          </Flex>
+          <Flex justifyContent={"space-between"} w="100%">
+            <HStack>
+              <Heading color={"teal.700"} size={"sm"}>
+                {" "}
+                Periodicity
+              </Heading>
+              <Text>{`Every ${fixedTransaction.Periodicity > 1 ? fixedTransaction.Periodicity : ""} month${fixedTransaction.Periodicity > 1 ? "s" : ""}`}</Text>
+            </HStack>
+            <HStack>
+              <Heading color={"teal.700"} size={"sm"}>
+                {" "}
+                Total Spent
+              </Heading>
+              <FormatNumber
+                value={fixedTransaction.TotalSpent}
+                style="currency"
+                currency="Eur"
+              />
+            </HStack>
+          </Flex>
         </Flex>
-        <Flex direction={"row"} gap={10}>
-          <HStack>
-            <Heading color={"teal.700"} size={"sm"}>
-              {" "}
-              Transaction Type
-            </Heading>
-            <Text>{movementTypes[fixedTransaction.transactionType].name}</Text>
-          </HStack>
-          <HStack>
-            <Heading color={"teal.700"} size={"sm"}>
-              {" "}
-              Account
-            </Heading>
-            <Text>{fixedTransaction.Account}</Text>
-          </HStack>
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          gap={{ base: 4, md: 10 }}
+        >
+          <Flex justifyContent={"space-between"} w="100%">
+            <HStack>
+              <Heading color={"teal.700"} size={"sm"}>
+                {" "}
+                Transaction Type
+              </Heading>
+              <Text>
+                {movementTypes[fixedTransaction.transactionType].name}
+              </Text>
+            </HStack>
+            <HStack>
+              <Heading color={"teal.700"} size={"sm"}>
+                {" "}
+                Account
+              </Heading>
+              <Text>{fixedTransaction.Account}</Text>
+            </HStack>
+          </Flex>
+
           <HStack>
             <Heading color={"teal.700"} size={"sm"}>
               {" "}

@@ -27,6 +27,7 @@ interface Props {
   accountId?: number;
   categoryId?: number;
   creditAccountId?: number;
+  isMobile?: boolean;
 }
 
 const NewTransactionDrawer = ({
@@ -34,6 +35,7 @@ const NewTransactionDrawer = ({
   accountId,
   categoryId,
   creditAccountId,
+  isMobile = false,
 }: Props) => {
   const { userId } = useLoginData();
   const { categories } = useCategories();
@@ -130,6 +132,7 @@ const NewTransactionDrawer = ({
       formName="new-transaction-form"
       refElement={ref.current}
       update={transaction !== undefined}
+      isMobile={isMobile}
     >
       <form
         id="new-transaction-form"

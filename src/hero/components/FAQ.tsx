@@ -26,11 +26,27 @@ const FAQ = () => {
     setQuestion("");
   };
   return (
-    <Flex w="100%" direction={"row"} h="150vh" id="faq">
-      <Flex w="50%">
-        <Image src={faq} />
+    <Flex
+      w="100%"
+      direction={{ base: "column", md: "row" }}
+      h={{ base: "auto", md: "150vh" }}
+      id="faq"
+    >
+      <Flex w={{ base: "100%", md: "50%" }} order={{ base: 1, md: 0 }}>
+        <Image
+          src={faq}
+          objectFit="contain"
+          w={{ base: "100%", md: "90%" }}
+          h={{ base: "200px", md: "auto" }}
+          borderRadius="md"
+        />
       </Flex>
-      <Flex direction={"column"} w="50%" justifyContent={"center"} gap={2}>
+      <Flex
+        direction={"column"}
+        w={{ base: "100%", md: "50%" }}
+        justifyContent={"center"}
+        gap={2}
+      >
         <Heading color="teal.700">Frequently Asked Questions</Heading>
 
         <Stack>

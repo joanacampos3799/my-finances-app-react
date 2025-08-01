@@ -23,7 +23,13 @@ const CategoryKPIs = ({ data }: Props) => {
   };
 
   return (
-    <Flex px="10px" direction={"row"} gap={2} justifyContent={"center"} pt={1}>
+    <Flex
+      px="10px"
+      direction={{ base: "column", md: "row" }}
+      gap={2}
+      justifyContent={"center"}
+      pt={1}
+    >
       {movementTypes
         .filter((mt) => mt.id !== 2)
         .map((catType) => (

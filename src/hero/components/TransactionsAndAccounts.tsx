@@ -1,17 +1,33 @@
 import { Flex, Heading, Image, List, Text } from "@chakra-ui/react";
 import { LuCheck } from "react-icons/lu";
-
+import tracking from "../../assets/images/tracking.png";
 const TransactionsAndAccounts = () => {
   return (
-    <Flex w="100%" direction={"row"} h="75vh">
-      <Flex w="50%">
-        <Image src="" />
+    <Flex
+      w="100%"
+      direction={{ base: "column", md: "row" }}
+      h={{ base: "auto", md: "75vh" }}
+    >
+      <Flex w={{ base: "100%", md: "50%" }} order={{ base: 1, md: 0 }}>
+        <Image
+          src={tracking}
+          objectFit="contain"
+          w={{ base: "100%", md: "90%" }}
+          h={{ base: "200px", md: "auto" }}
+          borderRadius="md"
+          alt="Tracking"
+        />
       </Flex>
-      <Flex direction={"column"} w="50%" justifyContent={"center"} gap={2}>
+      <Flex
+        direction={"column"}
+        w={{ base: "100%", md: "50%" }}
+        justifyContent={"center"}
+        gap={2}
+      >
         <Heading color={"teal.700"}>
           Keep Track of Every Financial Transaction
         </Heading>
-        <Text>
+        <Text fontSize={{ base: "md", md: "lg" }} textAlign="justify">
           MoneyTrack enables you to monitor all your transactions in real time.
           Whether it's daily purchases, bill payments, or large expenses, you
           can easily track everything and categorize transactions automatically.
@@ -39,7 +55,7 @@ const TransactionsAndAccounts = () => {
             both (e.g. gifts, savings).
           </List.Item>
         </List.Root>
-        <Text>
+        <Text fontSize={{ base: "md", md: "lg" }} textAlign="justify">
           Imagine having your checking account, savings, and credit cards all in
           one app. See a transaction come through instantly, assign it to the
           right category, and track your spending effortlessly.

@@ -1,18 +1,34 @@
 import { Flex, Heading, Image, List, Text } from "@chakra-ui/react";
 import React from "react";
 import { LuCheck } from "react-icons/lu";
-
+import budget from "../../assets/images/budget-planning.png";
 const BudgetAndCategories = () => {
   return (
-    <Flex w="100%" direction={"row"} h="75vh">
-      <Flex w="50%">
-        <Image src="" />
+    <Flex
+      w="100%"
+      direction={{ base: "column", md: "row" }}
+      h={{ base: "auto", md: "75vh" }}
+    >
+      <Flex w={{ base: "100%", md: "50%" }} order={{ base: 1, md: 0 }}>
+        <Image
+          src={budget}
+          objectFit="contain"
+          w={{ base: "100%", md: "90%" }}
+          h={{ base: "200px", md: "auto" }}
+          borderRadius="md"
+          alt="Budget Planning"
+        />
       </Flex>
-      <Flex direction={"column"} w="50%" justifyContent={"center"} gap={2}>
+      <Flex
+        direction={"column"}
+        w={{ base: "100%", md: "50%" }}
+        justifyContent={"center"}
+        gap={2}
+      >
         <Heading color={"teal.700"}>
           Create Budgets Tailored to Your Lifestyle
         </Heading>
-        <Text>
+        <Text fontSize={{ base: "md", md: "lg" }} textAlign="justify">
           Budgeting is made simple with MoneyTrack. Set spending limits in
           specific categories that matter most to you. Automatically track how
           much you’re spending on groceries, entertainment, or bills, and adjust
@@ -38,7 +54,7 @@ const BudgetAndCategories = () => {
             Track budget progress with visual indicators.
           </List.Item>
         </List.Root>
-        <Text>
+        <Text fontSize={{ base: "md", md: "lg" }} textAlign="justify">
           Set a 200€ monthly limit for dining out. MoneyTrack will automatically
           categorize your restaurant transactions and alert you when you’re
           nearing your limit

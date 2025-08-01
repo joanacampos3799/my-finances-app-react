@@ -12,7 +12,7 @@ import {
 } from "../../components/ui/drawer";
 import { Button } from "../../components/ui/button";
 import { ConditionalValue, Flex } from "@chakra-ui/react";
-import { LuPenLine } from "react-icons/lu";
+import { LuPenLine, LuPlus } from "react-icons/lu";
 
 interface Props {
   placement: ConditionalValue<"start" | "end" | "top" | "bottom" | undefined>;
@@ -20,6 +20,7 @@ interface Props {
     "sm" | "md" | "lg" | "xl" | "xs" | "full" | undefined
   >;
   update?: boolean;
+  isMobile?: boolean;
   open: boolean;
   setOpen: (open: boolean) => void;
   name: string;
@@ -36,6 +37,7 @@ const DrawerComponent = ({
   formName,
   refElement,
   update,
+  isMobile = false,
 }: PropsWithChildren<Props>) => {
   return (
     <DrawerRoot
@@ -50,6 +52,16 @@ const DrawerComponent = ({
         {update ? (
           <Button h="40px" w="40px" bgColor={"teal.500"} borderRadius={"md"}>
             <LuPenLine />
+          </Button>
+        ) : isMobile ? (
+          <Button
+            h="40px"
+            w="40px"
+            bgColor={"teal.500"}
+            borderRadius={"md"}
+            mt={1}
+          >
+            <LuPlus />
           </Button>
         ) : (
           <Button

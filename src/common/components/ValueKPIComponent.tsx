@@ -8,14 +8,7 @@ interface Props {
 }
 const ValueKPIComponent = ({ value, title, IconEl }: Props) => {
   return (
-    <Flex
-      height={{ base: "full", md: "15%" }}
-      bgColor={"white"}
-      direction={"row"}
-      borderRadius={"md"}
-      gap={2}
-      p={4}
-    >
+    <Flex bgColor={"white"} direction={"row"} borderRadius={"md"} gap={2} p={4}>
       <Flex alignItems={"center"}>
         <Box
           borderRadius={"full"}

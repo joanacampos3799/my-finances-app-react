@@ -1,4 +1,13 @@
-import { Flex, HStack, Show, Table } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Show,
+  Table,
+  Text,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { useDeleteCategory } from "../hooks/useDeleteCategory";
 import Category from "../model/Category";
 import CategoryEmptyState from "./CategoryEmptyState";
@@ -13,6 +22,7 @@ import TableHeader from "../../common/components/TableHeader";
 import CategoryRow from "./CategoryRow";
 import { useEffect, useState } from "react";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
+import CategoryCard from "./CategoryCard";
 
 interface Props {
   categories: Category[];
@@ -48,7 +58,34 @@ const CategoriesList = ({ categories, categoryTypeId }: Props) => {
     element.deleted = true;
     deleteCategory(element);
   };
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
+  if (isMobile) {
+    return (
+      <Flex direction="column" gap={3} p={2}>
+        {sortedCategories.map((category) => (
+          <CategoryCard
+            key={category.Id + "-mobile"}
+            category={category}
+            onDelete={handleDelete}
+          />
+        ))}
+
+        <PaginationRoot
+          count={catCount}
+          pageSize={size}
+          page={page}
+          onPageChange={(e) => handlePageChange(e.page)}
+        >
+          <HStack wrap="wrap" justifyContent="center" mt={2}>
+            <PaginationPrevTrigger />
+            <PaginationItems />
+            <PaginationNextTrigger />
+          </HStack>
+        </PaginationRoot>
+      </Flex>
+    );
+  }
   return (
     <Flex p={"10px"}>
       {sortedCategories.length > 0 ? (
