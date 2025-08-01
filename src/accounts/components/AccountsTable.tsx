@@ -1,4 +1,10 @@
-import { Flex, HStack, Show, Table } from "@chakra-ui/react";
+import {
+  Flex,
+  HStack,
+  Show,
+  Table,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 
 import TableHeader from "../../common/components/TableHeader";
 import { useEffect, useState } from "react";
@@ -16,6 +22,7 @@ import { useUpdateAccount } from "../hooks/useUpdateAccount";
 import { format } from "date-fns";
 import useDateFilter from "../../common/hooks/useDateFilter";
 import { useDeleteAccount } from "../hooks/useDeleteAccount";
+import AccountCard from "./AccountCard";
 
 interface Props {
   accounts: AccountList[];
@@ -68,6 +75,35 @@ const AccountsTable = ({ accounts, fromInstitution }: Props) => {
   const handleDelete = (element: AccountList) => {
     deleteAccount(element);
   };
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
+  if (isMobile) {
+    return (
+      <Flex direction="column" gap={3} p={2}>
+        {sortedAccounts.map((account) => (
+          <AccountCard
+            key={account.Id + "-mobile"}
+            account={account}
+            onArquiveRestore={handleArquiveRestore}
+            onDelete={handleDelete}
+          />
+        ))}
+
+        <PaginationRoot
+          count={accountCount}
+          pageSize={size}
+          page={page}
+          onPageChange={(e) => handlePageChange(e.page)}
+        >
+          <HStack wrap="wrap" justifyContent="center" mt={2}>
+            <PaginationPrevTrigger />
+            <PaginationItems />
+            <PaginationNextTrigger />
+          </HStack>
+        </PaginationRoot>
+      </Flex>
+    );
+  }
   return (
     <Flex p={"10px"}>
       {sortedAccounts.length > 0 ? (

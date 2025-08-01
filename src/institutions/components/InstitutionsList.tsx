@@ -1,4 +1,4 @@
-import { Flex, HStack, Table } from "@chakra-ui/react";
+import { Flex, HStack, Table, useBreakpointValue } from "@chakra-ui/react";
 
 import TableHeader from "../../common/components/TableHeader";
 import { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import {
 } from "../../components/ui/pagination";
 import useSorting from "../../common/hooks/useSorting";
 import InstitutionRow from "./InstitutionRow";
+import InstitutionCard from "./InstitutionCard";
 
 interface Props {
   institutions: InstitutionList[];
@@ -42,7 +43,34 @@ const InstitutionsList = ({ institutions }: Props) => {
     element.deleted = true;
     deleteInstitution(element);
   };
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
+  if (isMobile) {
+    return (
+      <Flex direction="column" gap={3} p={2}>
+        {sortedInstitutions.map((institution) => (
+          <InstitutionCard
+            key={institution.Id + "-mobile"}
+            institution={institution}
+            onDelete={handleDelete}
+          />
+        ))}
+
+        <PaginationRoot
+          count={institutionCount}
+          pageSize={size}
+          page={page}
+          onPageChange={(e) => handlePageChange(e.page)}
+        >
+          <HStack wrap="wrap" justifyContent="center" mt={2}>
+            <PaginationPrevTrigger />
+            <PaginationItems />
+            <PaginationNextTrigger />
+          </HStack>
+        </PaginationRoot>
+      </Flex>
+    );
+  }
   return (
     <Flex p={"10px"}>
       <Flex

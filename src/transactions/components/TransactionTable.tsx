@@ -1,4 +1,11 @@
-import { Flex, FormatNumber, HStack, Show, Table } from "@chakra-ui/react";
+import {
+  Flex,
+  FormatNumber,
+  HStack,
+  Show,
+  Table,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import Transaction from "../model/Transaction";
 import { useEffect, useState } from "react";
 import useSorting from "../../common/hooks/useSorting";
@@ -14,6 +21,7 @@ import TransactionRow from "./TransactionRow";
 import { useDeleteTransaction } from "../hooks/useDeleteTransaction";
 import useDateFilter from "../../common/hooks/useDateFilter";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
+import TransactionCard from "./TransactionCard";
 
 interface Props {
   data: Transaction[];
@@ -60,6 +68,80 @@ const TransactionTable = ({
     setPage(page);
     if (size) setSortedTransactions(data.slice((page - 1) * size, page * size));
   };
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
+  if (isMobile) {
+    return (
+      <Flex direction="column" gap={2} py={2} borderRadius="md" w="full">
+        {sortedTransactions && sortedTransactions.length > 0 ? (
+          <>
+            {sortedTransactions.map((t) => (
+              <TransactionCard
+                transaction={t}
+                onDelete={handleDelete}
+                fromAccount={fromAccount}
+                fromCategory={fromCategory}
+                key={"tr-card-" + t.Id}
+              />
+            ))}
+            {showFooter && (
+              <Flex
+                direction="row"
+                justify="space-between"
+                align="center"
+                borderRadius="md"
+                p={3}
+                mt={2}
+                fontWeight="semibold"
+                fontSize="md"
+              >
+                <Flex direction="column" align="start">
+                  <span>Total Spent</span>
+                  <FormatNumber
+                    value={data.reduce((total, { transactionType, Amount }) => {
+                      if (transactionType === 0) return total + Amount;
+                      else return total;
+                    }, 0)}
+                    style="currency"
+                    currency="EUR"
+                  />
+                </Flex>
+                <Flex direction="column" align="end">
+                  <span>Total Earned</span>
+                  <FormatNumber
+                    value={data.reduce((total, { transactionType, Amount }) => {
+                      if (transactionType === 1) return total + Amount;
+                      else return total;
+                    }, 0)}
+                    style="currency"
+                    currency="EUR"
+                  />
+                </Flex>
+              </Flex>
+            )}
+
+            {size && (
+              <PaginationRoot
+                count={transCount}
+                pageSize={size}
+                page={page}
+                onPageChange={(e) => handlePageChange(e.page)}
+              >
+                <HStack wrap="wrap" justifyContent={"center"}>
+                  <PaginationPrevTrigger />
+                  <PaginationItems />
+                  <PaginationNextTrigger />
+                </HStack>
+              </PaginationRoot>
+            )}
+          </>
+        ) : (
+          <TransactionEmptyState />
+        )}
+      </Flex>
+    );
+  }
+
   return (
     <Flex
       justifyContent={"center"}

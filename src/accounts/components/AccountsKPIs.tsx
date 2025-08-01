@@ -5,6 +5,7 @@ import {
   Heading,
   Icon,
   List,
+  SimpleGrid,
   Text,
 } from "@chakra-ui/react";
 import DonutChart from "../../common/components/DonutChart";
@@ -74,45 +75,51 @@ const AccountsKPIs = ({ accounts }: Props) => {
     .slice(0, 3);
 
   return (
-    <Flex flexDir={"row"} gap={2} p={"10px"} w="100%">
+    <Flex flexDir={{ base: "column", md: "row" }} gap={2} p={"10px"} w="100%">
       <DonutChart data={donutData} caption={"Accounts Distribution"} />
 
-      <Flex flexDir={"column"} gap={2} w="25%">
-        <ValueKPIComponent
-          title="Savings"
-          IconEl={LuPiggyBank}
-          value={totalSavings}
-        />
-        <ValueKPIComponent
-          title="Investements"
-          IconEl={LuLineChart}
-          value={totalInvestements}
-        />
-        <ValueKPIComponent
-          title="Total Expenses"
-          IconEl={LuArrowUpFromLine}
-          value={totalExpenses}
-        />
+      <Flex flexDir={"column"} gap={2} w={{ base: "100%", md: "25%" }}>
+        <SimpleGrid columns={{ base: 2, md: 1 }} gap={2} w="100%">
+          <ValueKPIComponent
+            title="Savings"
+            IconEl={LuPiggyBank}
+            value={totalSavings}
+          />
+          <ValueKPIComponent
+            title="Investements"
+            IconEl={LuLineChart}
+            value={totalInvestements}
+          />
+        </SimpleGrid>
+        <SimpleGrid columns={{ base: 2, md: 1 }} gap={2} w="100%">
+          <ValueKPIComponent
+            title="Total Expenses"
+            IconEl={LuArrowUpFromLine}
+            value={totalExpenses}
+          />
 
-        <ValueKPIComponent
-          title="Total Income"
-          IconEl={LuArrowDownFromLine}
-          value={totalIncome}
-        />
+          <ValueKPIComponent
+            title="Total Income"
+            IconEl={LuArrowDownFromLine}
+            value={totalIncome}
+          />
+        </SimpleGrid>
       </Flex>
 
-      <Flex flexDir={"column"} gap={2} w="25%">
-        <ValueKPIComponent
-          title="Total Balance"
-          IconEl={LuWallet}
-          value={totalBalance}
-        />
-        <ValueKPIComponent
-          title={`Projected ${period} Savings`}
-          IconEl={TbCoins}
-          value={getProjectedSavings(accounts, period, month)}
-        />
+      <Flex flexDir={"column"} gap={2} w={{ base: "100%", md: "25%" }}>
+        <SimpleGrid columns={{ base: 2, md: 1 }} gap={2} w="100%">
+          <ValueKPIComponent
+            title="Total Balance"
+            IconEl={LuWallet}
+            value={totalBalance}
+          />
 
+          <ValueKPIComponent
+            title={`${period} Savings`}
+            IconEl={TbCoins}
+            value={getProjectedSavings(accounts, period, month)}
+          />
+        </SimpleGrid>
         <Flex
           h={"full"}
           bgColor={"white"}

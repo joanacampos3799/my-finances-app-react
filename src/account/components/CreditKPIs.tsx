@@ -29,16 +29,17 @@ const CreditKPIs = () => {
   );
   return (
     <>
-      {/* Responsive Flex for Account Information */}
       <Flex
         direction={"column"}
-        gap={8}
+        gap={{ base: 2, md: 8 }}
         p="10px"
         w="100%"
         justifyContent={"flex-start"}
       >
-        {/* First Row Group */}
-        <Flex direction={{ base: "column", md: "row" }} gap={8}>
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          gap={{ base: 2, md: 8 }}
+        >
           <HStack>
             <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
               Account Type
@@ -64,8 +65,10 @@ const CreditKPIs = () => {
           </HStack>
         </Flex>
 
-        {/* Second Row Group */}
-        <Flex direction={{ base: "column", md: "row" }} gap={8}>
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          gap={{ base: 2, md: 8 }}
+        >
           <HStack>
             <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
               Next Statement Date
@@ -91,7 +94,11 @@ const CreditKPIs = () => {
         </Flex>
       </Flex>
 
-      <Flex direction={{ base: "column", lg: "row" }} gap={4} w={"100%"}>
+      <Flex
+        direction={{ base: "column", lg: "row" }}
+        gap={{ base: 2, md: 4 }}
+        w={"100%"}
+      >
         <BalanceHistory />
         <ExpensesChart />
         <CreditUtilization />

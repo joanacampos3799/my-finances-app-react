@@ -22,12 +22,14 @@ const AccountKPIs = () => {
     <>
       <Flex
         direction={{ base: "column", lg: "row" }}
-        gap={8}
+        gap={{ base: 2, md: 8 }}
         w="100%"
         justifyContent={"flex-start"}
       >
-        {/* First Row Group */}
-        <Flex direction={{ base: "column", md: "row" }} gap={8}>
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          gap={{ base: 2, md: 8 }}
+        >
           <HStack>
             <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
               Account Type
@@ -53,8 +55,10 @@ const AccountKPIs = () => {
           </HStack>
         </Flex>
 
-        {/* Second Row Group */}
-        <Flex direction={{ base: "column", md: "row" }} gap={8}>
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          gap={{ base: 2, md: 8 }}
+        >
           <HStack>
             <Heading color={"teal.700"} size={"md"} fontWeight={"bold"}>
               {" "}
@@ -79,7 +83,7 @@ const AccountKPIs = () => {
           </Show>
         </Flex>
       </Flex>
-      <Flex direction={{ base: "column", lg: "row" }} gap={4}>
+      <Flex direction={{ base: "column", lg: "row" }} gap={{ base: 2, md: 4 }}>
         <BalanceHistory />
         <Revenue />{" "}
         <Show when={account.Type === 2}>

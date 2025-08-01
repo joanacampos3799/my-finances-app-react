@@ -9,7 +9,11 @@ const CollapsibleTitle = ({ title, description }: Props) => {
   return (
     <Collapsible.Root unmountOnExit>
       <Collapsible.Trigger paddingY="3">
-        <Heading fontWeight={"bold"} size="3xl" color={"teal.700"}>
+        <Heading
+          fontWeight={"bold"}
+          size={{ base: "xl", md: "3xl" }}
+          color={"teal.700"}
+        >
           {title}
         </Heading>
       </Collapsible.Trigger>

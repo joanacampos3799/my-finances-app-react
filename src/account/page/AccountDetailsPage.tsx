@@ -9,6 +9,7 @@ import {
   Show,
   Stack,
   Text,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import TransactionTable from "../../transactions/components/TransactionTable";
 import NewTransactionDrawer from "../../transactions/components/NewTransactionDrawer";
@@ -31,15 +32,24 @@ const AccountDetailsPage = () => {
   useEffect(() => {
     if (acc !== undefined) setAccount(acc);
   }, [acc, setAccount]);
+  const isMobile = useBreakpointValue({ base: true, md: false });
   if (isLoading || !isValueSet) return <LoadingPage />;
   if (error || !account) return <Text>No data</Text>;
   return (
     <Box>
       <AccountHeader name={account.Name} />
-      <Box padding={"15px"}>
-        <BreadCrumb name={account.Name} />
-        <Flex direction={"column"} gap={4} mt={4}>
-          <Flex direction={"column"} gap={4} mt={4}>
+      <Box padding={{ base: "8px", md: "15px" }}>
+        {!isMobile && <BreadCrumb name={account.Name} />}
+        <Flex
+          direction={"column"}
+          gap={{ base: 2, md: 4 }}
+          mt={{ base: 0, md: 4 }}
+        >
+          <Flex
+            direction={"column"}
+            gap={{ base: 2, md: 4 }}
+            mt={{ base: 0, md: 4 }}
+          >
             <Flex direction={{ base: "column", md: "row" }}>
               <Heading
                 color={"teal.700"}

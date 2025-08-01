@@ -1,4 +1,11 @@
-import { Box, Flex, HStack, Show, Tabs } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  HStack,
+  Show,
+  Tabs,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { queryKeys } from "../common/constants";
 import { useMutationState } from "@tanstack/react-query";
 import { HelperEntity } from "../common/helper";
@@ -16,6 +23,8 @@ import React from "react";
 import LoadingPage from "../common/components/LoadingPage";
 import MonthlyMenu from "../common/components/MonthlyMenu";
 import useMonthStore from "../common/hooks/useMonthStore";
+import NavbarMobile from "../hero/components/NavbarMobile";
+import HamburgerMenu from "../common/components/HamburgerMenu";
 
 const AccountsPage = React.memo(() => {
   const { period, setPeriod } = usePeriodStore();
@@ -46,33 +55,54 @@ const AccountsPage = React.memo(() => {
     accountCount = tCount;
     accountData = tData;
   }
+
+  const isMobile = useBreakpointValue({ base: true, md: false });
   if (isLoading || !accounts.isValueSet) return <LoadingPage />;
   return (
-    <Box padding={"15px"}>
+    <Box padding={{ base: "8px", md: "15px" }}>
       <Box>
         <HStack
-          justifyContent={"space-between"}
-          alignItems={"flex-start"}
-          justifyItems={"flex-end"}
+          flexDirection={"row"}
+          alignItems={{ base: "stretch", md: "flex-start" }}
+          justifyContent="space-between"
+          gap={{ base: 4, md: 0 }}
         >
+          {isMobile && <NavbarMobile />}
           <CollapsibleTitle
             title={"Accounts"}
             description={
               "On the Accounts page, you can easily manage all the accounts you hold with institutions. This page provides a simple and organized way to keep track of your associated accounts like checking, savings, or credit accounts."
             }
           />
-          <Flex
-            direction={"row"}
-            gap={2}
-            alignItems={"flex-start"}
-            justifyItems={"flex-end"}
-          >
-            <TimePeriodMenu period={period} setPeriod={setPeriod} />
-            <Show when={period === "Monthly"}>
-              <MonthlyMenu month={month} setMonth={setMonth} />
-            </Show>
-            <NewAccountDrawer />
-          </Flex>
+          {isMobile ? (
+            <HamburgerMenu>
+              <Flex
+                direction={"column"}
+                gap={2}
+                alignItems={"flex-start"}
+                justifyItems={"flex-end"}
+              >
+                <TimePeriodMenu period={period} setPeriod={setPeriod} />
+                <Show when={period === "Monthly"}>
+                  <MonthlyMenu month={month} setMonth={setMonth} />
+                </Show>
+                <NewAccountDrawer />
+              </Flex>
+            </HamburgerMenu>
+          ) : (
+            <Flex
+              direction={"row"}
+              gap={2}
+              alignItems={"flex-start"}
+              justifyItems={"flex-end"}
+            >
+              <TimePeriodMenu period={period} setPeriod={setPeriod} />
+              <Show when={period === "Monthly"}>
+                <MonthlyMenu month={month} setMonth={setMonth} />
+              </Show>
+              <NewAccountDrawer />
+            </Flex>
+          )}
         </HStack>
 
         {!accountData || accountCount === 0 ? (

@@ -105,7 +105,6 @@ const prepareIncomeVsExpensesData = (
   } else {
     periods = eachMonthOfInterval({ start, end });
   }
-
   // Format the periods and fill in missing data with zeroes
   const chartData = periods.map((date) => {
     let periodKey: string;

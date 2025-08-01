@@ -70,7 +70,7 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
     0
   );
   return (
-    <Flex direction={"row"} gap={2} mx={"10px"}>
+    <Flex direction={{ base: "column", md: "row" }} gap={2} mx={"10px"}>
       <Flex width={"100%"} bgColor={"white"} borderRadius={"md"}>
         <BarChartComponent
           chartData={chartData}
@@ -84,7 +84,12 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
           ]}
         />
       </Flex>
-      <Flex direction={"column"} gap={2} width={"30%"} h={"full"}>
+      <Flex
+        direction={"column"}
+        gap={2}
+        width={{ base: "100%", md: "30%" }}
+        h={"full"}
+      >
         <Flex
           h={"full"}
           bgColor={"white"}
@@ -238,8 +243,8 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
               Top Institutions
             </Text>
             <List.Root as="ol" colorPalette={"teal"}>
-              {topInstitutions.map((institution) => (
-                <List.Item key={institution.Id + "-top"}>
+              {topInstitutions.map((institution, index) => (
+                <List.Item key={institution.Id + "-top-" + index}>
                   <List.Indicator color={"teal.100"} />
                   {institution.Name}:{" "}
                   <FormatNumber
@@ -250,8 +255,8 @@ const InstitutionsKPIs = ({ institutions }: Props) => {
                 </List.Item>
               ))}
               {topInstitutions.length < 3 &&
-                placeholders.map((institution) => (
-                  <List.Item key={institution + "-top"}>
+                placeholders.map((institution, index) => (
+                  <List.Item key={institution + "-top-" + index}>
                     <List.Indicator color={"teal.100"} />
                     {institution}
                   </List.Item>

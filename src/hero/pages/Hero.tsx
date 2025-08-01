@@ -19,7 +19,7 @@ import TransactionsAndAccounts from "../components/TransactionsAndAccounts";
 import BudgetAndCategories from "../components/BudgetAndCategories";
 import FixedTransactions from "../components/FixedAndDebts";
 import LimitsandGoals from "../components/LimitsAndGoals";
-import AlertsAndInsights from "../components/AlertsAndInsights";
+
 import Benefits from "../components/Benefits";
 import FAQ from "../components/FAQ";
 
@@ -36,27 +36,43 @@ export default function HeroPage() {
   };
   return (
     <>
-      <Flex direction={"row"} w="100%" px="15px">
+      <Flex
+        direction={{ base: "column", md: "row" }}
+        w="100%"
+        px={{ base: "8px", md: "15px" }}
+        py={{ base: 4, md: 0 }}
+        align="center"
+        minH={{ base: "auto", md: "90vh" }}
+        gap={{ base: 6, md: 0 }}
+      >
         <Flex
-          direction={"column"}
-          w="40%"
-          h="90vh"
-          gap={2}
-          justifyContent={"center"}
-          alignContent={"center"}
+          direction="column"
+          w={{ base: "100%", md: "40%" }}
+          minH={{ base: "auto", md: "90vh" }}
+          gap={4}
+          justifyContent="center"
+          alignContent="center"
         >
           <Center>
             <HStack>
-              <Heading size={"2xl"} color={"teal.700"}>
+              <Heading
+                size={{ base: "lg", md: "2xl" }}
+                color="teal.700"
+                textAlign={{ base: "center", md: "left" }}
+              >
                 Manage Your Finances Like a{" "}
               </Heading>
-              <Heading size={"2xl"} color={"teal.500"}>
+              <Heading
+                size={{ base: "lg", md: "2xl" }}
+                color="teal.500"
+                textAlign={{ base: "center", md: "left" }}
+              >
                 Pro
               </Heading>
             </HStack>
           </Center>
           <Center>
-            <Text>
+            <Text fontSize={{ base: "md", md: "lg" }} textAlign="justify">
               With MoneyTrack., managing your finances has never been easier.
               Track every transaction, set categories, and link multiple
               accounts across different financial institutions. Stay organized
@@ -80,17 +96,28 @@ export default function HeroPage() {
             </HStack>
           </Center>
         </Flex>
-        <Flex h="90vh" w="60%">
-          <Image src={hero}></Image>
+        <Flex
+          w={{ base: "100%", md: "60%" }}
+          minH={{ base: "200px", md: "90vh" }}
+          justify="center"
+          align="center"
+        >
+          <Image
+            src={hero}
+            objectFit="contain"
+            w={{ base: "100%", md: "90%" }}
+            h={{ base: "200px", md: "auto" }}
+            borderRadius="md"
+            alt="Hero"
+          ></Image>
         </Flex>
       </Flex>
-      <Flex ref={ref} direction={"column"} px="15px">
+      <Flex ref={ref} direction={"column"} px={{ base: "8px", md: "15px" }}>
         <Overview />
         <TransactionsAndAccounts />
         <BudgetAndCategories />
         <FixedTransactions />
         <LimitsandGoals />
-        <AlertsAndInsights />
         <Benefits />
         <FAQ />
       </Flex>

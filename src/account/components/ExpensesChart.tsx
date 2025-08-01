@@ -150,7 +150,7 @@ const groupTransactionsByWeek = (
     const weekStartsOn = getDay(firstDayOfMonth) as Day;
 
     // Get the correct week number
-    const weekKey = "Week " + getWeekOfMonth(transactionDate, { weekStartsOn });
+    const weekKey = "Week " + getWeekOfMonth(transactionDate);
 
     if (!groupedData[weekKey]) {
       groupedData[weekKey] = {};
@@ -172,7 +172,6 @@ const groupTransactionsByWeek = (
     { weekStartsOn: getDay(startOfMonth(periodStart)) as Day }
   );
   const groupedWeeks: { [key: string]: { [category: string]: number } } = {};
-
   weeksInRange.forEach((week, index) => {
     const weekKey = "Week " + (index + 1);
     groupedWeeks[weekKey] = groupedData[weekKey] || {};

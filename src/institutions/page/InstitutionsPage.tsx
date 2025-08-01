@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Show } from "@chakra-ui/react";
+import { Box, Flex, HStack, Show, useBreakpointValue } from "@chakra-ui/react";
 import InstitutionsKPIs from "../components/InstitutionsKPIs";
 import InstitutionsList from "../components/InstitutionsList";
 import useInstitutions from "../hooks/useInstitutions";
@@ -15,6 +15,8 @@ import usePeriodStore from "../../common/hooks/usePeriodStore";
 import LoadingPage from "../../common/components/LoadingPage";
 import useMonthStore from "../../common/hooks/useMonthStore";
 import MonthlyMenu from "../../common/components/MonthlyMenu";
+import NavbarMobile from "../../hero/components/NavbarMobile";
+import HamburgerMenu from "../../common/components/HamburgerMenu";
 
 const InstitutionsPage = () => {
   const { period, setPeriod } = usePeriodStore();
@@ -44,33 +46,53 @@ const InstitutionsPage = () => {
     instCount = tCount;
     instData = tData;
   }
+  const isMobile = useBreakpointValue({ base: true, md: false });
   if (isLoading || !institutions.isValueSet) return <LoadingPage />;
   return (
-    <Box padding={"15px"}>
+    <Box padding={{ base: "8px", md: "15px" }}>
       <HStack
-        px="10px"
-        justifyContent={"space-between"}
-        alignItems={"flex-start"}
-        justifyItems={"flex-end"}
+        px={{ base: 0, md: "10px" }}
+        flexDirection={"row"}
+        alignItems={{ base: "stretch", md: "flex-start" }}
+        justifyContent="space-between"
+        gap={{ base: 4, md: 0 }}
       >
+        {isMobile && <NavbarMobile />}
         <CollapsibleTitle
           title={"Institutions"}
           description={
             "On the Institutions page, you can easily manage all the financial institutions. This page provides a simple and organized way to keep track of your institutions."
           }
         />
-        <Flex
-          direction={"row"}
-          gap={2}
-          alignItems={"flex-start"}
-          justifyItems={"flex-end"}
-        >
-          <TimePeriodMenu period={period} setPeriod={setPeriod} />
-          <Show when={period === "Monthly"}>
-            <MonthlyMenu month={month} setMonth={setMonth} />
-          </Show>
-          <NewInstitutionModal />
-        </Flex>
+        {isMobile ? (
+          <HamburgerMenu>
+            <Flex
+              direction={"column"}
+              gap={2}
+              alignItems={"flex-start"}
+              justifyItems={"flex-end"}
+            >
+              <TimePeriodMenu period={period} setPeriod={setPeriod} />
+              <Show when={period === "Monthly"}>
+                <MonthlyMenu month={month} setMonth={setMonth} />
+              </Show>
+              <NewInstitutionModal />
+            </Flex>
+          </HamburgerMenu>
+        ) : (
+          <Flex
+            direction={"row"}
+            gap={2}
+            alignItems={"flex-start"}
+            justifyItems={"flex-end"}
+          >
+            <TimePeriodMenu period={period} setPeriod={setPeriod} />
+            <Show when={period === "Monthly"}>
+              <MonthlyMenu month={month} setMonth={setMonth} />
+            </Show>
+            <NewInstitutionModal />
+          </Flex>
+        )}
       </HStack>
       {!instData || instCount === 0 ? (
         <EmptyState

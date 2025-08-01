@@ -1,4 +1,4 @@
-import { Flex, HStack, Table } from "@chakra-ui/react";
+import { Flex, HStack, Table, useBreakpointValue } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 import FixedTransactionList from "../model/FixedTransactionsList";
@@ -14,6 +14,7 @@ import {
   PaginationRoot,
 } from "../../components/ui/pagination";
 import FixedTransactionRow from "./FixedTransactionRow";
+import FixedTransactionCard from "./FixedTransactionCard";
 
 interface Props {
   fixedTransactions: FixedTransactionList[];
@@ -50,6 +51,34 @@ const FixedTransactionsList = ({ fixedTransactions }: Props) => {
     setFxCount(fixedTransactions.length);
     setSortedFx(fixedTransactions.slice((page - 1) * size, page * size));
   }, [fixedTransactions, setSortedFx, page]);
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
+  if (isMobile) {
+    return (
+      <Flex direction="column" gap={3} p={2}>
+        {sortedFx.map((fx) => (
+          <FixedTransactionCard
+            key={fx.Id + "-mobile"}
+            fixed={fx}
+            onDelete={handleDelete}
+          />
+        ))}
+
+        <PaginationRoot
+          count={fxCount}
+          pageSize={size}
+          page={page}
+          onPageChange={(e) => handlePageChange(e.page)}
+        >
+          <HStack wrap="wrap" justifyContent="center" mt={2}>
+            <PaginationPrevTrigger />
+            <PaginationItems />
+            <PaginationNextTrigger />
+          </HStack>
+        </PaginationRoot>
+      </Flex>
+    );
+  }
   return (
     <Flex p={"10px"}>
       {sortedFx.length > 0 ? (

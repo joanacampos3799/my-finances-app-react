@@ -43,12 +43,15 @@ const InstitutionDetails = ({ institution }: Props) => {
   );
   return (
     <DialogComponent
-      size="xl"
+      size={{ base: "full", md: "xl" }}
       title={institution.Name + "'s Accounts"}
       footer={<NewAccountDrawer institutionId={institution.Id} />}
     >
       <Flex direction={"column"} gap={5} mb={3}>
-        <Flex direction={"row"} gap={10}>
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          gap={{ base: 4, md: 10 }}
+        >
           <Flex gap={2} w="100%">
             <Heading color={"teal.700"} size={"sm"}>
               {" "}
@@ -85,7 +88,10 @@ const InstitutionDetails = ({ institution }: Props) => {
           </Flex>
         </Flex>
 
-        <Flex direction={"row"} gap={10}>
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          gap={{ base: 4, md: 10 }}
+        >
           <Flex gap={2} w="100%">
             <Heading color={"teal.700"} size={"sm"}>
               {" "}

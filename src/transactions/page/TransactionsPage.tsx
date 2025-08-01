@@ -1,5 +1,5 @@
 import NewTransactionDrawer from "../components/NewTransactionDrawer";
-import { Box, Flex, HStack, Tabs } from "@chakra-ui/react";
+import { Box, Flex, HStack, Tabs, useBreakpointValue } from "@chakra-ui/react";
 import { HelperEntity } from "../../common/helper";
 import Transaction from "../model/Transaction";
 import useTransactions from "../hooks/useTransactions";
@@ -10,6 +10,7 @@ import TransactionEmptyState from "../components/TransactionEmptyState";
 import CollapsibleTitle from "../../common/components/CollapsibleTitle";
 import DateObj from "../../common/date";
 import LoadingPage from "../../common/components/LoadingPage";
+import NavbarMobile from "../../hero/components/NavbarMobile";
 
 const TransactionsPage = () => {
   const { transactions, isLoading } = useTransactions();
@@ -46,15 +47,18 @@ const TransactionsPage = () => {
     years = Array.from(
       new Set(transData.map((s) => s.Date.year.toString()))
     ).sort((a, b) => +b - +a);
+  const isMobile = useBreakpointValue({ base: true, md: false });
   if (isLoading || !transactions.isValueSet) return <LoadingPage />;
   return (
-    <Box padding={"15px"}>
+    <Box padding={{ base: "8px", md: "15px" }}>
       <Box>
         <HStack
-          justifyContent={"space-between"}
-          alignItems={"flex-start"}
-          justifyItems={"flex-end"}
+          flexDirection={"row"}
+          alignItems={{ base: "stretch", md: "flex-start" }}
+          justifyContent="space-between"
+          gap={{ base: 4, md: 0 }}
         >
+          {isMobile && <NavbarMobile />}
           <CollapsibleTitle
             title="Transactions"
             description="Welcome to the Transactions Page, where you can easily manage all your expenses and incomes"
@@ -65,7 +69,7 @@ const TransactionsPage = () => {
             alignItems={"flex-start"}
             justifyItems={"flex-end"}
           >
-            <NewTransactionDrawer />
+            <NewTransactionDrawer isMobile={isMobile} />
           </Flex>
         </HStack>
       </Box>

@@ -1,4 +1,12 @@
-import { Box, Flex, HStack, Icon, Show, Tabs } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  HStack,
+  Icon,
+  Show,
+  Tabs,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import CategoriesList from "../components/CategoriesList";
 import NewCategoryDrawer from "../components/NewCategoryDrawer";
 import useCategories from "../hooks/useCategories";
@@ -16,6 +24,8 @@ import React from "react";
 import LoadingPage from "../../common/components/LoadingPage";
 import useMonthStore from "../../common/hooks/useMonthStore";
 import MonthlyMenu from "../../common/components/MonthlyMenu";
+import NavbarMobile from "../../hero/components/NavbarMobile";
+import HamburgerMenu from "../../common/components/HamburgerMenu";
 
 const CategoriesPage = React.memo(() => {
   const { categories, isLoading } = useCategories();
@@ -40,33 +50,53 @@ const CategoriesPage = React.memo(() => {
     catData = tData;
     catCount = tCount;
   }
+  const isMobile = useBreakpointValue({ base: true, md: false });
   if (isLoading || !categories.isValueSet) return <LoadingPage />;
   return (
-    <Box padding={"15px"}>
+    <Box padding={{ base: "8px", md: "15px" }}>
       <Box>
         <HStack
-          justifyContent={"space-between"}
-          alignItems={"flex-start"}
-          justifyItems={"flex-end"}
+          flexDirection={"row"}
+          alignItems={{ base: "stretch", md: "flex-start" }}
+          justifyContent="space-between"
+          gap={{ base: 4, md: 0 }}
         >
+          {isMobile && <NavbarMobile />}
           <CollapsibleTitle
             title={"Categories"}
             description={
               " Welcome to the Categories Page, where you can easily manage your finances by organizing your transactions into meaningful categories."
             }
           />
-          <Flex
-            direction={"row"}
-            gap={2}
-            alignItems={"flex-start"}
-            justifyItems={"flex-end"}
-          >
-            <TimePeriodMenu period={period} setPeriod={setPeriod} />
-            <Show when={period === "Monthly"}>
-              <MonthlyMenu month={month} setMonth={setMonth} />
-            </Show>
-            <NewCategoryDrawer />
-          </Flex>
+          {isMobile ? (
+            <HamburgerMenu>
+              <Flex
+                direction={"column"}
+                gap={2}
+                alignItems={"flex-start"}
+                justifyItems={"flex-end"}
+              >
+                <TimePeriodMenu period={period} setPeriod={setPeriod} />
+                <Show when={period === "Monthly"}>
+                  <MonthlyMenu month={month} setMonth={setMonth} />
+                </Show>
+                <NewCategoryDrawer />
+              </Flex>
+            </HamburgerMenu>
+          ) : (
+            <Flex
+              direction={"row"}
+              gap={2}
+              alignItems={"flex-start"}
+              justifyItems={"flex-end"}
+            >
+              <TimePeriodMenu period={period} setPeriod={setPeriod} />
+              <Show when={period === "Monthly"}>
+                <MonthlyMenu month={month} setMonth={setMonth} />
+              </Show>
+              <NewCategoryDrawer />
+            </Flex>
+          )}
         </HStack>
 
         <CategoryKPIs data={catData} />
