@@ -57,7 +57,9 @@ const AccountsKPIs = ({ accounts }: Props) => {
   }, 0);
 
   const totalExpenses = accounts.reduce((totalExpenses, account) => {
-    return (totalExpenses += account.Transactions.reduce((acc, transaction) => {
+    return (totalExpenses += account.Transactions.filter(
+      (t) => !t.isCreditCardPayment
+    ).reduce((acc, transaction) => {
       if (transaction.transactionType === 0) return acc + transaction.Amount;
       else return acc;
     }, 0));

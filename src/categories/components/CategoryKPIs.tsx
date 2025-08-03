@@ -17,7 +17,12 @@ const CategoryKPIs = ({ data }: Props) => {
   const getChartData = (filtered: Category[], type: number) => {
     return filtered.map((f) => ({
       label: f.Name,
-      value: getTransactionsTotalAmount(f.Transactions, period, month, type),
+      value: getTransactionsTotalAmount(
+        f.Transactions.filter((t) => !t.isCreditCardPayment),
+        period,
+        month,
+        type
+      ),
       color: f.Color,
     }));
   };

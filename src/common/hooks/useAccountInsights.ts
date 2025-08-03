@@ -162,16 +162,18 @@ const useAccountInsights = () => {
     let totalExpenses = 0;
     const dates = getStartEndDates(period, month);
     accounts.forEach((account) =>
-      account.Transactions.filter((f) => {
-        const itemDate = parseDate(f.Date);
-        return itemDate >= dates.startDate && itemDate <= dates.endDate;
-      }).forEach((transaction) => {
-        if (transaction.Amount > 0) {
-          totalIncome += transaction.Amount;
-        } else {
-          totalExpenses -= transaction.Amount;
-        }
-      })
+      account.Transactions.filter((t) => !t.isCreditCardPayment)
+        .filter((f) => {
+          const itemDate = parseDate(f.Date);
+          return itemDate >= dates.startDate && itemDate <= dates.endDate;
+        })
+        .forEach((transaction) => {
+          if (transaction.Amount > 0) {
+            totalIncome += transaction.Amount;
+          } else {
+            totalExpenses -= transaction.Amount;
+          }
+        })
     );
     const currentSavings = totalIncome + totalExpenses;
 

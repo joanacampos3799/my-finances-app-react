@@ -43,7 +43,7 @@ const ExpensesChart = () => {
       return txDate >= statementStartDate && txDate < nextStatement;
     }
     return txDate >= dates.startDate && txDate <= dates.endDate;
-  });
+  }).filter((t) => t.isCreditCardPayment === false);
   const categories = transactions
     .map((t) => t.category)
     .filter((t) => t != null);

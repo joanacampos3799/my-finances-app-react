@@ -25,7 +25,7 @@ const Revenue = () => {
   const { getStartEndDates, parseDate } = useDateFilter();
   const dates = getStartEndDates(period, month);
   const chartProps = prepareIncomeVsExpensesData(
-    account.Transactions,
+    account.Transactions.filter((t) => !t.isCreditCardPayment),
     period,
     dates.startDate,
     dates.endDate,
