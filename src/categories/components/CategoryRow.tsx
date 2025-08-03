@@ -24,7 +24,11 @@ const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
   const { month } = useMonthStore();
   const iconPack = useIconPack();
   const { getTransactionsTotalAmount, getTransactionsTotal } = useInsights();
-  const totalAmount = getTransactionsTotalAmount(category.Transactions, period);
+  const totalAmount = getTransactionsTotalAmount(
+    category.Transactions,
+    period,
+    month
+  );
 
   const totalExpense = getTransactionsTotalAmount(
     category.Transactions,

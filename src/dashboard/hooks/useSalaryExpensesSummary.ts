@@ -18,7 +18,7 @@ const useSalaryExpensesSummary = (startDate: string, endDate: string) => {
   };
   const { data: summary = fallback, isLoading } = useQuery({
     enabled: !!userToken,
-    queryKey: [queryKeys.salaryExpensesSummay],
+    queryKey: [queryKeys.salaryExpensesSummay, startDate, endDate],
     queryFn: () =>
       apiClient.getQuery(
         userId!!,

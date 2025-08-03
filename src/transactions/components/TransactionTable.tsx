@@ -7,7 +7,7 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import Transaction from "../model/Transaction";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useSorting from "../../common/hooks/useSorting";
 import TableHeader from "../../common/components/TableHeader";
 import {
@@ -22,6 +22,7 @@ import { useDeleteTransaction } from "../hooks/useDeleteTransaction";
 import useDateFilter from "../../common/hooks/useDateFilter";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
 import TransactionCard from "./TransactionCard";
+import useMonthStore from "../../common/hooks/useMonthStore";
 
 interface Props {
   data: Transaction[];
@@ -39,26 +40,46 @@ const TransactionTable = ({
 }: Props) => {
   const { isSorting, getSortingState, sortNumber, sortString, sortDate } =
     useSorting();
+  const { getStartEndDates } = useDateFilter();
+  const { period } = usePeriodStore();
+  const { month } = useMonthStore();
+  const { startDate, endDate } = getStartEndDates(period, month);
   const deleteTransaction = useDeleteTransaction();
   const [sortedTransactions, setSortedTransactions] =
     useState<Transaction[]>(data);
   const [page, setPage] = useState(1);
   const [transCount, setTransCount] = useState(data.length);
+  const filteredData = useMemo(() => {
+    if (fromAccount || fromCategory) {
+      return data.filter((transaction) => {
+        const transactionDate = new Date(
+          transaction.Date.year,
+          transaction.Date.month - 1,
+          transaction.Date.day
+        );
+        return transactionDate >= startDate && transactionDate <= endDate;
+      });
+    }
+    return data;
+  }, [data, fromAccount, fromCategory, startDate, endDate]);
 
   useEffect(() => {
-    setTransCount(data.length);
+    setTransCount(filteredData.length);
     if (size)
       setSortedTransactions(
         sortDate(
-          data.slice((page - 1) * size, page * size),
+          filteredData.slice((page - 1) * size, page * size),
           "Date",
           "Date",
           "Id",
           "desc"
         )
       );
-    else setSortedTransactions(sortDate(data, "Date", "Date", "Id", "asc"));
-  }, [setSortedTransactions, data, page, size]);
+    else
+      setSortedTransactions(
+        sortDate(filteredData, "Date", "Date", "Id", "asc")
+      );
+  }, [setSortedTransactions, filteredData, page, size]);
 
   const handleDelete = (element: Transaction) => {
     element.deleted = true;
@@ -66,7 +87,8 @@ const TransactionTable = ({
   };
   const handlePageChange = (page: number) => {
     setPage(page);
-    if (size) setSortedTransactions(data.slice((page - 1) * size, page * size));
+    if (size)
+      setSortedTransactions(filteredData.slice((page - 1) * size, page * size));
   };
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -98,10 +120,13 @@ const TransactionTable = ({
                 <Flex direction="column" align="start">
                   <span>Total Spent</span>
                   <FormatNumber
-                    value={data.reduce((total, { transactionType, Amount }) => {
-                      if (transactionType === 0) return total + Amount;
-                      else return total;
-                    }, 0)}
+                    value={filteredData.reduce(
+                      (total, { transactionType, Amount }) => {
+                        if (transactionType === 0) return total + Amount;
+                        else return total;
+                      },
+                      0
+                    )}
                     style="currency"
                     currency="EUR"
                   />
@@ -109,10 +134,13 @@ const TransactionTable = ({
                 <Flex direction="column" align="end">
                   <span>Total Earned</span>
                   <FormatNumber
-                    value={data.reduce((total, { transactionType, Amount }) => {
-                      if (transactionType === 1) return total + Amount;
-                      else return total;
-                    }, 0)}
+                    value={filteredData.reduce(
+                      (total, { transactionType, Amount }) => {
+                        if (transactionType === 1) return total + Amount;
+                        else return total;
+                      },
+                      0
+                    )}
                     style="currency"
                     currency="EUR"
                   />
@@ -241,7 +269,7 @@ const TransactionTable = ({
                   <Table.Cell>Total Spent</Table.Cell>
                   <Table.Cell>
                     <FormatNumber
-                      value={data.reduce(
+                      value={filteredData.reduce(
                         (total, { transactionType, Amount }) => {
                           if (transactionType === 0) return total + Amount;
                           else return total;
@@ -257,7 +285,7 @@ const TransactionTable = ({
                   <Table.Cell>
                     {" "}
                     <FormatNumber
-                      value={data.reduce(
+                      value={filteredData.reduce(
                         (total, { transactionType, Amount }) => {
                           if (transactionType === 1) return total + Amount;
                           else return total;

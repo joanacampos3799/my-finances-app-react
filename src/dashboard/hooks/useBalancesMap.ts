@@ -11,7 +11,7 @@ const useBalancesMap = (startDate: string, endDate: string) => {
 
   const { data: balances, isLoading } = useQuery({
     enabled: !!userToken,
-    queryKey: [queryKeys.balancesMap],
+    queryKey: [queryKeys.balancesMap, startDate, endDate],
     queryFn: () =>
       apiClient.getBalances(userId!!, userToken!!, startDate, endDate),
   });
