@@ -2,6 +2,7 @@ import {
   LuArrowDownToLine,
   LuArrowDownUp,
   LuArrowUpFromLine,
+  LuCreditCard,
 } from "react-icons/lu";
 import EnumType from "./EnumType";
 import { ReactElement } from "react";
@@ -58,6 +59,11 @@ export const movementTypes: MovType[] = [
     id: 2,
     name: "Transfer",
     MovementIcon: <LuArrowDownUp />,
+  },
+  {
+    id: 3,
+    name: "Credit Card Payment",
+    MovementIcon: <LuCreditCard />,
   },
 ];
 

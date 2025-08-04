@@ -153,7 +153,7 @@ const NewFixedTransactionDrawer = ({ fixedTransaction }: Props) => {
           />
           <RadioMenu
             hasArrow
-            data={movementTypes.filter((m) => m.id !== 2)}
+            data={movementTypes}
             placeholder="Transaction Type"
             selectedId={values.selectedTT}
             setSelectedId={(v) => handleChange("selectedTT", v)}

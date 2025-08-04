@@ -6,6 +6,7 @@ import {
   LuArrowDownToLine,
   LuArrowDownUp,
   LuArrowUpFromLine,
+  LuCreditCard,
   LuTrash2,
 } from "react-icons/lu";
 import { FormatNumber } from "@chakra-ui/react";
@@ -33,9 +34,12 @@ const TransactionCard = ({
   } else if (transaction.transactionType === 1) {
     icon = <LuArrowDownToLine />;
     color = "green.500";
-  } else {
+  } else if (transaction.transactionType === 2) {
     icon = <LuArrowDownUp />;
     color = "blue.500";
+  } else {
+    icon = <LuCreditCard />;
+    color = "orange.500";
   }
 
   return (

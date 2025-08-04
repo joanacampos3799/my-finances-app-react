@@ -122,7 +122,7 @@ const NewCategoryDrawer = ({ category }: Props) => {
             <RadioMenu
               hasArrow
               minW="17rem"
-              data={movementTypes.filter((ct) => ct.id !== 2)}
+              data={movementTypes.filter((ct) => ct.id < 2)}
               selectedId={values.selectedTT}
               setSelectedId={(val) => handleChange("selectedTT", val)}
               placeholder="a category type"

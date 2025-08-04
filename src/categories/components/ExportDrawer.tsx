@@ -62,7 +62,7 @@ const ExportDrawer = () => {
               width="30%"
               minW="10rem"
               data={[
-                ...movementTypes.filter((cat) => cat.id !== 2),
+                ...movementTypes.filter((cat) => cat.id > 2),
                 { id: -1, name: "All" },
               ]}
               selectedId={type}

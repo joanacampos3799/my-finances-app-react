@@ -116,7 +116,7 @@ const CategoriesPage = React.memo(() => {
               <ExportDrawer />
               <Tabs.List width={"full"} border={0}>
                 {movementTypes
-                  .filter((mt) => mt.id !== 2)
+                  .filter((mt) => mt.id < 2)
                   .map((ct) => (
                     <Tabs.Trigger key={ct.id + "-movTypesTab"} value={ct.name}>
                       <Icon color={"teal.500"}>{ct.MovementIcon}</Icon>
@@ -128,7 +128,7 @@ const CategoriesPage = React.memo(() => {
 
             {/* Render Tabs content */}
             {movementTypes
-              .filter((mt) => mt.id !== 2)
+              .filter((mt) => mt.id < 2)
               .map((ct) => (
                 <Tabs.Content key={ct.name + "-contentTab"} value={ct.name}>
                   <CategoriesList

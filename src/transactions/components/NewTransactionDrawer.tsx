@@ -62,10 +62,7 @@ const NewTransactionDrawer = ({
       : categoryId
         ? "" + categoryId
         : "",
-    isCreditCardPayment:
-      transaction != null
-        ? transaction.isCreditCardPayment
-        : creditAccountId !== undefined,
+
     selectedCreditCard:
       transaction != null
         ? "" + transaction.creditCardId
@@ -148,7 +145,7 @@ const NewTransactionDrawer = ({
             Description: values.description,
             accountId: +values.selectedAccount,
             category: +values.selectedCategory,
-            isCreditCardPayment: values.isCreditCardPayment,
+            isCreditCardPayment: movementTypes[+values.selectedTT].id === 3,
             creditCardId: values.selectedCreditCard
               ? +values.selectedCreditCard
               : undefined,
@@ -204,7 +201,7 @@ const NewTransactionDrawer = ({
               variant="outline"
             />
           </Box>
-          <Show when={+values.selectedTT !== 2}>
+          <Show when={+values.selectedTT < 2}>
             <Box>
               <Field label="Choose the Category">
                 <RadioMenu
@@ -234,6 +231,22 @@ const NewTransactionDrawer = ({
               </Field>
             </Box>
           </Show>
+          <Show when={+values.selectedTT === 3}>
+            <Box>
+              <Field label="Credit Card">
+                <RadioMenu
+                  hasArrow
+                  placeholder="credit card"
+                  data={creditSelect}
+                  selectedId={values.selectedCreditCard ?? ""}
+                  setSelectedId={(value) =>
+                    handleChange("selectedCreditCard", value)
+                  }
+                  variant="outline"
+                />
+              </Field>
+            </Box>
+          </Show>
         </Stack>
 
         <Stack>
@@ -255,35 +268,6 @@ const NewTransactionDrawer = ({
               variant="outline"
             />
           </Field>
-
-          <Field label="">
-            <Switch
-              size="lg"
-              colorPalette="green"
-              thumbLabel={{ on: <LuCheck />, off: <LuX /> }}
-              checked={values.isCreditCardPayment}
-              onCheckedChange={(e) =>
-                handleChange("isCreditCardPayment", e.checked)
-              }
-            >
-              Is Credit Card Payment
-            </Switch>
-          </Field>
-
-          <Show when={values.isCreditCardPayment}>
-            <Field label="Credit Card">
-              <RadioMenu
-                hasArrow
-                placeholder="credit card"
-                data={creditSelect}
-                selectedId={values.selectedCreditCard ?? ""}
-                setSelectedId={(value) =>
-                  handleChange("selectedCreditCard", value)
-                }
-                variant="outline"
-              />
-            </Field>
-          </Show>
         </Stack>
       </form>
     </DrawerComponent>

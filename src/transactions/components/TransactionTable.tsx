@@ -79,7 +79,7 @@ const TransactionTable = ({
       setSortedTransactions(
         sortDate(filteredData, "Date", "Date", "Id", "asc")
       );
-  }, [setSortedTransactions, filteredData, page, size]);
+  }, [filteredData, page, size]);
 
   const handleDelete = (element: Transaction) => {
     element.deleted = true;

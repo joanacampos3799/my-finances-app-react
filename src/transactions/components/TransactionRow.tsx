@@ -14,6 +14,7 @@ import {
   LuArrowDownToLine,
   LuArrowDownUp,
   LuArrowUpFromLine,
+  LuCreditCard,
   LuTrash2,
 } from "react-icons/lu";
 
@@ -41,9 +42,13 @@ const TransactionRow = ({
           <Icon color={"green.500"}>
             <LuArrowDownToLine />
           </Icon>
-        ) : (
+        ) : transaction.transactionType === 2 ? (
           <Icon color={"blue.500"}>
             <LuArrowDownUp />
+          </Icon>
+        ) : (
+          <Icon color={"orange.500"}>
+            <LuCreditCard />
           </Icon>
         )}
       </Table.Cell>

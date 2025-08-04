@@ -36,7 +36,7 @@ const CategoryKPIs = ({ data }: Props) => {
       pt={1}
     >
       {movementTypes
-        .filter((mt) => mt.id !== 2)
+        .filter((mt) => mt.id < 2)
         .map((catType) => (
           <DonutChart
             key={catType.id + "-kpi"}

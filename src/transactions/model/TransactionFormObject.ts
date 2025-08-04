@@ -7,7 +7,6 @@ export default interface TransactionFormObject {
   selectedTT: string;
   selectedAccount: string;
   Name: string;
-  isCreditCardPayment: boolean;
   selectedCreditCard?: string;
   selectedCategory: string;
   selectedTransferAccount?: string;
