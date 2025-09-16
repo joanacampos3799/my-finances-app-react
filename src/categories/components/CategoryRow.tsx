@@ -1,5 +1,5 @@
 import { HStack, Icon, Show, Table } from "@chakra-ui/react";
-import { LuTrash2 } from "react-icons/lu";
+import { LuSearch, LuTrash2 } from "react-icons/lu";
 import { Button } from "../../components/ui/button";
 import BudgetProgress from "./BudgetProgress";
 import { FormatNumber } from "@chakra-ui/react";
@@ -7,11 +7,11 @@ import { timePeriods } from "../../common/constants";
 import { useIconPack } from "../../common/hooks/useIconPack";
 import Category from "../model/Category";
 import NewCategoryDrawer from "./NewCategoryDrawer";
-import CategoryDetails from "./CategoryDetails";
 import useInsights from "../../common/hooks/useInsights";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
 import { FaPen } from "react-icons/fa6";
 import useMonthStore from "../../common/hooks/useMonthStore";
+import { LinkButton } from "../../components/ui/link-button";
 
 interface CategoryRowProps {
   category: Category;
@@ -104,12 +104,17 @@ const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
 
       <Table.Cell textAlign={"end"}>
         <HStack justifyContent={"flex-end"}>
-          <CategoryDetails
-            category={category}
-            total={totalAmount}
-            totalExpense={totalExpense}
-            totalIncome={totalIncome}
-          />
+          <LinkButton
+            href={"/s/categories/" + category.Id}
+            h="40px"
+            w="40px"
+            variant={"outline"}
+            colorPalette={"teal"}
+            borderColor={"teal.500"}
+            borderRadius={"md"}
+          >
+            <LuSearch />
+          </LinkButton>
           <NewCategoryDrawer category={category} />
           <Button
             h="40px"

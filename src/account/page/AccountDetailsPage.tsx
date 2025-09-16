@@ -31,7 +31,7 @@ const AccountDetailsPage = () => {
 
   useEffect(() => {
     if (acc !== undefined) setAccount(acc);
-  }, [acc, setAccount]);
+  }, [acc]);
   const isMobile = useBreakpointValue({ base: true, md: false });
   if (isLoading || !isValueSet) return <LoadingPage />;
   if (error || !account) return <Text>No data</Text>;

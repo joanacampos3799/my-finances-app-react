@@ -11,7 +11,7 @@ export default interface AccountRequest {
   Type: number;
   institutionId: number;
   paymentDate?: string;
-  statementDate?: string;
+  statementDay?: number;
   interest?: number;
   active: boolean;
   goal?: number;

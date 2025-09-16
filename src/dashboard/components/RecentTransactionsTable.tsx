@@ -15,6 +15,7 @@ import {
   LuArrowDownToLine,
   LuArrowDownUp,
   LuArrowUpFromLine,
+  LuCreditCard,
 } from "react-icons/lu";
 
 interface Props {
@@ -66,15 +67,19 @@ const RecentTransactionsTable = ({ transactions }: Props) => {
                   ? "red.500"
                   : t.transactionType === 1
                     ? "green.500"
-                    : "blue.500"
+                    : t.transactionType === 2
+                      ? "blue.500"
+                      : "orange.500"
               }
             >
               {t.transactionType === 0 ? (
                 <LuArrowUpFromLine />
               ) : t.transactionType === 1 ? (
                 <LuArrowDownToLine />
-              ) : (
+              ) : t.transactionType === 1 ? (
                 <LuArrowDownUp />
+              ) : (
+                <LuCreditCard />
               )}
             </Icon>
             <Flex direction="column" flex="1" ml={2}>
@@ -98,7 +103,9 @@ const RecentTransactionsTable = ({ transactions }: Props) => {
                   ? "red.500"
                   : t.transactionType === 1
                     ? "green.500"
-                    : "blue.500"
+                    : t.transactionType === 2
+                      ? "blue.500"
+                      : "orange.500"
               }
             >
               <FormatNumber value={t.Amount} style="currency" currency="EUR" />
@@ -150,9 +157,13 @@ const RecentTransactionsTable = ({ transactions }: Props) => {
                   <Icon color={"green.500"}>
                     <LuArrowDownToLine />
                   </Icon>
-                ) : (
+                ) : t.transactionType === 2 ? (
                   <Icon color={"blue.500"}>
                     <LuArrowDownUp />
+                  </Icon>
+                ) : (
+                  <Icon color={"orange.500"}>
+                    <LuCreditCard />
                   </Icon>
                 )}
               </Table.Cell>

@@ -44,10 +44,10 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
       account && account.PaymentDueDate
         ? parseDate(account.PaymentDueDate)
         : new Date(),
-    statementDate:
+    statementDay:
       account && account.StatementDate
-        ? parseDate(account.StatementDate)
-        : new Date(),
+        ? "" + account.StatementDate.day
+        : undefined,
     goal: account && account.Goal ? "" + account.Goal : "0",
   });
   const [open, setOpen] = useState(false);
@@ -70,8 +70,8 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
         account.PaymentDueDate ? parseDate(account.PaymentDueDate) : new Date()
       );
       handleChange(
-        "statementDate",
-        account.StatementDate ? parseDate(account.StatementDate) : new Date()
+        "statementDay",
+        account.StatementDate ? "" + account.StatementDate.day : undefined
       );
       handleChange("goal", account.Goal?.toString() || "0");
       setOpen(open);
@@ -120,8 +120,8 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               paymentDate: values.paymentDate
                 ? format(values.paymentDate, "dd/MM/yyyy")
                 : undefined,
-              statementDate: values.statementDate
-                ? format(values.statementDate, "dd/MM/yyyy")
+              statementDay: values.statementDay
+                ? +values.statementDay
                 : undefined,
               interest: values.interest
                 ? parseFloat(
@@ -153,8 +153,8 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
               paymentDate: values.paymentDate
                 ? format(values.paymentDate, "dd/MM/yyyy")
                 : undefined,
-              statementDate: values.statementDate
-                ? format(values.statementDate, "dd/MM/yyyy")
+              statementDay: values.statementDay
+                ? +values.statementDay
                 : undefined,
               interest: values.interest
                 ? parseFloat(
@@ -231,10 +231,10 @@ const NewAccountDrawer = ({ account, institutionId }: Props) => {
             </Field>
             <HStack>
               <Field label="Statement Date">
-                <DatePicker
-                  selectedDate={values.statementDate!!}
-                  setSelectedDate={(d) => handleChange("statementDate", d)}
-                  allowFutureDates
+                <NumberInput
+                  number={"" + values.statementDay}
+                  setNumber={(e) => handleChange("statementDay", e)}
+                  isCurrency={false}
                 />
               </Field>
               <Field label="Payment Due Date">

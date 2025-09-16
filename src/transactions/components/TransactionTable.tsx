@@ -43,7 +43,10 @@ const TransactionTable = ({
   const { getStartEndDates } = useDateFilter();
   const { period } = usePeriodStore();
   const { month } = useMonthStore();
-  const { startDate, endDate } = getStartEndDates(period, month);
+  const { startDate, endDate } = useMemo(
+    () => getStartEndDates(period, month),
+    [period, month]
+  );
   const deleteTransaction = useDeleteTransaction();
   const [sortedTransactions, setSortedTransactions] =
     useState<Transaction[]>(data);
@@ -64,22 +67,27 @@ const TransactionTable = ({
   }, [data, fromAccount, fromCategory, startDate, endDate]);
 
   useEffect(() => {
-    setTransCount(filteredData.length);
-    if (size)
-      setSortedTransactions(
-        sortDate(
+    setTransCount((prev) =>
+      prev === filteredData.length ? prev : filteredData.length
+    );
+
+    const next = size
+      ? sortDate(
           filteredData.slice((page - 1) * size, page * size),
           "Date",
           "Date",
           "Id",
           "desc"
         )
-      );
-    else
-      setSortedTransactions(
-        sortDate(filteredData, "Date", "Date", "Id", "asc")
-      );
-  }, [filteredData, page, size]);
+      : sortDate(filteredData, "Date", "Date", "Id", "asc");
+
+    setSortedTransactions((prev) => {
+      if (prev.length === next.length && prev.every((p, i) => p === next[i])) {
+        return prev;
+      }
+      return next;
+    });
+  }, [filteredData, filteredData.length, page, size, transCount]);
 
   const handleDelete = (element: Transaction) => {
     element.deleted = true;

@@ -91,7 +91,10 @@ export default function DashboardPage() {
     accountData = tData;
   }
 
-  const { startDate, endDate } = getStartEndDates(period, month);
+  const { startDate, endDate } = useMemo(
+    () => getStartEndDates(period, month),
+    [getStartEndDates, period, month]
+  );
   const balancesMap = useBalancesMap(
     format(startDate, "dd/MM/yyyy"),
     format(endDate, "dd/MM/yyyy")

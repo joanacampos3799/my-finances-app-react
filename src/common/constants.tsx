@@ -20,6 +20,7 @@ export const queryKeys = {
   months: "months",
   balancesMap: "balances-map",
   salaryExpensesSummay: "salary-expense-summary",
+  monthlyBudget: "monthly-budget",
 };
 
 export const mutationKeys = {
@@ -40,6 +41,9 @@ export const mutationKeys = {
   updateTransaction: "update-transaction",
   deleteTransaction: "delete-transaction",
   addQuestion: "new-question",
+  addMonthlyBudget: "new-monthly-budget",
+  updateMonthlyBudget: "update-monthly-budget",
+  deleteMonthlyBudget: "delete-monthly-budget",
 };
 interface MovType extends EnumType {
   MovementIcon: ReactElement;

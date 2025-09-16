@@ -39,13 +39,13 @@ const FormDialog = ({
           </Button>
         ) : (
           <Button bgColor={"teal.500"} aria-label="Add">
-            Add {label}
+            {label}
           </Button>
         )}
       </DialogTrigger>
       <DialogContent colorPalette={"teal"}>
         <DialogHeader color={"teal.700"} fontSize="lg" fontWeight="bold">
-          {update ? "Update" : "Add a new"} {label}
+          {update ? "Update" : ""} {label}
         </DialogHeader>
 
         <DialogBody>{children}</DialogBody>

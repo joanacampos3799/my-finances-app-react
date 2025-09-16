@@ -1,9 +1,17 @@
-import { Box, Flex, Icon, Text, Button, HStack } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Icon,
+  Text,
+  Button,
+  HStack,
+  LinkBox,
+  LinkOverlay,
+} from "@chakra-ui/react";
 import { LuTrash2 } from "react-icons/lu";
 import BudgetProgress from "./BudgetProgress";
 import { FormatNumber } from "@chakra-ui/react";
 import { FaPen } from "react-icons/fa6";
-import CategoryDetails from "./CategoryDetails";
 import NewCategoryDrawer from "./NewCategoryDrawer";
 import useInsights from "../../common/hooks/useInsights";
 import usePeriodStore from "../../common/hooks/usePeriodStore";
@@ -20,7 +28,7 @@ const CategoryCard = ({ category, onDelete }: Props) => {
   const { period } = usePeriodStore();
   const { month } = useMonthStore();
   const iconPack = useIconPack();
-  const { getTransactionsTotalAmount, getTransactionsTotal } = useInsights();
+  const { getTransactionsTotalAmount } = useInsights();
 
   const totalAmount = getTransactionsTotalAmount(category.Transactions, period);
   const totalExpense = getTransactionsTotalAmount(
@@ -41,7 +49,8 @@ const CategoryCard = ({ category, onDelete }: Props) => {
   const CatIcon =
     iconPack?.find((i) => i.name === category.Icon)?.icon ?? FaPen;
   return (
-    <Box bg="white" borderRadius="md" boxShadow="sm" p={3} mb={3} w="full">
+    <LinkBox bg="white" borderRadius="md" boxShadow="sm" p={3} mb={3} w="full">
+      <LinkOverlay href={`/s/categories/${category.Id}`}></LinkOverlay>
       <Flex align="center" mb={2} gap={2}>
         <Icon color={category.Color}>
           <CatIcon />
@@ -50,12 +59,6 @@ const CategoryCard = ({ category, onDelete }: Props) => {
           {category.Name}
         </Text>
         <HStack ml="auto">
-          <CategoryDetails
-            category={category}
-            total={totalAmount}
-            totalExpense={totalExpense}
-            totalIncome={totalIncome}
-          />
           <NewCategoryDrawer category={category} />
           <Button
             h="32px"
@@ -97,7 +100,7 @@ const CategoryCard = ({ category, onDelete }: Props) => {
           </>
         )}
       </Flex>
-    </Box>
+    </LinkBox>
   );
 };
 export default CategoryCard;

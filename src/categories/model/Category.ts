@@ -14,3 +14,17 @@ export default interface Category {
   deleted?: boolean;
   isSalary: boolean;
 }
+
+export const fallbackCategory: Category = {
+  Id: 0,
+  Name: "General",
+  Budget: 0,
+  userId: "00000000-0000-0000-0000-000000000000",
+  Icon: "FaPen",
+  Color: "gray",
+  CategoryType: 0,
+  Transactions: [],
+  Notes: "",
+  deleted: false,
+  isSalary: false,
+};

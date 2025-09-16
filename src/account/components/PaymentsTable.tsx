@@ -104,7 +104,7 @@ const PaymentsTable = () => {
             </Table.Header>
             <Table.Body>
               {sortedPayments.map((payment) => (
-                <PaymentRow payment={payment} />
+                <PaymentRow key={`payment-${payment.Id}`} payment={payment} />
               ))}
             </Table.Body>
           </Table.Root>

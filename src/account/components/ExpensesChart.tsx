@@ -28,22 +28,31 @@ const ExpensesChart = () => {
   const dates = getStartEndDates(period, month);
   let statementStartDate: Date | null = null;
   if (account.Type === 1 && account.StatementDate) {
-    const statementDate = parseDate(account.StatementDate);
-    if (new Date() >= statementDate) {
-      statementStartDate = statementDate;
-    } else {
-      // Otherwise, we're still in the previous period
-      statementStartDate = subMonths(statementDate, 1);
-    }
+    const base = parseDate(account.StatementDate); // use its day-of-month
+    const statementDay = base.getDate();
+    const y = dates.startDate.getFullYear();
+    const m = dates.startDate.getMonth() - 1;
+    // clamp to end-of-month to avoid overflow (e.g., Feb 30)
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
+    const safeDay = Math.min(statementDay, daysInMonth);
+    statementStartDate = new Date(y, m, safeDay);
   }
+
+  // Compute the active window [periodStart, periodEnd)
+  const periodStart =
+    account.Type === 1 && statementStartDate
+      ? statementStartDate
+      : dates.startDate;
+  const periodEnd =
+    account.Type === 1 && statementStartDate
+      ? addMonths(statementStartDate, 1)
+      : dates.endDate;
+
   const transactions = account.Transactions.filter((transaction) => {
     const txDate = parseDate(transaction.Date);
-    if (account.Type === 1 && statementStartDate) {
-      const nextStatement = addMonths(statementStartDate, 1);
-      return txDate >= statementStartDate && txDate < nextStatement;
-    }
-    return txDate >= dates.startDate && txDate <= dates.endDate;
+    return txDate >= periodStart && txDate < periodEnd;
   }).filter((t) => t.isCreditCardPayment === false);
+
   const categories = transactions
     .map((t) => t.category)
     .filter((t) => t != null);
@@ -150,7 +159,7 @@ const groupTransactionsByWeek = (
     const weekStartsOn = getDay(firstDayOfMonth) as Day;
 
     // Get the correct week number
-    const weekKey = "Week " + getWeekOfMonth(transactionDate);
+    const weekKey = "Week " + getWeekOfMonth(transactionDate, { weekStartsOn });
 
     if (!groupedData[weekKey]) {
       groupedData[weekKey] = {};

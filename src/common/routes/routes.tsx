@@ -16,6 +16,7 @@ import AccountDetailsPage from "../../account/page/AccountDetailsPage";
 import AboutUsPage from "../../info/pages/AboutUsPage";
 import PrivacyPage from "../../info/pages/PrivacyPage";
 import TermsPage from "../../info/pages/TermsPage";
+import CategoryDetailsPage from "../../category/page/CategoryDetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
         children: [
           { path: "/s/dashboard", element: <DashboardPage /> },
           { path: "/s/categories", element: <CategoriesPage /> },
+          { path: "/s/categories/:id", element: <CategoryDetailsPage /> },
           { path: "/s/accounts", element: <AccountsPage /> },
           { path: "/s/accounts/:id", element: <AccountDetailsPage /> },
           { path: "/s/institutions", element: <InstitutionsPage /> },

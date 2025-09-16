@@ -22,7 +22,6 @@ const BalanceHistory = () => {
     x: format(parseDate(entry.date), "dd/MM/yyyy"),
     y: entry.balance,
   }));
-
   return (
     <LineChartComponent
       data={balanceHistoryData}

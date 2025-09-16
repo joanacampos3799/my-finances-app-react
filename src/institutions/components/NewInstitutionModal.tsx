@@ -22,7 +22,7 @@ const NewInstitutionModal = ({ institution }: Props) => {
   const ref = useRef<HTMLInputElement>(null);
   return (
     <FormDialog
-      label={institution ? institution.Name : "Institution"}
+      label={institution ? institution.Name : "Add Institution"}
       initialEl={ref.current}
       formName={"new-institution-form"}
       update={institution !== undefined}
