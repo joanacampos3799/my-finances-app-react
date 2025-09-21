@@ -12,6 +12,8 @@ import usePeriodStore from "../../common/hooks/usePeriodStore";
 import { FaPen } from "react-icons/fa6";
 import useMonthStore from "../../common/hooks/useMonthStore";
 import { LinkButton } from "../../components/ui/link-button";
+import useMonthlyBudget from "../../category/hooks/useMonthlyBudget";
+import { useMemo } from "react";
 
 interface CategoryRowProps {
   category: Category;
@@ -23,6 +25,8 @@ const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
   const { period } = usePeriodStore();
   const { month } = useMonthStore();
   const iconPack = useIconPack();
+  const budget = useMonthlyBudget(category.Id!, month);
+  const monthlyBudget = budget.budget ? budget.budget : undefined;
   const { getTransactionsTotalAmount, getTransactionsTotal } = useInsights();
   const totalAmount = getTransactionsTotalAmount(
     category.Transactions,
@@ -42,9 +46,14 @@ const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
     month,
     1
   );
-  const budgetValue = category.Budget
-    ? category.Budget * timePeriods.find((t) => t.name === period)!!.period
-    : 0;
+  const budgetValue = useMemo(() => {
+    if (monthlyBudget != null && period === "Monthly")
+      return monthlyBudget.budget;
+    return category.Budget
+      ? category.Budget * timePeriods.find((t) => t.name === period)!!.period
+      : undefined;
+  }, [monthlyBudget, category.Budget]);
+
   const CatIcon =
     iconPack?.find((i) => i.name === category.Icon)?.icon ?? FaPen;
 
@@ -83,7 +92,7 @@ const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
       </Table.Cell>
       <Show when={category.CategoryType === 0}>
         <Table.Cell>
-          {category.Budget ? (
+          {budgetValue != undefined ? (
             <FormatNumber
               value={budgetValue}
               style={"currency"}
@@ -94,7 +103,7 @@ const CategoryRow = ({ category, onDelete }: CategoryRowProps) => {
           )}
         </Table.Cell>
         <Table.Cell w="200px">
-          {category.Budget ? (
+          {budgetValue != undefined ? (
             <BudgetProgress budget={budgetValue} spent={totalAmount} />
           ) : (
             "N/A"
